@@ -239,22 +239,18 @@ def init_db():
     if DB_TYPE == "postgres":
         conn.commit()
 
-    # Initialize Default Admin
-    cursor.execute("SELECT COUNT(*) FROM users")
-    count = cursor.fetchone()
-    # Handle dict/row access robustly
-    if isinstance(count, (tuple, list)):
-        actual_count = count[0]
-    elif isinstance(count, dict):
-        # Postgres often returns lowercase 'count', SQLite often 'COUNT(*)'
-        actual_count = count.get('count') or count.get('COUNT(*)') or list(count.values())[0]
+    # Initialize Default Admin if none exists
+    hashed_admin = _hash_password("admin123")
+    if DB_TYPE == "postgres":
+        sql = """
+        INSERT INTO users (username, password, role, allowed_pages, created_at) 
+        VALUES (%s, %s, %s, %s, %s)
+        ON CONFLICT (username) DO NOTHING
+        """
+        cursor.execute(sql, ("admin", hashed_admin, "Admin", "all", str(datetime.now())))
+        conn.commit()
     else:
-        actual_count = 0
-    
-    if actual_count == 0:
-        hashed_admin = _hash_password("admin123")
-        sql = "INSERT INTO users (username, password, role, allowed_pages, created_at) VALUES (?, ?, ?, ?, ?)"
-        if DB_TYPE == "postgres": sql = sql.replace('?', '%s')
+        sql = "INSERT OR IGNORE INTO users (username, password, role, allowed_pages, created_at) VALUES (?, ?, ?, ?, ?)"
         cursor.execute(sql, ("admin", hashed_admin, "Admin", "all", str(datetime.now())))
         conn.commit()
     
