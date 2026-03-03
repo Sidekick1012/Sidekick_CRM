@@ -28,3 +28,16 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Data exports and backups
+*.sql
+*.json
+crm_database.db
+
+# Migration and test scripts
+migrate_*.py
+test_*.py
+manual_migrate.py
+export_to_json.py
+import_from_json.py
+create_sql_dump.py

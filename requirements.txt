@@ -3,3 +3,5 @@ pandas>=2.0.0
 plotly>=5.18.0
 google-generativeai
 openpyxl
+psycopg2-binary
+sqlalchemy

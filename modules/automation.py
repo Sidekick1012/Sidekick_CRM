@@ -1,6 +1,5 @@
 import smtplib
 import os
-import sqlite3
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
