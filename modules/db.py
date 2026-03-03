@@ -13,13 +13,20 @@ DB_PATH = "database/crm_database.db"
 
 def get_db_config():
     """Determine if we should use Cloud (Postgres) or Local (SQLite)."""
+    # Try multiple ways to get the URL
+    url = None
     try:
+        # Check standard Streamlit connections format
         if "connections" in st.secrets and "postgresql" in st.secrets["connections"]:
-            url = st.secrets["connections"]["postgresql"].get("url", "")
-            if url:
-                return "postgres", url
+            url = st.secrets["connections"]["postgresql"].get("url")
+        # Check a flattened format as fallback
+        elif "SUPABASE_URL" in st.secrets:
+            url = st.secrets["SUPABASE_URL"]
     except Exception:
         pass
+    
+    if url and url != "" and "[YOUR-PASSWORD]" not in url:
+        return "postgres", url
     return "sqlite", DB_PATH
 
 DB_TYPE, DB_URL = get_db_config()
@@ -28,10 +35,13 @@ def get_connection():
     if DB_TYPE == "postgres":
         import psycopg2
         from psycopg2.extras import RealDictCursor
-        conn = psycopg2.connect(DB_URL)
-        # We can't set row_factory=sqlite3.Row in psycopg2, 
-        # but we can use DictCursor to mimic the behavior
-        return conn
+        try:
+            conn = psycopg2.connect(DB_URL)
+            return conn
+        except Exception as e:
+            st.error(f"PostgreSQL Connection Error: {e}")
+            # Fallback (optional, but maybe better to show error)
+            raise e
     else:
         # Ensure directory exists for local setups
         db_dir = os.path.dirname(DB_PATH)
@@ -232,8 +242,14 @@ def init_db():
     # Initialize Default Admin
     cursor.execute("SELECT COUNT(*) FROM users")
     count = cursor.fetchone()
-    # Handle dict/row access
-    actual_count = count[0] if isinstance(count, (tuple, list)) else count['COUNT(*)'] if 'COUNT(*)' in count else count[0]
+    # Handle dict/row access robustly
+    if isinstance(count, (tuple, list)):
+        actual_count = count[0]
+    elif isinstance(count, dict):
+        # Postgres often returns lowercase 'count', SQLite often 'COUNT(*)'
+        actual_count = count.get('count') or count.get('COUNT(*)') or list(count.values())[0]
+    else:
+        actual_count = 0
     
     if actual_count == 0:
         hashed_admin = _hash_password("admin123")
@@ -262,15 +278,17 @@ def db_call(query, params=(), fetch="all", commit=True):
         if commit: conn.commit()
         
         if fetch == "all":
+            if DB_TYPE == "postgres" and cursor.description is None:
+                return []
             rows = cursor.fetchall()
             return [dict(r) for r in rows]
         elif fetch == "one":
+            if DB_TYPE == "postgres" and cursor.description is None:
+                return None
             row = cursor.fetchone()
             return dict(row) if row else None
         elif fetch == "lastrowid":
             if DB_TYPE == "postgres":
-                # For postgres, we need to handle lastrowid differently if it's critical
-                # For now return cursor.rowcount or similar
                 return None
             return cursor.lastrowid
     finally:
