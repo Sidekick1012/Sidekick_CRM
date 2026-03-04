@@ -521,16 +521,6 @@ if page == "📊 Dashboard":
         if not df_l_active.empty:
             st.markdown('<div class="glass-card" style="padding:10px !important;">', unsafe_allow_html=True)
             st.plotly_chart(get_pulse_chart(df_l_active), use_container_width=True, config={'displayModeBar': False})
-            st.markdown('</div>', unsafe_allow_html=True)
-                xaxis=dict(showgrid=False, title=None),
-                yaxis=dict(showgrid=True, gridcolor='rgba(27, 102, 86, 0.05)', title=None),
-                margin=dict(t=60, l=40, r=20, b=40),
-                height=350,
-                title=dict(text="ENGAGEMENT DYNAMICS", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656"))
-            )
-            
-            st.markdown('<div class="glass-card" style="padding:10px !important;">', unsafe_allow_html=True)
-            st.plotly_chart(fig_pulse, use_container_width=True, config={'displayModeBar': False})
             st.markdown("""
                 <div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;">
                     <b>Intel Note:</b> System ki "dharhkan" (pulse). Ye last 30 days mein nayi leads ki entry ka pattern dikhata hai.
