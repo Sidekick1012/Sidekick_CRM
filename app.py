@@ -19,7 +19,7 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 # Initialize Database
 db.init_db()
 
-# ─── CONFIG ──────────────────────────────────────────────────────────────────
+# === CONFIG ===================================================================
 st.set_page_config(
     page_title="Sidekick CRM",
     page_icon="🎯",
@@ -27,7 +27,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ─── CUSTOM CSS ───────────────────────────────────────────────────────────────
+# === CUSTOM CSS ===============================================================
 def local_css(file_name):
     if os.path.exists(file_name):
         with open(file_name, encoding="utf8") as f:
@@ -52,7 +52,7 @@ def get_img_with_href(local_img_path, target_width="250px", extra_style=""):
         pass
     return None
 
-# ─── SESSION STATE INITIALIZATION ──────────────────────────────────────────────
+# === SESSION STATE INITIALIZATION =============================================
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "username" not in st.session_state:
@@ -64,7 +64,7 @@ if "allowed_pages" not in st.session_state:
 if "show_loader" not in st.session_state:
     st.session_state.show_loader = False
 
-# ─── LOGIN SYSTEM ─────────────────────────────────────────────────────────────
+# === LOGIN SYSTEM =============================================================
 def login_page():
     local_css("assets/login.css")
 
@@ -116,7 +116,7 @@ if not st.session_state.authenticated:
     login_page()
     st.stop()
 
-# ─── LUXURY DATA LOADER ────────────────────────────────────────────────────────
+# === LUXURY DATA LOADER =======================================================
 def display_luxury_loader():
     local_css("assets/loader.css")
     st.markdown("""
@@ -126,9 +126,6 @@ def display_luxury_loader():
                 <div class="spinner-ring"></div>
                 <div class="loader-title">SIDEKICK</div>
                 <div class="loader-status">Synchronizing Data</div>
-                <div class="progress-container">
-                    <div class="progress-bar"></div>
-                </div>
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -158,7 +155,7 @@ if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring
         st.session_state.show_loader = False
         st.rerun()
 
-# ─── AUTOMATED TASKS ──────────────────────────────────────────────────────────
+# === AUTOMATED TASKS ==========================================================
 def run_daily_checks():
     s = st.session_state.settings
     if not s.get("auto_reminders", False):
