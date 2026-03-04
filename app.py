@@ -71,47 +71,50 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    # Replicating the "Sweet" blob layout (Top-Right, Right-Middle, Bottom-Right)
+    # Replicating the "Sweet" blob layout (Overlapping circles & bubbles)
     components.html("""
         <style>
-        .sweet-blob { position:fixed; border-radius:50%; z-index:-1; pointer-events:none; }
+        .sweet-circle { position:fixed; border-radius:50%; z-index:1; pointer-events:none; }
         
-        /* Orange circle equivalent */
-        .blob-1 { top:35%; right:140px; width:130px; height:130px; 
-                  background:#7bb06b; opacity:0.8; animation: float 8s infinite alternate ease-in-out; }
-        
-        /* Large green circle overlapping */
-        .blob-2 { top:42%; right:-50px; width:280px; height:280px; 
+        /* Overlapping circles on the mid-right edge */
+        .sc-1 { top:35%; right:-100px; width:340px; height:340px; 
                   background:linear-gradient(135deg, #1b6656, #2d8a76); opacity:0.6; 
-                  animation: float 12s infinite alternate ease-in-out -2s; z-index:-2; }
+                  animation: float 14s infinite alternate ease-in-out; z-index:0; }
         
-        /* Smaller blue circle overlapping bottom of large circle */
-        .blob-3 { top:25%; right:-90px; width:260px; height:260px; 
-                  background:linear-gradient(135deg, #1d4354, #2c637a); opacity:0.75; 
-                  animation: float 10s infinite alternate-reverse ease-in-out; z-index:-3; }
+        .sc-2 { top:28%; right:-70px; width:280px; height:280px; 
+                  background:linear-gradient(135deg, #1d4354, #2c637a); opacity:0.7; 
+                  animation: float 12s infinite alternate-reverse ease-in-out -2s; z-index:-1; }
+        
+        .sc-3 { top:48%; right:150px; width:150px; height:150px; 
+                  background:#7bb06b; opacity:0.85; 
+                  animation: float 9s infinite alternate ease-in-out 1s; z-index:1; }
 
-        /* Tiny dot at bottom-right */
-        .blob-dot { bottom:80px; right:100px; width:50px; height:50px; 
-                    background:#7bb06b; opacity:0.9; animation: float 6s infinite alternate ease-in-out 1s; }
+        /* Floating small bubbles/dots */
+        .sc-dot1 { bottom:120px; right:120px; width:65px; height:65px; 
+                    background:#7bb06b; opacity:0.8; animation: float 7s infinite alternate ease-in-out; z-index:1; }
+
+        .sc-dot2 { top:150px; left:80px; width:40px; height:40px; 
+                    background:#1b6656; opacity:0.5; animation: float 10s infinite alternate-reverse ease-in-out; z-index:1; }
 
         @keyframes float {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(15px, -15px) scale(1.05); }
+            100% { transform: translate(18px, -18px) scale(1.06); }
         }
         </style>
-        <div class="sweet-blob blob-1"></div>
-        <div class="sweet-blob blob-2"></div>
-        <div class="sweet-blob blob-3"></div>
-        <div class="sweet-blob blob-dot"></div>
+        <div class="sweet-circle sc-1"></div>
+        <div class="sweet-circle sc-2"></div>
+        <div class="sweet-circle sc-3"></div>
+        <div class="sweet-circle sc-dot1"></div>
+        <div class="sweet-circle sc-dot2"></div>
     """, height=0)
 
     _, center_col, _ = st.columns([1, 1.4, 1])
     with center_col:
         with st.form("login_form"):
-            # Sidekick CRM Logo (Top Center of form)
+            # Sidekick CRM Logo (Horizontal-focused wide version)
             st.markdown(f"""
                 <div class="sidekick-logo-container">
-                    {get_img_with_href("assets/SDK_LOGO.png", "140px") or
+                    {get_img_with_href("assets/SDK_LOGO.png", "260px") or
                      '<div style="font-family:Inter; font-size:2rem; font-weight:900; color:#1b6656; letter-spacing:-0.03em;">⬟ Sidekick CRM</div>'}
                 </div>
 
@@ -119,7 +122,7 @@ def login_page():
                 <div class="login-title-underline"></div>
 
                 <div class="login-subtitle">
-                    Welcome back! Login to access your CRM dashboard.
+                    Welcome back! Access your CRM dashboard.
                 </div>
             """, unsafe_allow_html=True)
 

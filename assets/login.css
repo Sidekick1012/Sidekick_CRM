@@ -42,61 +42,73 @@ body,
     justify-content: center !important;
 }
 
-/* ========== DECORATIVE BLOBS (Sweet Marketplace Style) ========== */
+/* ========== DECORATIVE BLOBS (Perfect Sweet Style Layout) ========== */
 
-/* Top-Left Organic Blob (like pink one in Sweet) */
+/* Top-Right Large Soft Wave (like reference image) */
 .stApp::before {
     content: "";
     position: fixed;
-    top: -150px;
-    left: -100px;
-    width: 600px;
-    height: 500px;
-    background: linear-gradient(135deg, #1b6656 0%, #7bb06b 60%, rgba(123, 176, 107, 0.4) 100%);
-    border-radius: 0 0 100% 50% / 0 0 80% 60%;
+    top: -200px;
+    right: -150px;
+    width: 700px;
+    height: 600px;
+    background: linear-gradient(135deg, #7bb06b 0%, #1b6656 60%, rgba(29, 67, 84, 0.4) 100%);
+    border-radius: 50% 100% 40% 90% / 100% 50% 100% 40%;
     z-index: 0;
-    animation: blobWave 15s ease-in-out infinite alternate;
-    opacity: 0.9;
+    animation: blobWave 18s ease-in-out infinite alternate;
+    opacity: 0.85;
+}
+
+/* Top-Left Accent Shape */
+.stApp::after {
+    content: "";
+    position: fixed;
+    top: -120px;
+    left: -120px;
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #1b6656, rgba(123, 176, 107, 0.3));
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    z-index: 0;
+    animation: float 12s ease-in-out infinite alternate;
+    opacity: 0.7;
 }
 
 @keyframes blobWave {
     from {
-        transform: rotate(0deg) scale(1);
+        transform: rotate(0deg) scale(1) translate(0, 0);
     }
 
     to {
-        transform: rotate(-5deg) scale(1.05);
+        transform: rotate(5deg) scale(1.08) translate(-20px, 20px);
     }
 }
 
-/* Overlapping Circles on Right Side (Injected via app.py) */
-/* This CSS handles their movement/blur if needed */
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(15px, -20px) scale(1.05);
+    }
+}
+
+/* Utility for overlapping circles on right side */
 .sweet-blob {
     position: fixed;
     border-radius: 50%;
-    z-index: 0;
+    z-index: 1;
     pointer-events: none;
-    animation: blobFloat 8s ease-in-out infinite;
+    animation: float 10s ease-in-out infinite alternate;
 }
 
-@keyframes blobFloat {
-
-    0%,
-    100% {
-        transform: translate(0, 0);
-    }
-
-    50% {
-        transform: translate(10px, -15px);
-    }
-}
-
-/* ========== FORM CARD (Compact Version) ========== */
+/* ========== FORM CARD (Ultra Compact) ========== */
 [data-testid="stForm"] {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0px !important;
+    padding: 0 !important;
     width: 440px !important;
     max-width: 90% !important;
     margin: 0 auto !important;
@@ -106,10 +118,10 @@ body,
     flex-direction: column !important;
 }
 
-/* ========== LOGO AT TOP ========== */
+/* ========== LOGO AT TOP (Increased Width) ========== */
 .sidekick-logo-container {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     animation: slideDownFade 0.8s ease-out;
 }
 
@@ -129,7 +141,7 @@ body,
     height: 4px;
     background: linear-gradient(90deg, var(--accent), var(--primary));
     border-radius: 10px;
-    margin: 10px auto 20px !important;
+    margin: 8px auto 15px !important;
     animation: slideDownFade 0.9s ease-out 0.1s forwards;
     opacity: 0;
 }
@@ -138,8 +150,8 @@ body,
     text-align: center;
     color: var(--text-muted);
     font-size: 0.95rem;
-    line-height: 1.4;
-    margin-bottom: 30px;
+    line-height: 1.3;
+    margin-bottom: 25px;
     font-weight: 500;
     animation: slideDownFade 1s ease-out 0.2s forwards;
     opacity: 0;
@@ -148,7 +160,7 @@ body,
 @keyframes slideDownFade {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(-15px);
     }
 
     to {
@@ -159,12 +171,12 @@ body,
 
 /* ========== UNDERLINE INPUTS ========== */
 [data-testid="stTextInput"] {
-    margin-bottom: 20px !important;
+    margin-bottom: 15px !important;
     background: transparent !important;
 }
 
 [data-testid="stTextInput"] label {
-    margin-bottom: -5px !important;
+    margin-bottom: -8px !important;
     color: var(--text-muted) !important;
     font-size: 0.85rem !important;
     font-weight: 600 !important;
@@ -179,14 +191,14 @@ input {
     border-radius: 0 !important;
     color: var(--secondary) !important;
     font-size: 1rem !important;
-    padding: 6px 0 !important;
-    height: 44px !important;
+    padding: 5px 0 !important;
+    height: 40px !important;
     box-shadow: none !important;
     transition: all 0.3s ease !important;
 }
 
 input:focus {
-    border-bottom: 2.5px solid var(--accent) !important;
+    border-bottom: 2px solid var(--accent) !important;
     background: transparent !important;
     outline: none !important;
 }
@@ -200,23 +212,21 @@ div[data-baseweb="base-input"] {
     box-shadow: none !important;
 }
 
-/* ========== GRADIENT BUTTON (Multi-Selector Force) ========== */
+/* ========== FORCED GRADIENT BUTTON ========== */
 button[kind="secondaryFormSubmit"],
-button[data-testid="stBaseButton-secondaryFormSubmit"],
-button[data-testid="stBaseButton-primaryFormSubmit"],
 [data-testid="stFormSubmitButton"] button,
 .stButton>button {
     background: linear-gradient(135deg, #1b6656 0%, #7bb06b 50%, #1d4354 100%) !important;
     background-size: 200% auto !important;
-    height: 52px !important;
+    height: 50px !important;
     border-radius: 50px !important;
     font-weight: 700 !important;
     font-size: 1rem !important;
     color: #ffffff !important;
     border: none !important;
-    margin-top: 15px !important;
+    margin-top: 10px !important;
     width: 100% !important;
-    box-shadow: 0 8px 20px rgba(27, 102, 86, 0.25) !important;
+    box-shadow: 0 8px 18px rgba(27, 102, 86, 0.25) !important;
     transition: all 0.4s ease !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
@@ -226,43 +236,10 @@ button[data-testid="stBaseButton-primaryFormSubmit"],
     outline: none !important;
 }
 
-button[kind="secondaryFormSubmit"]:hover,
-button[data-testid="stBaseButton-secondaryFormSubmit"]:hover,
-[data-testid="stFormSubmitButton"] button:hover {
+button:hover {
     background-position: right center !important;
-    transform: translateY(-3px) !important;
-    box-shadow: 0 15px 35px rgba(27, 102, 86, 0.45) !important;
-    color: #ffffff !important;
-}
-
-button[kind="secondaryFormSubmit"]:active {
-    transform: scale(0.96) !important;
-}
-
-/* Red error shake */
-.stError {
-    animation: shake 0.5s;
-    background: rgba(255, 75, 75, 0.1) !important;
-    border: 1px solid #ff4b4b !important;
-    color: #ff4b4b !important;
-    border-radius: 12px !important;
-    padding: 15px !important;
-}
-
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(-10px);
-    }
-
-    75% {
-        transform: translateX(10px);
-    }
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 25px rgba(27, 102, 86, 0.35) !important;
 }
 
 /* ========== FOOTER ========== */
@@ -270,6 +247,6 @@ button[kind="secondaryFormSubmit"]:active {
     text-align: center;
     color: var(--text-muted);
     font-size: 0.8rem;
-    margin-top: 25px;
+    margin-top: 20px;
     font-weight: 500;
 }
