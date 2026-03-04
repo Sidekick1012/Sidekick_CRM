@@ -66,6 +66,8 @@ body,
     align-items: center !important;
     justify-content: center !important;
     height: 100vh !important;
+    width: 100% !important;
+    max-width: none !important;
     z-index: 10;
 }
 
@@ -181,12 +183,14 @@ input {
     background: rgba(255, 255, 255, 0.05) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     height: 60px !important;
+    line-height: 1.5 !important;
     border-radius: 18px !important;
     color: #ffffff !important;
     font-size: 1.1rem !important;
     padding: 0 24px !important;
     margin-bottom: 5px !important;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: block !important;
 }
 
 input:focus {
