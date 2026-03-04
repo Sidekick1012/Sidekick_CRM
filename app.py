@@ -143,9 +143,14 @@ def display_luxury_loader():
         <div class="loader-wrapper">
             <div class="orb-glow"></div>
             <div class="loader-card">
-                <div class="spinner-ring"></div>
+                <div class="circular-progress">
+                    <svg>
+                        <circle class="bg" cx="60" cy="60" r="50"></circle>
+                        <circle class="bar" cx="60" cy="60" r="50"></circle>
+                    </svg>
+                </div>
                 <div class="loader-title">SIDEKICK</div>
-                <div class="loader-status">Synchronizing Data</div>
+                <div class="loader-status">Synchronizing Intelligence</div>
             </div>
         </div>
     """, unsafe_allow_html=True)
