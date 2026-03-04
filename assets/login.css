@@ -176,31 +176,32 @@ body,
 }
 
 [data-testid="stTextInput"] label {
-    margin-bottom: -8px !important;
+    margin-bottom: 8px !important;
     color: var(--text-muted) !important;
     font-size: 0.85rem !important;
     font-weight: 600 !important;
+    margin-left: 2px !important;
 }
 
 input[type="text"],
 input[type="password"],
 input {
-    background: transparent !important;
-    border: none !important;
-    border-bottom: 2px solid #edf2f7 !important;
-    border-radius: 0 !important;
-    color: var(--secondary) !important;
+    background: #ffffff !important;
+    border: 1.5px solid #000000 !important;
+    border-radius: 10px !important;
+    color: #111827 !important;
     font-size: 1rem !important;
-    padding: 5px 0 !important;
-    height: 40px !important;
+    padding: 0 15px !important;
+    height: 46px !important;
     box-shadow: none !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.2s ease !important;
 }
 
 input:focus {
-    border-bottom: 2px solid var(--accent) !important;
-    background: transparent !important;
+    border: 2px solid var(--accent) !important;
+    background: #ffffff !important;
     outline: none !important;
+    box-shadow: 0 0 0 3px rgba(123, 176, 107, 0.15) !important;
 }
 
 /* Remove Streamlit borders */
