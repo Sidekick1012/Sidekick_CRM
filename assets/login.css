@@ -259,7 +259,7 @@ label,
 }
 
 .stButton>button {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 50%, var(--secondary) 100%) !important;
+    background: linear-gradient(135deg, #1b6656 0%, #7bb06b 50%, #1d4354 100%) !important;
     background-size: 200% auto !important;
     height: 56px !important;
     border-radius: 50px !important;
@@ -269,7 +269,7 @@ label,
     color: #ffffff !important;
     border: none !important;
     margin-top: 30px !important;
-    box-shadow: 0 6px 20px rgba(27, 102, 86, 0.3) !important;
+    box-shadow: 0 6px 20px rgba(27, 102, 86, 0.35) !important;
     transition: all 0.4s ease !important;
     text-transform: uppercase;
 }
