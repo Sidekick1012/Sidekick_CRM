@@ -71,38 +71,44 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    # Split side-by-side layout
-    col1, col2 = st.columns([1.3, 1])
-
-    with col1:
-        st.markdown("""
-            <div class="welcome-section">
-                <div class="welcome-title">Welcome Back .!</div>
-                <div class="welcome-subtitle">Sidekick CRM Intelligence</div>
-                <div class="skip_lag_box">Skip the lag ?</div>
-                <div class="dashed-separator"></div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
+    _, center_col, _ = st.columns([1, 2, 1])
+    with center_col:
         with st.form("login_form"):
             st.markdown(f"""
-                <div class="login-header">
-                    <h2>Login</h2>
-                    <p>Glad you're back..!</p>
+            <div style="text-align: center; margin-bottom: 35px;">
+                <div style="margin-bottom: 18px;">
+                    {get_img_with_href("assets/SDK_LOGO.png", "180px", "filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(123,176,107,0.4));") or '<div style="font-family:Outfit; font-size:3rem; font-weight:900; color:#fff; letter-spacing:-0.05em;">SIDEKICK</div>'}
                 </div>
+                <div style="
+                    font-family: 'Outfit', sans-serif;
+                    font-size: 1.4rem;
+                    font-weight: 700;
+                    color: rgba(255,255,255,0.95);
+                    letter-spacing: 0.01em;
+                    margin-bottom: 5px;
+                ">Lead & Task Manager</div>
+                <div style="
+                    font-size: 0.72rem;
+                    font-weight: 700;
+                    color: #7bb06b;
+                    letter-spacing: 0.25em;
+                    text-transform: uppercase;
+                    margin-bottom: 25px;
+                ">Enterprise CRM Suite</div>
+                <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(123,176,107,0.55), transparent); width: 80%; margin: 0 auto;"></div>
+            </div>
             """, unsafe_allow_html=True)
 
-            user = st.text_input("Username", placeholder="Username")
-            pw = st.text_input("Password", type="password", placeholder="Password")
+            user = st.text_input("Username", placeholder="Enter your username")
+            pw = st.text_input("Password", type="password", placeholder="Enter your password")
 
             # JavaScript hack for Enter-to-Next focus flow
             components.html("""
                 <script>
                 const doc = window.parent.document;
                 const inputs = Array.from(doc.querySelectorAll('input'));
-                const userField = inputs.find(i => i.placeholder === "Username");
-                const passField = inputs.find(i => i.placeholder === "Password");
+                const userField = inputs.find(i => i.placeholder === "Enter your username");
+                const passField = inputs.find(i => i.placeholder === "Enter your password");
                 
                 if (userField && passField) {
                     userField.addEventListener('keydown', (e) => {
@@ -115,7 +121,7 @@ def login_page():
                 </script>
                 """, height=0)
 
-            if st.form_submit_button("LOGIN", use_container_width=True):
+            if st.form_submit_button("🔐  LOGIN", use_container_width=True):
                 user_record = db.verify_user(user, pw)
                 if user_record:
                     st.session_state.authenticated = True
@@ -123,27 +129,10 @@ def login_page():
                     st.session_state.role = user_record['role']
                     st.session_state.allowed_pages = user_record['allowed_pages']
                     st.session_state.show_loader = True
+                    st.success(f"✅ Identity Verified. Welcome, {user}!")
                     st.rerun()
                 else:
-                    st.error("Invalid username or password.")
-
-            st.markdown("""
-                <div class="forgot-link">Forgot password?</div>
-                <div class="or-divider">Or</div>
-                <div class="social-icons">
-                    <span>G</span>
-                    <span>f</span>
-                    <span>🔗</span>
-                </div>
-                <div class="signup-footer">
-                    Don't have an account? <span>Signup</span>
-                </div>
-                <div class="final-links">
-                    <a>Terms & Conditions</a>
-                    <a>Support</a>
-                    <a>Customer Care</a>
-                </div>
-            """, unsafe_allow_html=True)
+                    st.error("❌ Invalid username or password.")
 
 if not st.session_state.authenticated:
     login_page()
