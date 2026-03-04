@@ -71,69 +71,85 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    _, center_col, _ = st.columns([1, 2, 1])
+    # Floating blobs via injected HTML (CSS ::before/::after handles main blobs)
+    components.html("""
+        <style>
+        .blob-dot   { position:fixed; bottom:60px; right:60px; width:55px; height:55px;
+                      background:#7bb06b; border-radius:50%; z-index:0; opacity:0.7;
+                      animation: blobFloat 6s ease-in-out 1s infinite; }
+        .blob-circle{ position:fixed; top:170px; right:30px; width:170px; height:170px;
+                      background:linear-gradient(135deg,#7bb06b,#1b6656); border-radius:50%;
+                      z-index:0; opacity:0.35; animation: blobFloat 9s ease-in-out 3s infinite; }
+        @keyframes blobFloat {
+            0%,100%{ transform:translate(0,0) scale(1); }
+            33%    { transform:translate(-10px,8px) scale(1.03); }
+            66%    { transform:translate(8px,-8px) scale(0.97); }
+        }
+        </style>
+        <div class="blob-dot"></div>
+        <div class="blob-circle"></div>
+    """, height=0)
+
+    _, center_col, _ = st.columns([1, 1.8, 1])
     with center_col:
         with st.form("login_form"):
+            # Brand logo / name at top
             st.markdown(f"""
-            <div style="text-align: center; margin-bottom: 35px;">
-                <div style="margin-bottom: 18px;">
-                    {get_img_with_href("assets/SDK_LOGO.png", "180px", "filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(123,176,107,0.4));") or '<div style="font-family:Outfit; font-size:3rem; font-weight:900; color:#fff; letter-spacing:-0.05em;">SIDEKICK</div>'}
+                <div style="text-align:center; margin-bottom:30px;">
+                    {get_img_with_href("assets/SDK_LOGO.png", "90px", "margin-bottom:10px;") or
+                     '<div style="font-family:Inter; font-size:1.5rem; font-weight:800; color:#1b6656; letter-spacing:-0.03em; margin-bottom:10px;">⬟ Sidekick CRM</div>'}
                 </div>
-                <div style="
-                    font-family: 'Outfit', sans-serif;
-                    font-size: 1.4rem;
-                    font-weight: 700;
-                    color: rgba(255,255,255,0.95);
-                    letter-spacing: 0.01em;
-                    margin-bottom: 5px;
-                ">Lead & Task Manager</div>
-                <div style="
-                    font-size: 0.72rem;
-                    font-weight: 700;
-                    color: #7bb06b;
-                    letter-spacing: 0.25em;
-                    text-transform: uppercase;
-                    margin-bottom: 25px;
-                ">Enterprise CRM Suite</div>
-                <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(123,176,107,0.55), transparent); width: 80%; margin: 0 auto;"></div>
-            </div>
+
+                <div class="login-title-main">Login</div>
+                <div class="login-title-underline"></div>
+
+                <div class="login-subtitle">
+                    Welcome back! Login to access your CRM dashboard.<br>
+                    Did you <a href="#">forget your password?</a>
+                </div>
             """, unsafe_allow_html=True)
 
-            user = st.text_input("Username", placeholder="Enter your username")
-            pw = st.text_input("Password", type="password", placeholder="Enter your password")
+            # Underline-style inputs
+            user = st.text_input("", placeholder="Username")
+            pw   = st.text_input("", type="password", placeholder="Password")
 
-            # JavaScript hack for Enter-to-Next focus flow
+            # Enter-to-next JS
             components.html("""
                 <script>
-                const doc = window.parent.document;
-                const inputs = Array.from(doc.querySelectorAll('input'));
-                // Standard targeting for the original layout
-                const userField = inputs.find(i => i.placeholder === "Enter your username");
-                const passField = inputs.find(i => i.placeholder === "Enter your password");
-                
-                if (userField && passField) {
-                    userField.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                            passField.focus();
+                (function() {
+                    const doc = window.parent.document;
+                    const check = setInterval(() => {
+                        const inputs = Array.from(doc.querySelectorAll('input'));
+                        const u = inputs.find(i => i.placeholder === 'Username');
+                        const p = inputs.find(i => i.placeholder === 'Password');
+                        if (u && p) {
+                            clearInterval(check);
+                            u.addEventListener('keydown', e => {
+                                if (e.key === 'Enter') { e.preventDefault(); p.focus(); }
+                            });
                         }
-                    });
-                }
+                    }, 300);
+                })();
                 </script>
-                """, height=0)
+            """, height=0)
 
-            if st.form_submit_button("🔐  LOGIN", use_container_width=True):
+            if st.form_submit_button("→  CONTINUE", use_container_width=True):
                 user_record = db.verify_user(user, pw)
                 if user_record:
-                    st.session_state.authenticated = True
-                    st.session_state.username = user_record['username']
-                    st.session_state.role = user_record['role']
-                    st.session_state.allowed_pages = user_record['allowed_pages']
-                    st.session_state.show_loader = True
-                    st.success(f"✅ Identity Verified. Welcome, {user}!")
+                    st.session_state.authenticated    = True
+                    st.session_state.username         = user_record['username']
+                    st.session_state.role             = user_record['role']
+                    st.session_state.allowed_pages    = user_record['allowed_pages']
+                    st.session_state.show_loader      = True
                     st.rerun()
                 else:
                     st.error("❌ Invalid username or password.")
+
+            st.markdown("""
+                <div class="login-footer">
+                    © 2026 Sidekick CRM. All rights reserved.
+                </div>
+            """, unsafe_allow_html=True)
 
 if not st.session_state.authenticated:
     login_page()
