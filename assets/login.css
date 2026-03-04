@@ -187,35 +187,55 @@ body,
     opacity: 0.9;
 }
 
+/* Target the whole input container (so eye icon is inside the box) */
+[data-testid="stTextInput"]>div {
+    background: #ffffff !important;
+    border: 1px solid #111827 !important;
+    /* Proper thin black border */
+    border-radius: 8px !important;
+    padding: 0 !important;
+    height: 44px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-testid="stTextInput"]>div:hover {
+    border-color: var(--primary) !important;
+}
+
+[data-testid="stTextInput"]>div:focus-within {
+    border: 2px solid var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(27, 102, 86, 0.1) !important;
+}
+
+/* Clear borders from the actual input element inside */
 input[type="text"],
 input[type="password"],
 input {
-    background: #ffffff !important;
-    border: 1px solid #111827 !important;
-    border-radius: 12px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
     color: #111827 !important;
     font-size: 0.95rem !important;
-    padding: 0 16px !important;
-    height: 48px !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-input:hover {
-    border-color: var(--primary) !important;
-    background: #fdfdfd !important;
+    padding: 0 12px !important;
+    height: 100% !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 input:focus {
-    border: 1.5px solid var(--primary) !important;
-    background: #ffffff !important;
     outline: none !important;
-    box-shadow: 0 0 0 4px rgba(27, 102, 86, 0.08) !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
-/* Remove Streamlit borders */
-[data-testid="stTextInput"]>div,
-div[data-baseweb="input"],
+/* Eye icon container styling */
+div[data-baseweb="input"] {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Remove Streamlit default stray borders */
 div[data-baseweb="base-input"] {
     background: transparent !important;
     border: none !important;
