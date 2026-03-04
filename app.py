@@ -72,13 +72,15 @@ def login_page():
     local_css("assets/login.css")
 
     # Split side-by-side layout
-    col1, col2 = st.columns([1.2, 1])
+    col1, col2 = st.columns([1.3, 1])
 
     with col1:
         st.markdown("""
             <div class="welcome-section">
                 <div class="welcome-title">Welcome Back .!</div>
-                <div class="skip_lag">Skip the lag ?</div>
+                <div class="welcome-subtitle">Sidekick CRM Intelligence</div>
+                <div class="skip_lag_box">Skip the lag ?</div>
+                <div class="dashed-separator"></div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -127,14 +129,19 @@ def login_page():
 
             st.markdown("""
                 <div class="forgot-link">Forgot password?</div>
+                <div class="or-divider">Or</div>
                 <div class="social-icons">
-                    <span style="font-size:1.5rem;">🌐</span>
-                    <span style="font-size:1.5rem;">📱</span>
-                    <span style="font-size:1.5rem;">💼</span>
+                    <span>G</span>
+                    <span>f</span>
+                    <span>🔗</span>
                 </div>
-                <div class="footer-links">
-                    Don't have an account? Signup<br><br>
-                    Terms & Conditions | Support | Customer Care
+                <div class="signup-footer">
+                    Don't have an account? <span>Signup</span>
+                </div>
+                <div class="final-links">
+                    <a>Terms & Conditions</a>
+                    <a>Support</a>
+                    <a>Customer Care</a>
                 </div>
             """, unsafe_allow_html=True)
 
