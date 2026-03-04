@@ -71,47 +71,31 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    # Replicating the "Sweet" blob layout (Overlapping circles & bubbles)
-    components.html("""
-        <style>
-        .sweet-circle { position:fixed; border-radius:50%; z-index:1; pointer-events:none; }
-        
-        /* Overlapping circles on the mid-right edge */
-        .sc-1 { top:35%; right:-100px; width:340px; height:340px; 
-                  background:linear-gradient(135deg, #1b6656, #2d8a76); opacity:0.6; 
-                  animation: float 14s infinite alternate ease-in-out; z-index:0; }
-        
-        .sc-2 { top:28%; right:-70px; width:280px; height:280px; 
-                  background:linear-gradient(135deg, #1d4354, #2c637a); opacity:0.7; 
-                  animation: float 12s infinite alternate-reverse ease-in-out -2s; z-index:-1; }
-        
-        .sc-3 { top:48%; right:150px; width:150px; height:150px; 
-                  background:#7bb06b; opacity:0.85; 
-                  animation: float 9s infinite alternate ease-in-out 1s; z-index:1; }
-
-        /* Floating small bubbles/dots */
-        .sc-dot1 { bottom:120px; right:120px; width:65px; height:65px; 
-                    background:#7bb06b; opacity:0.8; animation: float 7s infinite alternate ease-in-out; z-index:1; }
-
-        .sc-dot2 { top:150px; left:80px; width:40px; height:40px; 
-                    background:#1b6656; opacity:0.5; animation: float 10s infinite alternate-reverse ease-in-out; z-index:1; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(18px, -18px) scale(1.06); }
-        }
-        </style>
+    # Injected Decorative Blobs (Directly in main DOM for visibility)
+    st.markdown("""
         <div class="sweet-circle sc-1"></div>
         <div class="sweet-circle sc-2"></div>
         <div class="sweet-circle sc-3"></div>
         <div class="sweet-circle sc-dot1"></div>
         <div class="sweet-circle sc-dot2"></div>
-    """, height=0)
+        <style>
+            .sweet-circle { position:fixed; border-radius:50%; pointer-events:none; z-index:1; }
+            .sc-1 { top:35%; right:-100px; width:340px; height:340px; background:linear-gradient(135deg, #1b6656, #2d8a76); opacity:0.6; animation: float 14s infinite alternate ease-in-out; }
+            .sc-2 { top:28%; right:-70px; width:280px; height:280px; background:linear-gradient(135deg, #1d4354, #2c637a); opacity:0.75; animation: float 12s infinite alternate-reverse ease-in-out; }
+            .sc-3 { top:48%; right:150px; width:150px; height:150px; background:#7bb06b; opacity:0.85; animation: float 9s infinite alternate ease-in-out 1s; }
+            .sc-dot1 { bottom:120px; right:120px; width:65px; height:65px; background:#7bb06b; opacity:0.8; animation: float 7s infinite alternate ease-in-out; }
+            .sc-dot2 { top:150px; left:80px; width:40px; height:40px; background:#1b6656; opacity:0.5; animation: float 10s infinite alternate-reverse ease-in-out; }
+            @keyframes float {
+                0% { transform: translate(0, 0) scale(1); }
+                100% { transform: translate(20px, -20px) scale(1.05); }
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
     _, center_col, _ = st.columns([1, 1.4, 1])
     with center_col:
         with st.form("login_form"):
-            # Sidekick CRM Logo (Horizontal-focused wide version)
+            # Wide Sidekick Logo
             st.markdown(f"""
                 <div class="sidekick-logo-container">
                     {get_img_with_href("assets/SDK_LOGO.png", "260px") or
