@@ -82,8 +82,7 @@ label,
     letter-spacing: 0.05em !important;
     margin-bottom: 8px !important;
     display: inline-block !important;
-    width: 100% !important;
-    text-align: center !important;
+    text-align: left !important;
 }
 
 [data-testid="stTextInput"] {
