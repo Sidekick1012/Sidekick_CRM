@@ -71,7 +71,27 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    # Injected Decorative Blobs (Directly in main DOM for visibility)
+    # Kill 'Press Enter to submit form' tooltip using MutationObserver (JS-level fix)
+    st.markdown("""
+        <script>
+        (function() {
+            function removeHints() {
+                const doc = window.parent.document;
+                doc.querySelectorAll('small, p').forEach(el => {
+                    if (el.textContent && el.textContent.includes('Press Enter')) {
+                        el.style.display = 'none';
+                        el.style.visibility = 'hidden';
+                        el.style.height = '0';
+                    }
+                });
+            }
+            removeHints();
+            const observer = new MutationObserver(removeHints);
+            observer.observe(window.parent.document.body, { childList: true, subtree: true });
+        })();
+        </script>
+    """, unsafe_allow_html=True)
+
     st.markdown("""
         <div class="sweet-circle sc-1"></div>
         <div class="sweet-circle sc-2"></div>
