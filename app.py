@@ -74,36 +74,34 @@ def login_page():
     # Layout wrapper
     with st.container():
         with st.form("login_form"):
-            # Brand Header
-            st.markdown("""
-                <div class="login-logo" style="text-align: center; margin-bottom: 25px;">
-                    <div style="font-family:'Outfit'; font-size:3.5rem; font-weight:900; color:#fff; letter-spacing:-0.05em; line-height:1; display:flex; align-items:center; justify-content:center; gap:10px;">
-                        <span>SIDEKICK</span>
-                    </div>
+            # Header section
+            st.markdown(f"""
+                <div class="login-logo" style="text-align: center; margin-bottom: 30px;">
+                    {get_img_with_href("assets/SDK_LOGO.png", "160px", "filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));") or '<h1 style="color:var(--primary-blue); font-family:Outfit; font-size:2.5rem; font-weight:900; letter-spacing:-0.05em; margin:0;">Sidekick CRM</h1>'}
                 </div>
-                <div style="text-align: center; margin-bottom: 45px;">
-                    <div class="login-title">Command Center</div>
-                    <div class="login-subtitle">Secure access to your enterprise intelligence pipeline</div>
+                <div class="login-header">
+                    <div class="login-title">Account Access</div>
+                    <div class="login-subtitle">Enter your credentials to manage your pipeline</div>
                 </div>
             """, unsafe_allow_html=True)
 
-            user = st.text_input("Username / Email", placeholder="User ID")
-            pw = st.text_input("Security Key", type="password", placeholder="••••••••")
+            user = st.text_input("Email / Username", placeholder="Enter your email or username")
+            pw = st.text_input("Password", type="password", placeholder="Enter your password")
 
-            # Flex Row for Remember & Forgot
-            u1, u2 = st.columns([1, 1])
+            # Utils row: Remember Me & Forgot Password
+            u1, u2 = st.columns([1.2, 1])
             with u1:
-                st.checkbox("Secure Session", key="rem_check")
+                st.checkbox("Remember me", key="remember_me_val")
             with u2:
-                 st.markdown('<div style="text-align: right; padding-top:10px;"><a href="#" style="color:#6366f1; font-size:0.85rem; font-weight:700; text-decoration:none; opacity:0.8;">Lost Access?</a></div>', unsafe_allow_html=True)
+                st.markdown('<div style="text-align: right; padding-top:10px;"><a href="#" style="color:#4f46e5; font-size:0.85rem; font-weight:600; text-decoration:none;">Forgot Password?</a></div>', unsafe_allow_html=True)
 
             # JavaScript hack for Enter-to-Next focus flow
             components.html("""
                 <script>
                 const doc = window.parent.document;
                 const inputs = Array.from(doc.querySelectorAll('input'));
-                const userField = inputs.find(i => i.placeholder === "User ID");
-                const passField = inputs.find(i => i.placeholder === "••••••••");
+                const userField = inputs.find(i => i.placeholder === "Enter your email or username");
+                const passField = inputs.find(i => i.placeholder === "Enter your password");
                 
                 if (userField && passField) {
                     userField.addEventListener('keydown', (e) => {
@@ -116,8 +114,8 @@ def login_page():
                 </script>
                 """, height=0)
 
-            # Ultra Login
-            if st.form_submit_button("AUTHENTICATE", use_container_width=True):
+            # Login Button
+            if st.form_submit_button("LOGIN", use_container_width=True):
                 user_record = db.verify_user(user, pw)
                 if user_record:
                     st.session_state.authenticated = True
@@ -127,14 +125,7 @@ def login_page():
                     st.session_state.show_loader = True
                     st.rerun()
                 else:
-                    st.error("Authentication Failed: Invalid Credentials")
-
-            st.markdown("""
-                <div class="form-footer">
-                    Missing an account? <a href="#">Create Workspace</a><br><br>
-                    <span style="opacity:0.4; font-size:0.75rem;">Enterprise Grade Security • 256-bit Encryption</span>
-                </div>
-            """, unsafe_allow_html=True)
+                    st.error("Invalid username or password.")
 
 if not st.session_state.authenticated:
     login_page()
