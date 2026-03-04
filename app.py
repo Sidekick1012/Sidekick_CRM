@@ -28,680 +28,12 @@ st.set_page_config(
 )
 
 # ─── CUSTOM CSS ───────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@200;300;400;500;600;700;800&display=swap');
-
-/* ══ Brand Color Palette ══════════════════════════════════ */
-:root {
-    --primary:          #1b6656;
-    --primary-glow:      rgba(27, 102, 86, 0.3);
-    --secondary:        #1d4354;
-    --secondary-glow:   rgba(29, 67, 84, 0.3);
-    --accent:           #7bb06b;
-    --accent-glow:      rgba(123, 176, 107, 0.25);
-    --bg-dark:          #f8fafc;
-    --glass-bg:         rgba(255, 255, 255, 0.9);
-    --glass-border:     rgba(27, 102, 86, 0.15);
-    --border-light:     rgba(27, 102, 86, 0.18);
-    --text-main:        #1d4354;
-    --text-muted:       #475569;
-    --card-shadow:      0 8px 30px rgba(0,0,0,0.06);
-}
-
-/* ══ Reset & Base ═════════════════════════════════════════ */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body, [data-testid="stAppViewContainer"] {
-    font-family: 'Outfit', sans-serif !important;
-    font-size: 0.88rem !important;
-    background-color: #f8fafc !important;
-    background-image: 
-        radial-gradient(ellipse at 0%   0%,   rgba(79, 70, 229, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 100% 100%, rgba(124, 58, 237, 0.05)   0%, transparent 50%),
-        linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
-    color: var(--text-main) !important;
-}
-
-[data-testid="stHeader"] { background: rgba(240,244,242,0.85) !important; backdrop-filter: blur(10px) !important; }
-
-h1,h2,h3,h4,h5,
-.stMarkdown h1,.stMarkdown h2,.stMarkdown h3 {
-    font-family: 'Outfit', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: -0.04em !important;
-    color: #0f172a !important;
-}
-
-/* ── Scrollbar ───────────────────────────────────────────── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: rgba(27,102,86,0.05); }
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #1b6656, #7bb06b);
-    border-radius: 10px;
-}
-/* ══ Premium Static Sidebar ═══════════════════════════════ */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #1b6656 0%, #1d4354 100%) !important;
-    border-right: none !important;
-}
-
-/* ABSOLUTE-STATIC LOCK: Preventing any and all movement */
-[data-testid="stSidebarResizer"],
-[data-testid="stSidebarCollapseButton"],
-[data-testid="collapsedControl"],
-[data-testid="stSidebarNav"] button {
-    display: none !important;
-}
-
-section[data-testid="stSidebar"] {
-    min-width: 260px !important;
-    max-width: 260px !important;
-    width: 260px !important;
-    transform: none !important;
-    transition: none !important;
-}
-
-[data-testid="stSidebarContent"] {
-    width: 260px !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-}
-
-[data-testid="stSidebar"] * {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-/* Hard-lock Radio Buttons */
-[data-testid="stSidebar"] .stRadio label {
-    background: transparent !important;
-    padding: 18px 25px !important;
-    margin: 0 !important;
-    width: 100% !important;
-    font-weight: 500 !important;
-    color: #ffffff !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    position: relative;
-}
-
-/* Hover State - Only Color Change, No Layout Shift */
-[data-testid="stSidebar"] .stRadio label:hover {
-    background: rgba(255,255,255,0.08) !important;
-    padding: 18px 25px !important;
-    margin: 0 !important;
-}
-
-/* Active State - Perfectly Static Cut-out */
-[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label {
-    background-color: #f8fafc !important;
-    color: #1b6656 !important;
-    font-weight: 700 !important;
-    border-radius: 40px 0 0 40px !important;
-    padding: 14px 20px !important;
-    margin: 0 !important;
-    width: 100% !important;
-}
-
-/* Pseudo-elements (Curves) - Perfectly Static Positioning */
-[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::before,
-[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    width: 40px;
-    height: 40px;
-    pointer-events: none !important;
-    background-color: transparent;
-    z-index: 1;
-}
-
-[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::before {
-    top: -40px;
-    border-radius: 0 0 40px 0;
-    box-shadow: 20px 20px 0 20px #f8fafc;
-}
-
-[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::after {
-    bottom: -40px;
-    border-radius: 0 40px 0 0;
-    box-shadow: 20px -20px 0 20px #f8fafc;
-}
-
-[data-testid="stSidebar"] .stButton > button,
-[data-testid="stSidebar"] .stButton > button:hover,
-[data-testid="stSidebar"] .stButton > button:active,
-[data-testid="stSidebar"] .stButton > button:focus {
-    transform: none !important;
-    transition: none !important;
-    animation: none !important;
-    margin: 0 !important;
-}
-
-/* Hide Streamlit elements + Collapse Button + Toggle */
-[data-testid="stSidebar"] .stRadio label[data-testid="stWidgetLabel"],
-[data-testid="stSidebar"] hr,
-[data-testid="stSidebarCollapseButton"],
-[data-testid="collapsedControl"] {
-    display: none !important;
-}
-
-/* Force Static Width & No Resizing */
-section[data-testid="stSidebar"] {
-    min-width: 260px !important;
-    max-width: 260px !important;
-    width: 260px !important;
-}
-
-/* Fix Sidebar Interaction Jitter */
-[data-testid="stSidebar"] * {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-}
-
-/* Fix Sidebar Buttons (Logout etc.) to be static */
-[data-testid="stSidebar"] .stButton > button:hover {
-    transform: none !important;
-    box-shadow: 0 4px 15px rgba(27, 102, 86, 0.25) !important;
-}
-[data-testid="stSidebar"] .stButton > button:active {
-    transform: none !important;
-}
-
-[data-testid="stSidebar"] .stRadio label p {
-    margin-bottom: 0px !important;
-    font-size: 1.05rem !important;
-    color: #ffffff !important;
-    opacity: 1 !important;
-}
-
-/* Ensure active text stays dark for contrast against white background */
-[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label p {
-    color: #1b6656 !important;
-}
-
-/* Fix Filter Labels to white */
-[data-testid="stSidebar"] label[data-testid="stWidgetLabel"] p {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    font-size: 0.8rem !important;
-    opacity: 1 !important;
-}
-
-
-/* ══ Main Container ═══════════════════════════════════════ */
-.block-container { padding: 2rem 2.5rem !important; max-width: 1600px !important; }
-
-/* ══ Page Header ══════════════════════════════════════════ */
-.page-header {
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(6, 182, 212, 0.05));
-    border: 1px solid rgba(79, 70, 229, 0.12);
-    border-top: 3px solid #1b6656;
-    border-radius: 8px;
-    padding: 10px 20px;
-    margin-bottom: 0.8rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    backdrop-filter: blur(10px);
-    position: relative;
-    overflow: hidden;
-    background-color: #ffffff;
-}
-
-.page-title {
-    font-family: 'Outfit', sans-serif !important;
-    font-size: 1.25rem !important;
-    font-weight: 800 !important;
-    color: #1b6656 !important;
-    margin-bottom: 0px !important;
-    letter-spacing: -0.03em !important;
-    line-height: 1.2 !important;
-}
-
-.page-sub {
-    font-size: 0.6rem;
-    color: #1b6656;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 800;
-    opacity: 0.7;
-}
-
-/* ══ Glass Cards ══════════════════════════════════════════ */
-.glass-card, [data-testid="stMetric"], .stForm {
-    background: #ffffff !important;
-    border: 1px solid rgba(79, 70, 229, 0.1) !important;
-    border-radius: 10px !important;
-    padding: 10px !important;
-    transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
-    box-shadow: 0 1px 10px rgba(0,0,0,0.04) !important;
-}
-
-/* Shrink Metric Values */
-[data-testid="stMetricValue"] {
-    font-size: 1.2rem !important;
-    font-weight: 700 !important;
-}
-[data-testid="stMetricLabel"] {
-    font-size: 0.75rem !important;
-}
-
-.glass-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(79, 70, 229, 0.25) !important;
-    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.15) !important;
-}
-
-/* ══ KPI Cards ════════════════════════════════════════════ */
-.kpi-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.kpi-card {
-    background: #ffffff;
-    border: 1px solid rgba(27, 102, 86, 0.08);
-    border-radius: 16px;
-    padding: 18px 24px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.35s ease;
-    animation: fadeInUp 0.6s ease-out backwards;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-}
-
-.kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: var(--accent-gradient, #4f46e5);
-}
-
-.kpi-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #4f46e5, #06b6d4, #7c3aed, #06b6d4, #4f46e5);
-    background-size: 300% 100%;
-    animation: shimmer 4s linear infinite;
-}
-
-.kpi-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(27,102,86,0.25);
-    box-shadow: 0 15px 35px rgba(27,102,86,0.15);
-}
-
-.kpi-value {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #1d4354;
-    margin-bottom: 2px;
-    font-family: 'Outfit', sans-serif;
-}
-
-.kpi-label {
-    font-size: 0.68rem;
-    color: #475569;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 700;
-    opacity: 0.7;
-}
-
-.kpi-icon {
-    position: absolute;
-    bottom: -10px; right: -5px;
-    font-size: 4rem;
-    opacity: 0.08;
-    filter: grayscale(100%) brightness(0);
-    transition: all 0.4s ease;
-    pointer-events: none;
-    z-index: 0;
-}
-.kpi-card:hover .kpi-icon {
-    transform: scale(1.2) rotate(-10deg);
-    opacity: 0.15;
-}
-.kpi-value, .kpi-label {
-    position: relative;
-    z-index: 1;
-}
-
-
-/* ══ Kanban ═══════════════════════════════════════════════ */
-.kanban-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 0 5px;
-}
-
-.kanban-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1d4354;
-    font-family: 'Outfit', sans-serif;
-}
-
-.kanban-count {
-    background: rgba(79, 70, 229, 0.1);
-    border: 1px solid rgba(79, 70, 229, 0.2);
-    color: #4f46e5;
-    padding: 3px 12px;
-    border-radius: 99px;
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-
-.kanban-item {
-    background: #ffffff;
-    border: 1px solid rgba(79, 70, 229, 0.08);
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 12px;
-    transition: all 0.25s ease;
-    cursor: pointer;
-    animation: fadeInUp 0.4s ease-out backwards;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.kanban-item:hover {
-    border-color: rgba(79, 70, 229, 0.25);
-    background: #f8fafc;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-}
-
-/* ══ Inputs & Forms ═══════════════════════════════════════ */
-.stTextInput input, .stTextArea textarea,
-.stSelectbox [data-baseweb="select"] {
-    background-color: #ffffff !important;
-    border: 1px solid rgba(27, 102, 86, 0.2) !important;
-    border-radius: 10px !important;
-    color: #1d4354 !important;
-    transition: all 0.3s !important;
-}
-
-/* ══ Selectbox / Dropdown Fix (all inner elements) ════════ */
-div[data-baseweb="select"] > div,
-div[data-baseweb="select"] > div > div,
-div[data-baseweb="select-container"],
-div[data-baseweb="select-container"] > div,
-.stSelectbox div[data-baseweb="select"],
-.stSelectbox div[data-baseweb="select"] > div,
-.stSelectbox div[role="combobox"],
-.stSelectbox div[role="listbox"] {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
-    color: #1d4354 !important;
-    border-color: rgba(27, 102, 86, 0.2) !important;
-}
-
-/* Value display text inside dropdown */
-div[data-baseweb="select"] [data-testid="stMarkdownContainer"],
-div[data-baseweb="select"] span,
-div[data-baseweb="select"] p,
-.stSelectbox div[data-baseweb="select"] span {
-    color: #1d4354 !important;
-    background: transparent !important;
-}
-
-/* Sidebar selectbox — white bg, black text */
-[data-testid="stSidebar"] div[data-baseweb="select"] > div,
-[data-testid="stSidebar"] div[data-baseweb="select"] > div > div,
-[data-testid="stSidebar"] div[data-baseweb="select-container"],
-[data-testid="stSidebar"] div[data-baseweb="select-container"] > div {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border-color: rgba(255,255,255,0.4) !important;
-    border-radius: 10px !important;
-}
-
-[data-testid="stSidebar"] div[data-baseweb="select"] span,
-[data-testid="stSidebar"] div[data-baseweb="select"] [class*="ValueContainer"] span,
-[data-testid="stSidebar"] div[data-baseweb="select"] *,
-[data-testid="stSidebar"] div[data-baseweb="select-container"] * {
-    color: #0f172a !important;
-}
-
-/* Dropdown option list popup */
-div[data-baseweb="menu"],
-div[data-baseweb="menu"] ul,
-div[data-baseweb="menu"] li {
-    background-color: #ffffff !important;
-    color: #1d4354 !important;
-}
-div[data-baseweb="menu"] li:hover {
-    background-color: rgba(27, 102, 86, 0.08) !important;
-}
-
-
-.stTextInput input:focus, .stTextArea textarea:focus {
-    border-color: #4f46e5 !important;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
-}
-
-
-/* ══ Buttons ══════════════════════════════════════════════ */
-.stButton > button {
-    background: linear-gradient(135deg, #1b6656 0%, #1d4354 100%) !important;
-    border: none !important;
-    border-radius: 12px !important;
-    color: #ffffff !important;
-    padding: 12px 24px !important;
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1) !important;
-    box-shadow: 0 4px 15px rgba(27, 102, 86, 0.25) !important;
-}
-
-.stButton > button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 25px rgba(27, 102, 86, 0.4) !important;
-    background: linear-gradient(135deg, #155245 0%, #153442 100%) !important;
-}
-
-.stButton > button::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.stButton > button:hover::after { opacity: 1; }
-.stButton > button:active { transform: translateY(1px) !important; }
-
-/* ══ Status Badges ════════════════════════════════════════ */
-.badge {
-    padding: 4px 12px;
-    border-radius: 99px;
-    font-size: 0.67rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border: 1px solid transparent;
-}
-
-.badge-new       { background: rgba(27, 102, 86, 0.1);    color: #1b6656; border-color: rgba(27, 102, 86, 0.25); }
-.badge-inprogress{ background: rgba(6, 182, 212, 0.12); color: #0891b2; border-color: rgba(6, 182, 212, 0.25); }
-.badge-closed    { background: rgba(15, 23, 42, 0.1);   color: #1d4354; border-color: rgba(15, 23, 42, 0.25); }
-.badge-hot       { background: rgba(239, 68, 68, 0.1);   color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
-.badge-warm      { background: rgba(245, 158, 11, 0.1);   color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
-.badge-cold      { background: rgba(71, 85, 105, 0.1);   color: #475569; border-color: rgba(71, 85, 105, 0.2); }
-
-/* ══ Section Heading ══════════════════════════════════════ */
-.section-heading {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
-    color: #334155;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin: 24px 0 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid rgba(27, 102, 86, 0.1);
-}
-
-.luxury-container {
-    padding: 18px;
-    background: rgba(79, 70, 229, 0.03);
-    border-radius: 14px;
-    border: 1px solid rgba(79, 70, 229, 0.08);
-}
-
-div[data-baseweb="popover"] {
-    background-color: #ffffff !important;
-    border: 1px solid rgba(79, 70, 229, 0.15) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 8px 30px rgba(79, 70, 229, 0.12) !important;
-}
-div[data-baseweb="popover"] li { background-color: transparent !important; color: #0f172a !important; }
-div[data-baseweb="popover"] li:hover { background-color: rgba(79, 70, 229, 0.08) !important; }
-
-/* ══ Keyframes ════════════════════════════════════════════ */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(22px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-22px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes shimmer {
-    0%   { background-position: -300% 0; }
-    100% { background-position: 300% 0; }
-}
-@keyframes active-pop {
-    0% { transform: scale(0.92) translateX(-10px); opacity: 0.5; }
-    100% { transform: scale(1) translateX(0); opacity: 1; }
-}
-
-@keyframes pulse-glow {
-    0%,100% { box-shadow: 0 0 15px rgba(79, 70, 229, 0.2); }
-    50%     { box-shadow: 0 0 40px rgba(6, 182, 212, 0.45); }
-}
-@keyframes float {
-    0%,100% { transform: translateY(0); }
-    50%     { transform: translateY(-7px); }
-}
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
-@keyframes orb-pulse {
-    0%,100% { transform: scale(1);   opacity: 0.7; }
-    50%     { transform: scale(1.15); opacity: 1; }
-}
-
-.animate-in { animation: fadeInUp 0.6s ease-out backwards; }
-
-/* ══ Data Editor / DataFrame Table Fix ═══════════════════ */
-/* Force white background on entire data editor wrapper */
-[data-testid="stDataFrameContainer"],
-[data-testid="stDataEditor"],
-.stDataFrame,
-div[class*="dataframe"],
-div[data-testid="stDataEditorContainer"] {
-    background: #ffffff !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(27, 102, 86, 0.15) !important;
-    overflow: hidden !important;
-}
-
-/* Glide data table (the underlying canvas-based table) */
-iframe[title*="dataframe"],
-iframe[title*="data_editor"] {
-    background: #ffffff !important;
-    border-radius: 10px !important;
-}
-
-/* Target the inner scrollable container */
-[data-testid="stDataEditorContainer"] > div,
-[data-testid="stDataFrameContainer"] > div {
-    background: #ffffff !important;
-}
-
-/* Fix stale dark bg on data editor toolbar */
-[data-testid="stElementToolbar"],
-[data-testid="StyledFullScreenButton"] {
-    background: #f8fafc !important;
-}
-
-/* ══ Sidebar Dropdown Text Fix ════════════════════════════ */
-/* Ensure sidebar selectbox text/value is always visible (white) */
-[data-testid="stSidebar"] .stSelectbox label p,
-[data-testid="stSidebar"] .stSelectbox [data-testid="stWidgetLabel"] p {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-}
-
-[data-testid="stSidebar"] div[data-baseweb="select"] *,
-[data-testid="stSidebar"] div[data-baseweb="select-container"] * {
-    color: #000000 !important;
-}
-
-[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    background: #ffffff !important;
-    border: 1px solid rgba(0,0,0,0.1) !important;
-    border-radius: 10px !important;
-    min-height: 42px !important;
-}
-
-[data-testid="stSidebar"] div[data-baseweb="select"] svg path {
-    fill: #000000 !important;
-}
-
-/* Specific fix for filter container labels and containers */
-[data-testid="stSidebar"] .filter-container {
-    background: transparent !important;
-}
-
-[data-testid="stSidebar"] .filter-container label p,
-[data-testid="stSidebar"] .filter-container [data-testid="stWidgetLabel"] p {
-    color: #ffffff !important;
-}
-
-/* ══ Download / Secondary Button (dark fix) ══════════════ */
-/* Prevent dark bg on download buttons that appear black */
-[data-testid="stDownloadButton"] button,
-[data-testid="stDownloadButton"] button:hover {
-    background: linear-gradient(135deg, #1b6656 0%, #1d4354 100%) !important;
-    color: #ffffff !important;
-    border: none !important;
-}
-
-/* ══ Tab container light fix ═════════════════════════════ */
-[data-testid="stTabs"] [data-baseweb="tab-list"] {
-    background: transparent !important;
-}
-[data-testid="stTabs"] [data-baseweb="tab"] {
-    background: transparent !important;
-    color: #475569 !important;
-}
-[data-testid="stTabs"] [aria-selected="true"] {
-    color: #1b6656 !important;
-    border-bottom: 2px solid #1b6656 !important;
-}
-
-.animate-in { animation: fadeInUp 0.6s ease-out backwards; }
-
-</style>
-""", unsafe_allow_html=True)
+def local_css(file_name):
+    if os.path.exists(file_name):
+        with open(file_name, encoding="utf8") as f:
+            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+local_css("assets/style.css")
 
 import base64
 def get_base64(bin_file):
@@ -734,114 +66,7 @@ if "show_loader" not in st.session_state:
 
 # ─── LOGIN SYSTEM ─────────────────────────────────────────────────────────────
 def login_page():
-    # Full screen background and stabilization
-    st.markdown("""
-    <style>
-    section[data-testid="stSidebar"], header[data-testid="stHeader"] {
-        display: none !important;
-    }
-    /* White background for the full page */
-    html, body, [data-testid="stAppViewContainer"], .stApp,
-    [data-testid="stMain"], [data-testid="stMainBlockContainer"],
-    .main, .block-container {
-        background: #f0f4f2 !important;
-        overflow: hidden !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
-    }
-    /* Center the column container */
-    [data-testid="stHorizontalBlock"] {
-        align-items: center !important;
-        justify-content: center !important;
-        height: 100vh !important;
-    }
-    .block-container {
-        padding: 0 !important;
-        height: 100vh !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    /* The dark colored card/form */
-    [data-testid="stForm"] {
-        background: linear-gradient(145deg, #1b3a30 0%, #1d3040 100%) !important;
-        border: none !important;
-        border-radius: 28px !important;
-        padding: 40px 45px 35px !important;
-        backdrop-filter: blur(30px) !important;
-        box-shadow:
-            0 30px 80px rgba(27,102,86,0.35),
-            0 0 0 1px rgba(123,176,107,0.18) !important;
-        animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
-        max-width: 500px !important;
-        margin: 0 auto !important;
-    }
-    .stButton > button {
-        background: linear-gradient(135deg, #1b6656, #7bb06b) !important;
-        height: 55px !important;
-        border-radius: 14px !important;
-        font-size: 1rem !important;
-        font-weight: 800 !important;
-        margin-top: 18px !important;
-        letter-spacing: 0.1em !important;
-        color: #fff !important;
-        box-shadow: 0 8px 25px rgba(27,102,86,0.5) !important;
-        transition: all 0.3s ease !important;
-        border: none !important;
-    }
-    .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 14px 35px rgba(27,102,86,0.65) !important;
-    }
-    input[type="text"], input[type="password"], input {
-        background: rgba(248, 250, 252, 0.95) !important;
-        border: 1px solid rgba(27, 102, 86, 0.2) !important;
-        height: 55px !important;
-        border-radius: 14px !important;
-        color: #0f172a !important; /* Deep Professional Black/Slate */
-        font-size: 1rem !important;
-        font-weight: 600 !important;
-        padding-left: 20px !important;
-        transition: all 0.3s ease !important;
-        outline: none !important;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
-    }
-    input:focus {
-        background: #ffffff !important;
-        border-color: #1b6656 !important;
-        box-shadow: 0 0 20px rgba(27, 102, 86, 0.3) !important;
-        outline: none !important;
-    }
-    /* Placeholder refinement */
-    input::placeholder { color: rgba(27, 102, 86, 0.4) !important; font-weight: 400 !important; }
-    
-    /* Label refinement */
-    label, .stTextInput label { 
-        color: rgba(255, 255, 255, 0.9) !important; 
-        font-size: 0.85rem !important; 
-        font-weight: 700 !important; 
-        letter-spacing: 0.05em !important; 
-        margin-left: 5px !important;
-        margin-bottom: 10px !important;
-        text-transform: uppercase !important;
-    }
-
-    /* Fix Streamlit's container and stray borders */
-    [data-testid="stTextInput"] > div, [data-testid="stTextInput"] {
-        background-color: transparent !important;
-        border: none !important;
-        outline: none !important;
-    }
-    div[data-baseweb="input"] {
-        border: none !important;
-        outline: none !important;
-    }
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    local_css("assets/login.css")
 
     _, center_col, _ = st.columns([1, 2, 1])
     with center_col:
@@ -893,78 +118,8 @@ if not st.session_state.authenticated:
 
 # ─── LUXURY DATA LOADER ────────────────────────────────────────────────────────
 def display_luxury_loader():
+    local_css("assets/loader.css")
     st.markdown("""
-        <style>
-        .loader-wrapper {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #f8fafc;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            z-index: 10000;
-            font-family: 'Outfit', sans-serif;
-        }
-        .orb-glow {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(27, 102, 86, 0.15), rgba(123, 176, 107, 0.05));
-            border-radius: 50%;
-            filter: blur(60px);
-            position: absolute;
-            animation: orb-pulse 4s infinite ease-in-out;
-        }
-        .loader-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 60px 80px;
-            border-radius: 40px;
-            border: 1px solid rgba(27, 102, 86, 0.1);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-        .spinner-ring {
-            width: 80px; height: 80px;
-            border: 4px solid rgba(27, 102, 86, 0.05);
-            border-top: 4px solid #1b6656;
-            border-radius: 50%;
-            animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            margin-bottom: 30px;
-        }
-        .loader-title {
-            font-size: 2.2rem; font-weight: 900;
-            background: linear-gradient(135deg, #1b6656, #1d4354);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-            letter-spacing: -0.04em;
-        }
-        .loader-status {
-            font-size: 0.75rem; font-weight: 800;
-            color: #7bb06b;
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            opacity: 0.9;
-        }
-        .progress-container {
-            width: 240px; height: 4px;
-            background: rgba(27, 102, 86, 0.08);
-            border-radius: 10px;
-            margin-top: 25px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, #1b6656, #7bb06b, #1b6656);
-            background-size: 200% 100%;
-            animation: progress-shimmer 2s infinite linear;
-        }
-        @keyframes progress-shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        </style>
         <div class="loader-wrapper">
             <div class="orb-glow"></div>
             <div class="loader-card">
@@ -998,9 +153,8 @@ if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring
     })
     st.session_state.recurring_clients = db.get_recurring_clients()
     
-    # Extra pause for aesthetic premium feel
+    # Optimized for speed - no artificial delays
     if st.session_state.show_loader:
-        time.sleep(1.2)
         st.session_state.show_loader = False
         st.rerun()
 
@@ -1025,8 +179,73 @@ def run_daily_checks():
 
 run_daily_checks()
 
+# --- OPTIMIZED DATA PROCESSING ENGINE ---
+@st.cache_data
+def get_processed_data(raw_leads, raw_tasks, selected_year, selected_month):
+    """Extreme performance data engine."""
+    df_l = pd.DataFrame(raw_leads)
+    df_t = pd.DataFrame(raw_tasks)
+    
+    lead_map = {l['id']: l['name'] for l in raw_leads}
+    
+    if df_l.empty:
+        available_years = [datetime.now().year]
+        filtered_leads = []
+    else:
+        df_l['dt'] = pd.to_datetime(df_l['created_at'], errors='coerce')
+        df_l['year'] = df_l['dt'].dt.year.fillna(0).astype(int)
+        df_l['month'] = df_l['dt'].dt.month.fillna(0).astype(int)
+        available_years = sorted([y for y in df_l['year'].unique() if y > 0], reverse=True) or [datetime.now().year]
+        
+        f_df_l = df_l[df_l['year'] == selected_year]
+        if selected_month > 0:
+            f_df_l = f_df_l[f_df_l['month'] == selected_month]
+        filtered_leads = f_df_l.to_dict('records')
+
+    if df_t.empty:
+        filtered_tasks = []
+    else:
+        df_t['dt'] = pd.to_datetime(df_t['created_at'], errors='coerce')
+        df_t['year'] = df_t['dt'].dt.year.fillna(0).astype(int)
+        df_t['month'] = df_t['dt'].dt.month.fillna(0).astype(int)
+        
+        f_df_t = df_t[df_t['year'] == selected_year]
+        if selected_month > 0:
+            f_df_t = f_df_t[f_df_t['month'] == selected_month]
+        filtered_tasks = f_df_t.to_dict('records')
+
+    # Pre-calculate Metrics (O(1) approach where possible)
+    total_l = len(filtered_leads)
+    open_t = sum(1 for t in filtered_tasks if not t.get("done"))
+    
+    today = date.today()
+    overdue_count = 0
+    for t in filtered_tasks:
+        if not t.get("done") and t.get("due_date"):
+            try:
+                if datetime.strptime(t["due_date"], "%Y-%m-%d").date() < today:
+                    overdue_count += 1
+            except: pass
+            
+    return {
+        "available_years": available_years,
+        "leads": filtered_leads,
+        "tasks": filtered_tasks,
+        "df_leads": f_df_l,
+        "df_tasks": f_df_t,
+        "lead_map": lead_map,
+        "stats": {
+            "total_leads": total_l,
+            "open_tasks": open_t,
+            "overdue": overdue_count
+        }
+    }
+
 # --- HELPERS ---
-def get_lead_name(lead_id):
+def get_lead_name(lead_id, lead_map=None):
+    if lead_map:
+        return lead_map.get(lead_id, "Unknown")
+    # Fallback if map not provided
     for l in st.session_state.leads:
         if l["id"] == lead_id:
             return l["name"]
@@ -1074,20 +293,7 @@ def send_email(subject, body, to_email=None):
         return True, "Email sent!"
     except Exception as e: return False, str(e)
 
-# ─── GLOBAL TIME INTELLIGENCE ───
-raw_leads = st.session_state.leads
-raw_tasks = st.session_state.tasks
-
-df_l_global = pd.DataFrame(raw_leads)
-if not df_l_global.empty:
-    df_l_global['created_at_dt'] = pd.to_datetime(df_l_global['created_at'], errors='coerce')
-    df_l_global['year'] = df_l_global['created_at_dt'].dt.year.fillna(0).astype(int)
-    df_l_global['month'] = df_l_global['created_at_dt'].dt.month.fillna(0).astype(int)
-    available_years = sorted(df_l_global['year'].unique(), reverse=True)
-    if 0 in available_years: available_years.remove(0)
-else:
-    available_years = [datetime.now().year]
-
+# ─── NAVIGATION & GLOBAL FILTERS ───
 with st.sidebar:
     st.markdown(f"""
     <div style='padding: 15px 5px 25px 5px; margin-top: -45px; text-align:center;'>
@@ -1098,20 +304,37 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div style="background:rgba(255,255,255,0.08); padding:10px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(123, 176, 107, 0.2); text-align:center;">
-        <div style="font-size:0.55rem; color:#7bb06b; font-weight:800; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:3px;">Active Session</div>
-        <div style="font-size:1rem; font-weight:800; color:#ffffff; font-family:'Outfit';">{st.session_state.username.upper()}</div>
-        <div style="display:inline-block; background:rgba(123, 176, 107, 0.2); color:#7bb06b; font-size:0.55rem; padding:1px 6px; border-radius:10px; font-weight:700; margin-top:3px;">{st.session_state.role} Protocol</div>
-    </div>
-    """, unsafe_allow_html=True)
-
+    # Initial year check to avoid bootstrap error
+    years_temp = [datetime.now().year]
+    
     st.markdown('<div class="filter-container" style="background:rgba(255,255,255,0.05); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">', unsafe_allow_html=True)
-    selected_year = st.selectbox("Year Filter", options=available_years, index=0)
+    temp_sel_year = st.selectbox("Year Filter", options=[datetime.now().year], key="temp_y", label_visibility="collapsed") # Placeholder
     month_names = ["Full Year Intel", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     selected_month_name = st.selectbox("Month Filter", options=month_names, index=0)
     selected_month = month_names.index(selected_month_name)
     st.markdown('</div>', unsafe_allow_html=True)
+
+    # PROCESS DATA (CACHED)
+    raw_l = st.session_state.leads
+    raw_t = st.session_state.tasks
+    
+    # We need a first pass to get years
+    data_bundle = get_processed_data(raw_l, raw_t, datetime.now().year, 0)
+    available_years = data_bundle["available_years"]
+    
+    # Correct the selectbox with real years
+    st.markdown("""<style>div[data-testid="stSelectbox"]+div { margin-top: -85px !important; }</style>""", unsafe_allow_html=True) # visual fix
+    # RE-DOING Filtering logic cleaner
+    selected_year = st.selectbox("Select Year", options=available_years, index=0, key="nav_year")
+    
+    # Get final data
+    data = get_processed_data(raw_l, raw_t, selected_year, selected_month)
+    leads = data["leads"]
+    tasks = data["tasks"]
+    df_l_active = data["df_leads"]
+    df_t_active = data["df_tasks"]
+    stats = data["stats"]
+    l_map = data["lead_map"]
 
     all_nav_items = ["📊 Dashboard", "💰 Sales Report", "👥 Leads", "✅ Tasks", "📧 Reminders", "📢 Email Marketing", "⚙️ Settings", "👤 User Management"]
     if st.session_state.role == "Admin": nav_options = all_nav_items
@@ -1121,37 +344,17 @@ with st.sidebar:
 
     page = st.radio("Navigate", nav_options, label_visibility="collapsed")
     
-    # Global Filtering
-    leads = raw_leads
-    if not df_l_global.empty:
-        f_df = df_l_global[df_l_global['year'] == selected_year]
-        if selected_month > 0: f_df = f_df[f_df['month'] == selected_month]
-        leads = f_df.to_dict('records')
-
-    df_t_global = pd.DataFrame(raw_tasks)
-    tasks = raw_tasks
-    if not df_t_global.empty:
-        df_t_global['created_at_dt'] = pd.to_datetime(df_t_global['created_at'], errors='coerce')
-        f_t_df = df_t_global[(df_t_global['created_at_dt'].dt.year == selected_year)]
-        if selected_month > 0: f_t_df = f_t_df[f_t_df['created_at_dt'].dt.month == selected_month]
-        tasks = f_t_df.to_dict('records')
-
     st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
-    total_leads = len(leads)
-    open_tasks = sum(1 for t in tasks if not t.get("done"))
-    overdue = sum(1 for t in tasks if not t.get("done") and t.get("due_date") 
-                  and datetime.strptime(t["due_date"], "%Y-%m-%d").date() < date.today())
-
     st.markdown(f"""
     <div style='padding: 10px 15px;'>
     <div class="luxury-container" style="margin-bottom: 12px; border-color: rgba(123, 176, 107, 0.3); background: rgba(255,255,255,0.05); padding: 15px;">
     <div style="font-size: 0.7rem; color: #ffffff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; opacity: 0.9;">Active Leads</div>
-    <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{total_leads}</div>
+    <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{stats['total_leads']}</div>
     </div>
     <div class="luxury-container" style="background: rgba(255,255,255,0.03); border-color: rgba(123, 176, 107, 0.15); padding: 15px;">
     <div style="font-size: 0.7rem; color: #ffffff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; opacity: 0.9;">Open Tasks</div>
-    <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{open_tasks}</div>
-    {f'<div style="font-size: 0.65rem; color: #ff9999; margin-top: 5px; font-weight: 600;">⚠️ {overdue} OVERDUE</div>' if overdue > 0 else ''}
+    <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{stats['open_tasks']}</div>
+    {f'<div style="font-size: 0.65rem; color: #ff9999; margin-top: 5px; font-weight: 600;">⚠️ {stats["overdue"]} OVERDUE</div>' if stats["overdue"] > 0 else ''}
     </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1238,122 +441,87 @@ if page == "📊 Dashboard":
     
     row1_c1, row1_c2 = st.columns([3, 2])
     
+    @st.cache_resource
+    def get_funnel_chart(df):
+        stage_order = ["New", "In Progress", "Closed"]
+        pipe_counts = df["status"].value_counts().reindex(stage_order).fillna(0).reset_index()
+        pipe_counts.columns = ["Stage", "Count"]
+        fig = go.Figure(go.Funnel(
+            y=pipe_counts["Stage"], x=pipe_counts["Count"],
+            textposition = "inside", textinfo = "value+percent initial",
+            marker = {"color": ["#1b6656", "#1d4354", "#7bb06b"], "line": {"width": [4, 2, 2], "color": ["rgba(255,255,255,0.2)"] * 3}},
+            connector = {"line": {"color": "rgba(255,255,255,0.1)", "width": 3}}
+        ))
+        fig.update_layout(template="plotly_white", paper_bgcolor="white", plot_bgcolor="white",
+            font=dict(family="Outfit", color="#1d4354", size=12), margin=dict(l=20, r=20, t=60, b=20), height=400,
+            title=dict(text="EXECUTIVE PIPELINE VELOCITY", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656")))
+        return fig
+
+    @st.cache_resource
+    def get_source_chart(df):
+        source_counts = df["source"].value_counts().reset_index()
+        source_counts.columns = ["Source", "Count"]
+        fig = px.treemap(source_counts, path=["Source"], values="Count", color="Count", color_continuous_scale='Mint')
+        fig.update_layout(template="plotly_white", paper_bgcolor="white", plot_bgcolor="white",
+            margin=dict(t=60, l=10, r=10, b=10), font=dict(family="Outfit", color="#1d4354"), height=400,
+            title=dict(text="SOURCE ORIGIN INTEL", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656")))
+        fig.update_coloraxes(showscale=False)
+        return fig
+
     with row1_c1:
-        if leads:
-            df_leads = pd.DataFrame(leads)
-            # 1. Funnel/Sankey-like Pipeline Chart
-            stage_order = ["New", "In Progress", "Closed"]
-            pipe_counts = df_leads["status"].value_counts().reindex(stage_order).fillna(0).reset_index()
-            pipe_counts.columns = ["Stage", "Count"]
-            
-            fig_funnel = go.Figure(go.Funnel(
-                y=pipe_counts["Stage"],
-                x=pipe_counts["Count"],
-                textposition = "inside",
-                textinfo = "value+percent initial",
-                marker = {"color": ["#1b6656", "#1d4354", "#7bb06b"],
-                         "line": {"width": [4, 2, 2], "color": ["rgba(255,255,255,0.2)"] * 3}},
-                connector = {"line": {"color": "rgba(255,255,255,0.1)", "width": 3}}
-            ))
-            
-            fig_funnel.update_layout(
-                template="plotly_white",
-                paper_bgcolor="white",
-                plot_bgcolor="white",
-                font=dict(family="Outfit", color="#1d4354", size=12),
-                margin=dict(l=20, r=20, t=60, b=20),
-                height=400,
-                title=dict(text="EXECUTIVE PIPELINE VELOCITY", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656"))
-            )
-            
+        if not df_l_active.empty:
             st.markdown('<div class="glass-card" style="padding:10px !important;">', unsafe_allow_html=True)
-            st.plotly_chart(fig_funnel, use_container_width=True, config={'displayModeBar': False})
-            st.markdown("""
-                <div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;">
-                    <b>Intel Note:</b> Ye chart aapki leads ki "velocity" track karta hai. Is se pata chalta hai ke kitne % leads "New" se "Closed" stage tak pohanch rahi hain.
-                </div>
-            """, unsafe_allow_html=True)
+            st.plotly_chart(get_funnel_chart(df_l_active), use_container_width=True, config={'displayModeBar': False})
+            st.markdown('<div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;"><b>Intel Note:</b> Pipeline velocity track.</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
-        else:
-            st.info("System data pending...")
+        else: st.info("System data pending...")
 
     with row1_c2:
-        if leads:
-            # 2. Luxury Source Distribution
-            source_counts = df_leads["source"].value_counts().reset_index()
-            source_counts.columns = ["Source", "Count"]
-            
-            fig_source = px.treemap(source_counts, path=["Source"], values="Count",
-                                   color="Count", color_continuous_scale='Mint')
-            
-            fig_source.update_layout(
-                template="plotly_white",
-                paper_bgcolor="white",
-                plot_bgcolor="white",
-                margin=dict(t=60, l=10, r=10, b=10),
-                font=dict(family="Outfit", color="#1d4354"),
-                height=400,
-                title=dict(text="SOURCE ORIGIN INTEL", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656"))
-            )
-            fig_source.update_coloraxes(showscale=False)
-            
+        if not df_l_active.empty:
             st.markdown('<div class="glass-card" style="padding:10px !important;">', unsafe_allow_html=True)
-            st.plotly_chart(fig_source, use_container_width=True, config={'displayModeBar': False})
-            st.markdown("""
-                <div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;">
-                    <b>Intel Note:</b> Sources ka tajziya. Pata chalta hai ke aapko sabse zyada leads kahan se mil rahi thin (e.g. Ads, Referral).
-                </div>
-            """, unsafe_allow_html=True)
+            st.plotly_chart(get_source_chart(df_l_active), use_container_width=True, config={'displayModeBar': False})
+            st.markdown('<div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;"><b>Intel Note:</b> Source analysis.</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
     # Row 2: Lead Pulse & Engagement
     row2_c1, row2_c2 = st.columns([2, 3])
     
+    @st.cache_resource
+    def get_temp_chart(df):
+        temp_counts = df["temperature"].value_counts().reset_index()
+        temp_counts.columns = ["Temp", "Count"]
+        fig = px.pie(temp_counts, values="Count", names="Temp", hole=0.7, color="Temp", color_discrete_map={"Hot": "#ef4444", "Warm": "#f59e0b", "Cold": "#1b6656"})
+        fig.update_layout(template="plotly_white", paper_bgcolor="white", showlegend=True,
+            legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.05, font=dict(size=10)),
+            margin=dict(t=80, l=50, r=120, b=80), height=350,
+            title=dict(text="CLIMATE ANALYSIS", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656")),
+            annotations=[dict(text="TEMP", x=0.5, y=0.5, font_size=18, showarrow=False, font_family="Outfit", font_color="#1d4354")])
+        fig.update_traces(textposition='outside')
+        return fig
+
+    @st.cache_resource
+    def get_pulse_chart(df):
+        pulse_data = df.groupby('dt').size().reset_index(name='Count')
+        pulse_data.columns = ['Time Cycle', 'Ingestion Rate']
+        fig = px.area(pulse_data, x='Time Cycle', y='Ingestion Rate')
+        fig.update_traces(line_color='#1b6656', fillcolor='rgba(27, 102, 86, 0.1)')
+        fig.update_layout(template="plotly_white", paper_bgcolor="white", plot_bgcolor="white", font=dict(family="Outfit", color="#1d4354"),
+            xaxis=dict(showgrid=False, title=None), yaxis=dict(showgrid=True, gridcolor='rgba(27, 102, 86, 0.05)', title=None),
+            margin=dict(t=60, l=40, r=20, b=40), height=350,
+            title=dict(text="ENGAGEMENT DYNAMICS", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656")))
+        return fig
+
     with row2_c1:
-        if leads:
-            # 3. Temperature Donut
-            temp_counts = df_leads["temperature"].value_counts().reset_index()
-            temp_counts.columns = ["Temp", "Count"]
-            fig_donut = px.pie(temp_counts, values="Count", names="Temp", hole=0.7,
-                              color="Temp", color_discrete_map={"Hot": "#ef4444", "Warm": "#f59e0b", "Cold": "#1b6656"})
-            
-            fig_donut.update_layout(
-                template="plotly_white",
-                paper_bgcolor="white",
-                showlegend=True,
-                legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.05, font=dict(size=10)),
-                margin=dict(t=80, l=50, r=120, b=80),   # Improved margins for labels
-                height=350,
-                title=dict(text="CLIMATE ANALYSIS", x=0.5, y=0.95, font=dict(size=16, weight=800, color="#1b6656")),
-                annotations=[dict(text="TEMP", x=0.5, y=0.5, font_size=18, showarrow=False, font_family="Outfit", font_color="#1d4354")]
-            )
-            fig_donut.update_traces(textposition='outside') # Move percentages outside to avoid cramping
-            
+        if not df_l_active.empty:
             st.markdown('<div class="glass-card" style="padding:10px !important;">', unsafe_allow_html=True)
-            st.plotly_chart(fig_donut, use_container_width=True, config={'displayModeBar': False})
-            st.markdown("""
-                <div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;">
-                    <b>Intel Note:</b> Leads ki priority. "Hot" leads wo hain jin par fori tawajjo ki zaroorat hai deals close karne ke liye.
-                </div>
-            """, unsafe_allow_html=True)
+            st.plotly_chart(get_temp_chart(df_l_active), use_container_width=True, config={'displayModeBar': False})
             st.markdown('</div>', unsafe_allow_html=True)
 
     with row2_c2:
-        if leads:
-            # 4. Timeline Pulse (Activity over time)
-            df_leads['created_at_dt'] = pd.to_datetime(df_leads['created_at'].str[:10], errors='coerce')
-            pulse_data = df_leads.groupby('created_at_dt').size().reset_index(name='Lead Count')
-            pulse_data = pulse_data.sort_values('created_at_dt')
-            
-            fig_pulse = px.area(pulse_data, x='created_at_dt', y='Lead Count',
-                               labels={'created_at_dt': 'Time Cycle', 'Lead Count': 'Ingestion Rate'})
-            
-            fig_pulse.update_traces(line_color='#1b6656', fillcolor='rgba(27, 102, 86, 0.1)')
-            fig_pulse.update_layout(
-                template="plotly_white",
-                paper_bgcolor="white",
-                plot_bgcolor="white",
-                font=dict(family="Outfit", color="#1d4354"),
+        if not df_l_active.empty:
+            st.markdown('<div class="glass-card" style="padding:10px !important;">', unsafe_allow_html=True)
+            st.plotly_chart(get_pulse_chart(df_l_active), use_container_width=True, config={'displayModeBar': False})
+            st.markdown('</div>', unsafe_allow_html=True)
                 xaxis=dict(showgrid=False, title=None),
                 yaxis=dict(showgrid=True, gridcolor='rgba(27, 102, 86, 0.05)', title=None),
                 margin=dict(t=60, l=40, r=20, b=40),
@@ -1374,32 +542,24 @@ if page == "📊 Dashboard":
     st.markdown('<div class="section-heading">🛠️ Task Tactical Load</div>', unsafe_allow_html=True)
     t_col1, t_col2 = st.columns([1, 1])
     
+    @st.cache_resource
+    def get_task_prio_chart(df):
+        prio_counts = df["priority"].value_counts().reset_index()
+        prio_counts.columns = ["Priority", "Count"]
+        fig = px.pie(prio_counts, values="Count", names="Priority", hole=0.7, color="Priority", color_discrete_map={"High": "#ef4444", "Medium": "#fbbf24", "Low": "#10b981"})
+        fig.update_layout(template="plotly_white", paper_bgcolor="white", showlegend=True,
+            legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.05, font=dict(size=10)),
+            margin=dict(t=80, l=40, r=120, b=80), height=350,
+            title=dict(text="TASK OPERATIONAL LOAD", x=0.5, y=0.95, font=dict(size=14, weight=800, color="#1b6656")),
+            annotations=[dict(text="PRIO", x=0.5, y=0.5, font_size=16, showarrow=False, font_family="Outfit", font_color="#1d4354")])
+        fig.update_traces(textposition='outside')
+        return fig
+
     with t_col1:
-        if tasks:
-            df_tasks = pd.DataFrame(tasks)
-            # Task Priority Distribution
-            prio_counts = df_tasks["priority"].value_counts().reset_index()
-            prio_counts.columns = ["Priority", "Count"]
-            fig_tasks = px.pie(prio_counts, values="Count", names="Priority", hole=0.7,
-                              color="Priority", color_discrete_map={"High": "#ef4444", "Medium": "#fbbf24", "Low": "#10b981"})
-            
-            fig_tasks.update_layout(
-                template="plotly_white", paper_bgcolor="white", 
-                showlegend=True,
-                legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.05, font=dict(size=10)),
-                margin=dict(t=80, l=40, r=120, b=80), height=350, # Improved margins and height
-                title=dict(text="TASK OPERATIONAL LOAD", x=0.5, y=0.95, font=dict(size=14, weight=800, color="#1b6656")),
-                annotations=[dict(text="PRIO", x=0.5, y=0.5, font_size=16, showarrow=False, font_family="Outfit", font_color="#1d4354")]
-            )
-            fig_tasks.update_traces(textposition='outside') # Ensure visibility
-            
+        if not df_t_active.empty:
             st.markdown('<div class="glass-card" style="padding:10px !important;">', unsafe_allow_html=True)
-            st.plotly_chart(fig_tasks, use_container_width=True, config={'displayModeBar': False})
-            st.markdown("""
-                <div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;">
-                    <b>Intel Note:</b> Tasks ka tajziya. Pata chalta hai ke High Priority wale kitne ahem kaam abhi pending hain.
-                </div>
-            """, unsafe_allow_html=True)
+            st.plotly_chart(get_task_prio_chart(df_t_active), use_container_width=True, config={'displayModeBar': False})
+            st.markdown('<div style="padding:0 15px 10px; font-size:0.75rem; color:#475569; opacity:0.8; line-height:1.4;"><b>Intel Note:</b> Task priority analysis.</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
     with t_col2:
@@ -2414,7 +1574,7 @@ elif page == "✅ Tasks":
                             </span>
                         </div>
                         <div style="margin-top:10px; font-size:0.78rem; color:#1b6656; display:flex; gap:15px;">
-                            <span>👤 {lname}</span>
+                            <span>👤 {get_lead_name(t.get("lead_id"), l_map)}</span>
                             <span style="color:{ '#ef4444' if is_overdue else '#1b6656' }; font-weight:600;">{'⚠️' if is_overdue else '📅'} {t.get('due_date','-')}</span>
                         </div>
                     </div>

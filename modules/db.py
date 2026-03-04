@@ -1,10 +1,16 @@
+import streamlit as st
 import sqlite3
 import json
 import os
 import hashlib
 import secrets
 from datetime import datetime
-import streamlit as st
+try:
+    import psycopg2
+    from psycopg2 import pool
+    from psycopg2.extras import RealDictCursor
+except ImportError:
+    psycopg2 = None
 
 # --- DATABASE CONFIGURATION ---
 # We check if Supabase/Postgres secrets are available.
@@ -31,17 +37,35 @@ def get_db_config():
 
 DB_TYPE, DB_URL = get_db_config()
 
+# --- CONNECTION POOLING ---
+@st.cache_resource
+def get_connection_pool():
+    if DB_TYPE == "postgres" and psycopg2:
+        try:
+            # Threaded pool is better for Streamlit's architecture
+            return psycopg2.pool.ThreadedConnectionPool(1, 20, DB_URL)
+        except Exception as e:
+            st.error(f"Failed to create connection pool: {e}")
+            return None
+    return None
+
+POSTGRES_POOL = get_connection_pool()
+
 def get_connection():
     if DB_TYPE == "postgres":
-        import psycopg2
-        from psycopg2.extras import RealDictCursor
-        try:
-            conn = psycopg2.connect(DB_URL)
-            return conn
-        except Exception as e:
-            st.error(f"PostgreSQL Connection Error: {e}")
-            # Fallback (optional, but maybe better to show error)
-            raise e
+        if not psycopg2:
+            st.error("psycopg2 not installed. Please run 'pip install psycopg2-binary'")
+            return None
+        
+        if POSTGRES_POOL:
+            try:
+                return POSTGRES_POOL.getconn()
+            except Exception as e:
+                st.error(f"Error getting connection from pool: {e}")
+                # Fallback to direct connection if pool fails
+                return psycopg2.connect(DB_URL)
+        else:
+            return psycopg2.connect(DB_URL)
     else:
         # Ensure directory exists for local setups
         db_dir = os.path.dirname(DB_PATH)
@@ -51,19 +75,26 @@ def get_connection():
         conn.row_factory = sqlite3.Row
         return conn
 
+def release_connection(conn):
+    if DB_TYPE == "postgres" and POSTGRES_POOL and conn:
+        try:
+            POSTGRES_POOL.putconn(conn)
+        except Exception:
+            conn.close()
+    elif conn:
+        conn.close()
+
 def execute_query(query, params=(), commit=False, fetch="all"):
     """
     Unified query executor that handles placeholder differences between SQLite (?) and Postgres (%s).
     """
     conn = get_connection()
+    if not conn: return None
     
     # Adjust placeholders for Postgres if needed
     if DB_TYPE == "postgres":
         query = query.replace('?', '%s')
-        # Postgres expects SERIAL/IDENTITY for PKs, we handle that in init_db
-        # We also need a cursor that returns dict-like objects
-        import psycopg2.extras
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
     else:
         cursor = conn.cursor()
 
@@ -77,9 +108,6 @@ def execute_query(query, params=(), commit=False, fetch="all"):
             result = cursor.fetchone()
         elif fetch == "lastrowid":
             if DB_TYPE == "postgres":
-                # Postgres doesn't have lastrowid on the cursor like SQLite
-                # Usually requires 'RETURNING id' in the query
-                # However, for simplicity in migration, we'll try to find another way or just return None
                 result = None 
             else:
                 result = cursor.lastrowid
@@ -90,7 +118,7 @@ def execute_query(query, params=(), commit=False, fetch="all"):
         return result
     finally:
         cursor.close()
-        conn.close()
+        release_connection(conn)
 
 def _hash_password(password, salt=None):
     if salt is None:
@@ -98,8 +126,10 @@ def _hash_password(password, salt=None):
     h = hashlib.scrypt(password.encode(), salt=salt.encode(), n=16384, r=8, p=1).hex()
     return f"{salt}:{h}"
 
+@st.cache_resource
 def init_db():
     conn = get_connection()
+    if not conn: return
     cursor = conn.cursor()
     
     # SQL Adjustments for Postgres compatibility
@@ -254,19 +284,20 @@ def init_db():
         cursor.execute(sql, ("admin", hashed_admin, "Admin", "all", str(datetime.now())))
         conn.commit()
     
-    conn.close()
+    cursor.close()
+    release_connection(conn)
 
 # --- HELPER FOR DB ACCESS ---
 # To avoid rewriting every function, we make a small wrapper to handle connections
 def db_call(query, params=(), fetch="all", commit=True):
     # This is a bit lazy but effective for migration
+    conn = get_connection()
+    if not conn: return [] if fetch == "all" else None
+
     if DB_TYPE == "postgres":
         query = query.replace('?', '%s')
-        import psycopg2.extras
-        conn = get_connection()
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
     else:
-        conn = get_connection()
         cursor = conn.cursor()
 
     try:
@@ -289,7 +320,7 @@ def db_call(query, params=(), fetch="all", commit=True):
             return cursor.lastrowid
     finally:
         cursor.close()
-        conn.close()
+        release_connection(conn)
 
 # --- REWRITTEN API ---
 def verify_user(username, password):
@@ -306,6 +337,7 @@ def verify_user(username, password):
                 pass
     return None
 
+@st.cache_data
 def get_all_users():
     return db_call("SELECT * FROM users ORDER BY id DESC")
 
@@ -318,6 +350,7 @@ def add_user(data):
         placeholders = ', '.join(['?' for _ in keys])
         sql = f"INSERT INTO users ({columns}) VALUES ({placeholders})"
         db_call(sql, list(data.values()))
+        get_all_users.clear()
         return True
     except Exception:
         return False
@@ -332,10 +365,13 @@ def update_user(user_id, data):
     set_clause = ', '.join([f"{k} = ?" for k in keys])
     sql = f"UPDATE users SET {set_clause} WHERE id = ?"
     db_call(sql, list(data.values()) + [user_id])
+    get_all_users.clear()
 
 def delete_user(user_id):
     db_call("DELETE FROM users WHERE id = ?", (user_id,))
+    get_all_users.clear()
 
+@st.cache_data
 def get_all_sales():
     return db_call("SELECT * FROM sales_report ORDER BY month_year DESC, category ASC")
 
@@ -344,13 +380,15 @@ def add_sale(data):
     columns = ', '.join(keys)
     placeholders = ', '.join(['?' for _ in keys])
     sql = f"INSERT INTO sales_report ({columns}) VALUES ({placeholders})"
-    # For postgres, lastrowid is tricky without RETURNING, but let's try
     db_call(sql, list(data.values()))
+    get_all_sales.clear()
     return True
 
 def delete_sale(sale_id):
     db_call("DELETE FROM sales_report WHERE id = ?", (sale_id,))
+    get_all_sales.clear()
 
+@st.cache_data
 def get_recurring_clients():
     return db_call("SELECT * FROM recurring_clients ORDER BY client ASC")
 
@@ -360,11 +398,14 @@ def add_recurring_client(data):
     placeholders = ', '.join(['?' for _ in keys])
     sql = f"INSERT INTO recurring_clients ({columns}) VALUES ({placeholders})"
     db_call(sql, list(data.values()))
+    get_recurring_clients.clear()
     return True
 
 def delete_recurring_client(client_id):
     db_call("DELETE FROM recurring_clients WHERE id = ?", (client_id,))
+    get_recurring_clients.clear()
 
+@st.cache_data
 def get_all_leads():
     return db_call("SELECT * FROM leads ORDER BY id DESC")
 
@@ -374,6 +415,7 @@ def add_lead(data):
     placeholders = ', '.join(['?' for _ in keys])
     sql = f"INSERT INTO leads ({columns}) VALUES ({placeholders})"
     db_call(sql, list(data.values()))
+    get_all_leads.clear()
     return True
 
 def update_lead(lead_id, data):
@@ -381,11 +423,15 @@ def update_lead(lead_id, data):
     set_clause = ', '.join([f"{k} = ?" for k in keys])
     sql = f"UPDATE leads SET {set_clause} WHERE id = ?"
     db_call(sql, list(data.values()) + [lead_id])
+    get_all_leads.clear()
 
 def delete_lead(lead_id):
     db_call("DELETE FROM leads WHERE id = ?", (lead_id,))
     db_call("DELETE FROM tasks WHERE lead_id = ?", (lead_id,))
+    get_all_leads.clear()
+    get_all_tasks.clear()
 
+@st.cache_data
 def get_all_tasks():
     return db_call("SELECT * FROM tasks ORDER BY id DESC")
 
@@ -395,6 +441,7 @@ def add_task(data):
     placeholders = ', '.join(['?' for _ in keys])
     sql = f"INSERT INTO tasks ({columns}) VALUES ({placeholders})"
     db_call(sql, list(data.values()))
+    get_all_tasks.clear()
     return True
 
 def update_task(task_id, data):
@@ -402,10 +449,13 @@ def update_task(task_id, data):
     set_clause = ', '.join([f"{k} = ?" for k in keys])
     sql = f"UPDATE tasks SET {set_clause} WHERE id = ?"
     db_call(sql, list(data.values()) + [task_id])
+    get_all_tasks.clear()
 
 def delete_task(task_id):
     db_call("DELETE FROM tasks WHERE id = ?", (task_id,))
+    get_all_tasks.clear()
 
+@st.cache_data
 def get_settings(defaults):
     rows = db_call("SELECT key, value FROM settings")
     settings = defaults.copy()
@@ -419,7 +469,6 @@ def get_settings(defaults):
 
 def save_settings(settings_dict):
     for key, val in settings_dict.items():
-        # Postgres doesn't have INSERT OR REPLACE, use UPSERT logic
         if DB_TYPE == "postgres":
             sql = """
             INSERT INTO settings (key, value) VALUES (%s, %s)
@@ -428,14 +477,18 @@ def save_settings(settings_dict):
             db_call(sql, (key, str(val)))
         else:
             db_call("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, str(val)))
+    get_settings.clear()
 
 def add_log(emails_sent, tasks_checked, leads_checked):
     db_call("INSERT INTO reminder_logs (timestamp, emails_sent, tasks_checked, leads_checked) VALUES (?, ?, ?, ?)",
             (str(datetime.now()), emails_sent, tasks_checked, leads_checked))
+    get_logs.clear()
 
+@st.cache_data
 def get_logs(limit=30):
     return db_call("SELECT * FROM reminder_logs ORDER BY id DESC LIMIT ?", (limit,))
 
+@st.cache_data
 def get_all_templates():
     return db_call("SELECT * FROM email_templates ORDER BY id DESC")
 
@@ -445,17 +498,21 @@ def add_template(data):
     placeholders = ', '.join(['?' for _ in keys])
     sql = f"INSERT INTO email_templates ({columns}) VALUES ({placeholders})"
     db_call(sql, list(data.values()))
+    get_all_templates.clear()
     return True
 
 def delete_template(template_id):
     db_call("DELETE FROM email_templates WHERE id = ?", (template_id,))
+    get_all_templates.clear()
 
 def update_template(template_id, data):
     keys = data.keys()
     set_clause = ', '.join([f"{k} = ?" for k in keys])
     sql = f"UPDATE email_templates SET {set_clause} WHERE id = ?"
     db_call(sql, list(data.values()) + [template_id])
+    get_all_templates.clear()
 
+@st.cache_data
 def get_all_campaigns():
     return db_call("SELECT * FROM campaigns ORDER BY id DESC")
 
@@ -465,15 +522,19 @@ def add_campaign(data):
     placeholders = ', '.join(['?' for _ in keys])
     sql = f"INSERT INTO campaigns ({columns}) VALUES ({placeholders})"
     db_call(sql, list(data.values()))
+    get_all_campaigns.clear()
     return True
 
 def update_campaign_stats(campaign_id, sent, failed):
     db_call("UPDATE campaigns SET stats_sent = ?, stats_failed = ?, status = 'Completed' WHERE id = ?", 
             (sent, failed, campaign_id))
+    get_all_campaigns.clear()
 
 def add_campaign_log(campaign_id, email, status, error_message=""):
     db_call("INSERT INTO campaign_logs (campaign_id, email, status, error_message, sent_at) VALUES (?, ?, ?, ?, ?)",
             (campaign_id, email, status, error_message, str(datetime.now())))
+    get_campaign_logs.cache_clear() if hasattr(get_campaign_logs, 'cache_clear') else None
 
+@st.cache_data
 def get_campaign_logs(campaign_id):
     return db_call("SELECT * FROM campaign_logs WHERE campaign_id = ?", (campaign_id,))

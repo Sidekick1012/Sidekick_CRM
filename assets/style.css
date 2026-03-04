@@ -1,0 +1,1286 @@
+﻿
+/* â•â• Brand Color Palette â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+:root {
+    --primary:          #1b6656;
+    --primary-glow:      rgba(27, 102, 86, 0.3);
+    --secondary:        #1d4354;
+    --secondary-glow:   rgba(29, 67, 84, 0.3);
+    --accent:           #7bb06b;
+    --accent-glow:      rgba(123, 176, 107, 0.25);
+    --bg-dark:          #f8fafc;
+    --glass-bg:         rgba(255, 255, 255, 0.9);
+    --glass-border:     rgba(27, 102, 86, 0.15);
+    --border-light:     rgba(27, 102, 86, 0.18);
+    --text-main:        #1d4354;
+    --text-muted:       #475569;
+    --card-shadow:      0 8px 30px rgba(0,0,0,0.06);
+}
+
+/* â•â• Reset & Base â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, [data-testid="stAppViewContainer"] {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.88rem !important;
+    background-color: #f8fafc !important;
+    background-image: 
+        radial-gradient(ellipse at 0%   0%,   rgba(79, 70, 229, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(124, 58, 237, 0.05)   0%, transparent 50%),
+        linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    color: var(--text-main) !important;
+}
+
+[data-testid="stHeader"] { background: rgba(240,244,242,0.85) !important; backdrop-filter: blur(10px) !important; }
+
+h1,h2,h3,h4,h5,
+.stMarkdown h1,.stMarkdown h2,.stMarkdown h3 {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.04em !important;
+    color: #0f172a !important;
+}
+
+/* â”€â”€ Scrollbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: rgba(27,102,86,0.05); }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #1b6656, #7bb06b);
+    border-radius: 10px;
+}
+/* â•â• Premium Static Sidebar â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #1b6656 0%, #1d4354 100%) !important;
+    border-right: none !important;
+}
+
+/* ABSOLUTE-STATIC LOCK: Preventing any and all movement */
+[data-testid="stSidebarResizer"],
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"],
+[data-testid="stSidebarNav"] button {
+    display: none !important;
+}
+
+section[data-testid="stSidebar"] {
+    min-width: 260px !important;
+    max-width: 260px !important;
+    width: 260px !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+[data-testid="stSidebarContent"] {
+    width: 260px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+[data-testid="stSidebar"] * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Hard-lock Radio Buttons */
+[data-testid="stSidebar"] .stRadio label {
+    background: transparent !important;
+    padding: 18px 25px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    font-weight: 500 !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    position: relative;
+}
+
+/* Hover State - Only Color Change, No Layout Shift */
+[data-testid="stSidebar"] .stRadio label:hover {
+    background: rgba(255,255,255,0.08) !important;
+    padding: 18px 25px !important;
+    margin: 0 !important;
+}
+
+/* Active State - Perfectly Static Cut-out */
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label {
+    background-color: #f8fafc !important;
+    color: #1b6656 !important;
+    font-weight: 700 !important;
+    border-radius: 40px 0 0 40px !important;
+    padding: 14px 20px !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* Pseudo-elements (Curves) - Perfectly Static Positioning */
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::before,
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    pointer-events: none !important;
+    background-color: transparent;
+    z-index: 1;
+}
+
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::before {
+    top: -40px;
+    border-radius: 0 0 40px 0;
+    box-shadow: 20px 20px 0 20px #f8fafc;
+}
+
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::after {
+    bottom: -40px;
+    border-radius: 0 40px 0 0;
+    box-shadow: 20px -20px 0 20px #f8fafc;
+}
+
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] .stButton > button:hover,
+[data-testid="stSidebar"] .stButton > button:active,
+[data-testid="stSidebar"] .stButton > button:focus {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    margin: 0 !important;
+}
+
+/* Hide Streamlit elements + Collapse Button + Toggle */
+[data-testid="stSidebar"] .stRadio label[data-testid="stWidgetLabel"],
+[data-testid="stSidebar"] hr,
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"] {
+    display: none !important;
+}
+
+/* Force Static Width & No Resizing */
+section[data-testid="stSidebar"] {
+    min-width: 260px !important;
+    max-width: 260px !important;
+    width: 260px !important;
+}
+
+/* Fix Sidebar Interaction Jitter */
+[data-testid="stSidebar"] * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Fix Sidebar Buttons (Logout etc.) to be static */
+[data-testid="stSidebar"] .stButton > button:hover {
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(27, 102, 86, 0.25) !important;
+}
+[data-testid="stSidebar"] .stButton > button:active {
+    transform: none !important;
+}
+
+[data-testid="stSidebar"] .stRadio label p {
+    margin-bottom: 0px !important;
+    font-size: 1.05rem !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Ensure active text stays dark for contrast against white background */
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label p {
+    color: #1b6656 !important;
+}
+
+/* Fix Filter Labels to white */
+[data-testid="stSidebar"] label[data-testid="stWidgetLabel"] p {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    opacity: 1 !important;
+}
+
+
+/* â•â• Main Container â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.block-container { padding: 2rem 2.5rem !important; max-width: 1600px !important; }
+
+/* â•â• Page Header â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.page-header {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(6, 182, 212, 0.05));
+    border: 1px solid rgba(79, 70, 229, 0.12);
+    border-top: 3px solid #1b6656;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.page-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #1b6656 !important;
+    margin-bottom: 0px !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.2 !important;
+}
+
+.page-sub {
+    font-size: 0.6rem;
+    color: #1b6656;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 800;
+    opacity: 0.7;
+}
+
+/* â•â• Glass Cards â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.glass-card, [data-testid="stMetric"], .stForm {
+    background: #ffffff !important;
+    border: 1px solid rgba(79, 70, 229, 0.1) !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+    transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
+    box-shadow: 0 1px 10px rgba(0,0,0,0.04) !important;
+}
+
+/* Shrink Metric Values */
+[data-testid="stMetricValue"] {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 0.75rem !important;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(79, 70, 229, 0.25) !important;
+    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* â•â• KPI Cards â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.kpi-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid rgba(27, 102, 86, 0.08);
+    border-radius: 16px;
+    padding: 18px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+    animation: fadeInUp 0.6s ease-out backwards;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent-gradient, #4f46e5);
+}
+
+.kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4, #7c3aed, #06b6d4, #4f46e5);
+    background-size: 300% 100%;
+    animation: shimmer 4s linear infinite;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(27,102,86,0.25);
+    box-shadow: 0 15px 35px rgba(27,102,86,0.15);
+}
+
+.kpi-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1d4354;
+    margin-bottom: 2px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.kpi-label {
+    font-size: 0.68rem;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    opacity: 0.7;
+}
+
+.kpi-icon {
+    position: absolute;
+    bottom: -10px; right: -5px;
+    font-size: 4rem;
+    opacity: 0.08;
+    filter: grayscale(100%) brightness(0);
+    transition: all 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+.kpi-card:hover .kpi-icon {
+    transform: scale(1.2) rotate(-10deg);
+    opacity: 0.15;
+}
+.kpi-value, .kpi-label {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* â•â• Kanban â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 5px;
+}
+
+.kanban-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1d4354;
+    font-family: 'Outfit', sans-serif;
+}
+
+.kanban-count {
+    background: rgba(79, 70, 229, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    color: #4f46e5;
+    padding: 3px 12px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.kanban-item {
+    background: #ffffff;
+    border: 1px solid rgba(79, 70, 229, 0.08);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    animation: fadeInUp 0.4s ease-out backwards;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.kanban-item:hover {
+    border-color: rgba(79, 70, 229, 0.25);
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* â•â• Inputs & Forms â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.stTextInput input, .stTextArea textarea,
+.stSelectbox [data-baseweb="select"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(27, 102, 86, 0.2) !important;
+    border-radius: 10px !important;
+    color: #1d4354 !important;
+    transition: all 0.3s !important;
+}
+
+/* â•â• Selectbox / Dropdown Fix (all inner elements) â•â•â•â•â•â•â•â• */
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] > div > div,
+div[data-baseweb="select-container"],
+div[data-baseweb="select-container"] > div,
+.stSelectbox div[data-baseweb="select"],
+.stSelectbox div[data-baseweb="select"] > div,
+.stSelectbox div[role="combobox"],
+.stSelectbox div[role="listbox"] {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #1d4354 !important;
+    border-color: rgba(27, 102, 86, 0.2) !important;
+}
+
+/* Value display text inside dropdown */
+div[data-baseweb="select"] [data-testid="stMarkdownContainer"],
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] p,
+.stSelectbox div[data-baseweb="select"] span {
+    color: #1d4354 !important;
+    background: transparent !important;
+}
+
+/* Sidebar selectbox â€” white bg, black text */
+[data-testid="stSidebar"] div[data-baseweb="select"] > div,
+[data-testid="stSidebar"] div[data-baseweb="select"] > div > div,
+[data-testid="stSidebar"] div[data-baseweb="select-container"],
+[data-testid="stSidebar"] div[data-baseweb="select-container"] > div {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: rgba(255,255,255,0.4) !important;
+    border-radius: 10px !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] span,
+[data-testid="stSidebar"] div[data-baseweb="select"] [class*="ValueContainer"] span,
+[data-testid="stSidebar"] div[data-baseweb="select"] *,
+[data-testid="stSidebar"] div[data-baseweb="select-container"] * {
+    color: #0f172a !important;
+}
+
+/* Dropdown option list popup */
+div[data-baseweb="menu"],
+div[data-baseweb="menu"] ul,
+div[data-baseweb="menu"] li {
+    background-color: #ffffff !important;
+    color: #1d4354 !important;
+}
+div[data-baseweb="menu"] li:hover {
+    background-color: rgba(27, 102, 86, 0.08) !important;
+}
+
+
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+}
+
+
+/* â•â• Buttons â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.stButton > button {
+    background: linear-gradient(135deg, #1b6656 0%, #1d4354 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+    padding: 12px 24px !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+    box-shadow: 0 4px 15px rgba(27, 102, 86, 0.25) !important;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(27, 102, 86, 0.4) !important;
+    background: linear-gradient(135deg, #155245 0%, #153442 100%) !important;
+}
+
+.stButton > button::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.stButton > button:hover::after { opacity: 1; }
+.stButton > button:active { transform: translateY(1px) !important; }
+
+/* â•â• Status Badges â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.badge {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 0.67rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid transparent;
+}
+
+.badge-new       { background: rgba(27, 102, 86, 0.1);    color: #1b6656; border-color: rgba(27, 102, 86, 0.25); }
+.badge-inprogress{ background: rgba(6, 182, 212, 0.12); color: #0891b2; border-color: rgba(6, 182, 212, 0.25); }
+.badge-closed    { background: rgba(15, 23, 42, 0.1);   color: #1d4354; border-color: rgba(15, 23, 42, 0.25); }
+.badge-hot       { background: rgba(239, 68, 68, 0.1);   color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
+.badge-warm      { background: rgba(245, 158, 11, 0.1);   color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+.badge-cold      { background: rgba(71, 85, 105, 0.1);   color: #475569; border-color: rgba(71, 85, 105, 0.2); }
+
+/* â•â• Section Heading â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.section-heading {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 24px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(27, 102, 86, 0.1);
+}
+
+.luxury-container {
+    padding: 18px;
+    background: rgba(79, 70, 229, 0.03);
+    border-radius: 14px;
+    border: 1px solid rgba(79, 70, 229, 0.08);
+}
+
+div[data-baseweb="popover"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(79, 70, 229, 0.15) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 30px rgba(79, 70, 229, 0.12) !important;
+}
+div[data-baseweb="popover"] li { background-color: transparent !important; color: #0f172a !important; }
+div[data-baseweb="popover"] li:hover { background-color: rgba(79, 70, 229, 0.08) !important; }
+
+/* â•â• Keyframes â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+    0%   { background-position: -300% 0; }
+    100% { background-position: 300% 0; }
+}
+@keyframes active-pop {
+    0% { transform: scale(0.92) translateX(-10px); opacity: 0.5; }
+    100% { transform: scale(1) translateX(0); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+    0%,100% { box-shadow: 0 0 15px rgba(79, 70, 229, 0.2); }
+    50%     { box-shadow: 0 0 40px rgba(6, 182, 212, 0.45); }
+}
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-7px); }
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@keyframes orb-pulse {
+    0%,100% { transform: scale(1);   opacity: 0.7; }
+    50%     { transform: scale(1.15); opacity: 1; }
+}
+
+.animate-in { animation: fadeInUp 0.6s ease-out backwards; }
+
+/* â•â• Data Editor / DataFrame Table Fix â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Force white background on entire data editor wrapper */
+[data-testid="stDataFrameContainer"],
+[data-testid="stDataEditor"],
+.stDataFrame,
+div[class*="dataframe"],
+div[data-testid="stDataEditorContainer"] {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(27, 102, 86, 0.15) !important;
+    overflow: hidden !important;
+}
+
+/* Glide data table (the underlying canvas-based table) */
+iframe[title*="dataframe"],
+iframe[title*="data_editor"] {
+    background: #ffffff !important;
+    border-radius: 10px !important;
+}
+
+/* Target the inner scrollable container */
+[data-testid="stDataEditorContainer"] > div,
+[data-testid="stDataFrameContainer"] > div {
+    background: #ffffff !important;
+}
+
+/* Fix stale dark bg on data editor toolbar */
+[data-testid="stElementToolbar"],
+[data-testid="StyledFullScreenButton"] {
+    background: #f8fafc !important;
+}
+
+/* â•â• Sidebar Dropdown Text Fix â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Ensure sidebar selectbox text/value is always visible (white) */
+[data-testid="stSidebar"] .stSelectbox label p,
+[data-testid="stSidebar"] .stSelectbox [data-testid="stWidgetLabel"] p {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] *,
+[data-testid="stSidebar"] div[data-baseweb="select-container"] * {
+    color: #000000 !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    background: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    border-radius: 10px !important;
+    min-height: 42px !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] svg path {
+    fill: #000000 !important;
+}
+
+/* Specific fix for filter container labels and containers */
+[data-testid="stSidebar"] .filter-container {
+    background: transparent !important;
+}
+
+[data-testid="stSidebar"] .filter-container label p,
+[data-testid="stSidebar"] .filter-container [data-testid="stWidgetLabel"] p {
+    color: #ffffff !important;
+}
+
+/* â•â• Download / Secondary Button (dark fix) â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Prevent dark bg on download buttons that appear black */
+[data-testid="stDownloadButton"] button,
+[data-testid="stDownloadButton"] button:hover {
+    background: linear-gradient(135deg, #1b6656 0%, #1d4354 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* â•â• Tab container light fix â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+[data-testid="stTabs"] [data-baseweb="tab-list"] {
+    background: transparent !important;
+}
+[data-testid="stTabs"] [data-baseweb="tab"] {
+    background: transparent !important;
+    color: #475569 !important;
+}
+[data-testid="stTabs"] [aria-selected="true"] {
+    color: #1b6656 !important;
+    border-bottom: 2px solid #1b6656 !important;
+}
+
+.animate-in { animation: fadeInUp 0.6s ease-out backwards; }
+/* Hard-lock Radio Buttons */
+[data-testid="stSidebar"] .stRadio label {
+    background: transparent !important;
+    padding: 18px 25px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    font-weight: 500 !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    position: relative;
+}
+
+/* Hover State - Only Color Change, No Layout Shift */
+[data-testid="stSidebar"] .stRadio label:hover {
+    background: rgba(255,255,255,0.08) !important;
+    padding: 18px 25px !important;
+    margin: 0 !important;
+}
+
+/* Active State - Perfectly Static Cut-out */
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label {
+    background-color: #f8fafc !important;
+    color: #1b6656 !important;
+    font-weight: 700 !important;
+    border-radius: 40px 0 0 40px !important;
+    padding: 14px 20px !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* Pseudo-elements (Curves) - Perfectly Static Positioning */
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::before,
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    pointer-events: none !important;
+    background-color: transparent;
+    z-index: 1;
+}
+
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::before {
+    top: -40px;
+    border-radius: 0 0 40px 0;
+    box-shadow: 20px 20px 0 20px #f8fafc;
+}
+
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label::after {
+    bottom: -40px;
+    border-radius: 0 40px 0 0;
+    box-shadow: 20px -20px 0 20px #f8fafc;
+}
+
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] .stButton > button:hover,
+[data-testid="stSidebar"] .stButton > button:active,
+[data-testid="stSidebar"] .stButton > button:focus {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    margin: 0 !important;
+}
+
+/* Hide Streamlit elements + Collapse Button + Toggle */
+[data-testid="stSidebar"] .stRadio label[data-testid="stWidgetLabel"],
+[data-testid="stSidebar"] hr,
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"] {
+    display: none !important;
+}
+
+/* Force Static Width & No Resizing */
+section[data-testid="stSidebar"] {
+    min-width: 260px !important;
+    max-width: 260px !important;
+    width: 260px !important;
+}
+
+/* Fix Sidebar Interaction Jitter */
+[data-testid="stSidebar"] * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Fix Sidebar Buttons (Logout etc.) to be static */
+[data-testid="stSidebar"] .stButton > button:hover {
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(27, 102, 86, 0.25) !important;
+}
+[data-testid="stSidebar"] .stButton > button:active {
+    transform: none !important;
+}
+
+[data-testid="stSidebar"] .stRadio label p {
+    margin-bottom: 0px !important;
+    font-size: 1.05rem !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Ensure active text stays dark for contrast against white background */
+[data-testid="stSidebar"] .stRadio [aria-checked="true"] + div label p {
+    color: #1b6656 !important;
+}
+
+/* Fix Filter Labels to white */
+[data-testid="stSidebar"] label[data-testid="stWidgetLabel"] p {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    opacity: 1 !important;
+}
+
+
+/* â•â• Main Container â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.block-container { padding: 2rem 2.5rem !important; max-width: 1600px !important; }
+
+/* â•â• Page Header â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.page-header {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(6, 182, 212, 0.05));
+    border: 1px solid rgba(79, 70, 229, 0.12);
+    border-top: 3px solid #1b6656;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.page-title {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #1b6656 !important;
+    margin-bottom: 0px !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.2 !important;
+}
+
+.page-sub {
+    font-size: 0.6rem;
+    color: #1b6656;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 800;
+    opacity: 0.7;
+}
+
+/* â•â• Glass Cards â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.glass-card, [data-testid="stMetric"], .stForm {
+    background: #ffffff !important;
+    border: 1px solid rgba(79, 70, 229, 0.1) !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+    transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
+    box-shadow: 0 1px 10px rgba(0,0,0,0.04) !important;
+}
+
+/* Shrink Metric Values */
+[data-testid="stMetricValue"] {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 0.75rem !important;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(79, 70, 229, 0.25) !important;
+    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* â•â• KPI Cards â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.kpi-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid rgba(27, 102, 86, 0.08);
+    border-radius: 16px;
+    padding: 18px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+    animation: fadeInUp 0.6s ease-out backwards;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent-gradient, #4f46e5);
+}
+
+.kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4, #7c3aed, #06b6d4, #4f46e5);
+    background-size: 300% 100%;
+    animation: shimmer 4s linear infinite;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(27,102,86,0.25);
+    box-shadow: 0 15px 35px rgba(27,102,86,0.15);
+}
+
+.kpi-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1d4354;
+    margin-bottom: 2px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.kpi-label {
+    font-size: 0.68rem;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    opacity: 0.7;
+}
+
+.kpi-icon {
+    position: absolute;
+    bottom: -10px; right: -5px;
+    font-size: 4rem;
+    opacity: 0.08;
+    filter: grayscale(100%) brightness(0);
+    transition: all 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+.kpi-card:hover .kpi-icon {
+    transform: scale(1.2) rotate(-10deg);
+    opacity: 0.15;
+}
+.kpi-value, .kpi-label {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* â•â• Kanban â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 5px;
+}
+
+.kanban-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1d4354;
+    font-family: 'Outfit', sans-serif;
+}
+
+.kanban-count {
+    background: rgba(79, 70, 229, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    color: #4f46e5;
+    padding: 3px 12px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.kanban-item {
+    background: #ffffff;
+    border: 1px solid rgba(79, 70, 229, 0.08);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    animation: fadeInUp 0.4s ease-out backwards;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.kanban-item:hover {
+    border-color: rgba(79, 70, 229, 0.25);
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* â•â• Inputs & Forms â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.stTextInput input, .stTextArea textarea,
+.stSelectbox [data-baseweb="select"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(27, 102, 86, 0.2) !important;
+    border-radius: 10px !important;
+    color: #1d4354 !important;
+    transition: all 0.3s !important;
+}
+
+/* â•â• Selectbox / Dropdown Fix (all inner elements) â•â•â•â•â•â•â•â• */
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] > div > div,
+div[data-baseweb="select-container"],
+div[data-baseweb="select-container"] > div,
+.stSelectbox div[data-baseweb="select"],
+.stSelectbox div[data-baseweb="select"] > div,
+.stSelectbox div[role="combobox"],
+.stSelectbox div[role="listbox"] {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #1d4354 !important;
+    border-color: rgba(27, 102, 86, 0.2) !important;
+}
+
+/* Value display text inside dropdown */
+div[data-baseweb="select"] [data-testid="stMarkdownContainer"],
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] p,
+.stSelectbox div[data-baseweb="select"] span {
+    color: #1d4354 !important;
+    background: transparent !important;
+}
+
+/* Sidebar selectbox â€” white bg, black text */
+[data-testid="stSidebar"] div[data-baseweb="select"] > div,
+[data-testid="stSidebar"] div[data-baseweb="select"] > div > div,
+[data-testid="stSidebar"] div[data-baseweb="select-container"],
+[data-testid="stSidebar"] div[data-baseweb="select-container"] > div {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: rgba(255,255,255,0.4) !important;
+    border-radius: 10px !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] span,
+[data-testid="stSidebar"] div[data-baseweb="select"] [class*="ValueContainer"] span,
+[data-testid="stSidebar"] div[data-baseweb="select"] *,
+[data-testid="stSidebar"] div[data-baseweb="select-container"] * {
+    color: #0f172a !important;
+}
+
+/* Dropdown option list popup */
+div[data-baseweb="menu"],
+div[data-baseweb="menu"] ul,
+div[data-baseweb="menu"] li {
+    background-color: #ffffff !important;
+    color: #1d4354 !important;
+}
+div[data-baseweb="menu"] li:hover {
+    background-color: rgba(27, 102, 86, 0.08) !important;
+}
+
+
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+}
+
+
+/* â•â• Buttons â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.stButton > button {
+    background: linear-gradient(135deg, #1b6656 0%, #1d4354 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+    padding: 12px 24px !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+    box-shadow: 0 4px 15px rgba(27, 102, 86, 0.25) !important;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(27, 102, 86, 0.4) !important;
+    background: linear-gradient(135deg, #155245 0%, #153442 100%) !important;
+}
+
+.stButton > button::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.stButton > button:hover::after { opacity: 1; }
+.stButton > button:active { transform: translateY(1px) !important; }
+
+/* â•â• Status Badges â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.badge {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 0.67rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid transparent;
+}
+
+.badge-new       { background: rgba(27, 102, 86, 0.1);    color: #1b6656; border-color: rgba(27, 102, 86, 0.25); }
+.badge-inprogress{ background: rgba(6, 182, 212, 0.12); color: #0891b2; border-color: rgba(6, 182, 212, 0.25); }
+.badge-closed    { background: rgba(15, 23, 42, 0.1);   color: #1d4354; border-color: rgba(15, 23, 42, 0.25); }
+.badge-hot       { background: rgba(239, 68, 68, 0.1);   color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
+.badge-warm      { background: rgba(245, 158, 11, 0.1);   color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+.badge-cold      { background: rgba(71, 85, 105, 0.1);   color: #475569; border-color: rgba(71, 85, 105, 0.2); }
+
+/* â•â• Section Heading â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.section-heading {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 24px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(27, 102, 86, 0.1);
+}
+
+.luxury-container {
+    padding: 18px;
+    background: rgba(79, 70, 229, 0.03);
+    border-radius: 14px;
+    border: 1px solid rgba(79, 70, 229, 0.08);
+}
+
+div[data-baseweb="popover"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(79, 70, 229, 0.15) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 30px rgba(79, 70, 229, 0.12) !important;
+}
+div[data-baseweb="popover"] li { background-color: transparent !important; color: #0f172a !important; }
+div[data-baseweb="popover"] li:hover { background-color: rgba(79, 70, 229, 0.08) !important; }
+
+/* â•â• Keyframes â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+    0%   { background-position: -300% 0; }
+    100% { background-position: 300% 0; }
+}
+@keyframes active-pop {
+    0% { transform: scale(0.92) translateX(-10px); opacity: 0.5; }
+    100% { transform: scale(1) translateX(0); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+    0%,100% { box-shadow: 0 0 15px rgba(79, 70, 229, 0.2); }
+    50%     { box-shadow: 0 0 40px rgba(6, 182, 212, 0.45); }
+}
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-7px); }
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@keyframes orb-pulse {
+    0%,100% { transform: scale(1);   opacity: 0.7; }
+    50%     { transform: scale(1.15); opacity: 1; }
+}
+
+.animate-in { animation: fadeInUp 0.6s ease-out backwards; }
+
+/* â•â• Data Editor / DataFrame Table Fix â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Force white background on entire data editor wrapper */
+[data-testid="stDataFrameContainer"],
+[data-testid="stDataEditor"],
+.stDataFrame,
+div[class*="dataframe"],
+div[data-testid="stDataEditorContainer"] {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(27, 102, 86, 0.15) !important;
+    overflow: hidden !important;
+}
+
+/* Glide data table (the underlying canvas-based table) */
+iframe[title*="dataframe"],
+iframe[title*="data_editor"] {
+    background: #ffffff !important;
+    border-radius: 10px !important;
+}
+
+/* Target the inner scrollable container */
+[data-testid="stDataEditorContainer"] > div,
+[data-testid="stDataFrameContainer"] > div {
+    background: #ffffff !important;
+}
+
+/* Fix stale dark bg on data editor toolbar */
+[data-testid="stElementToolbar"],
+[data-testid="StyledFullScreenButton"] {
+    background: #f8fafc !important;
+}
+
+/* â•â• Sidebar Dropdown Text Fix â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Ensure sidebar selectbox text/value is always visible (white) */
+[data-testid="stSidebar"] .stSelectbox label p,
+[data-testid="stSidebar"] .stSelectbox [data-testid="stWidgetLabel"] p {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] *,
+[data-testid="stSidebar"] div[data-baseweb="select-container"] * {
+    color: #000000 !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    background: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    border-radius: 10px !important;
+    min-height: 42px !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="select"] svg path {
+    fill: #000000 !important;
+}
+
+/* Specific fix for filter container labels and containers */
+[data-testid="stSidebar"] .filter-container {
+    background: transparent !important;
+}
+
+[data-testid="stSidebar"] .filter-container label p,
+[data-testid="stSidebar"] .filter-container [data-testid="stWidgetLabel"] p {
+    color: #ffffff !important;
+}
+
+/* â•â• Download / Secondary Button (dark fix) â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Prevent dark bg on download buttons that appear black */
+[data-testid="stDownloadButton"] button,
+[data-testid="stDownloadButton"] button:hover {
+    background: linear-gradient(135deg, #1b6656 0%, #1d4354 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* â•â• Tab container light fix â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+[data-testid="stTabs"] [data-baseweb="tab-list"] {
+    background: transparent !important;
+}
+[data-testid="stTabs"] [data-baseweb="tab"] {
+    background: transparent !important;
+    color: #475569 !important;
+}
+[data-testid="stTabs"] [aria-selected="true"] {
+    color: #1b6656 !important;
+    border-bottom: 2px solid #1b6656 !important;
+}
+
+.animate-in { animation: fadeInUp 0.6s ease-out backwards; }
+
+</style>
+""", unsafe_allow_html=True)
+
+import base64
+def get_base64(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+def get_img_with_href(local_img_path, target_width="250px", extra_style=""):
+    try:
+        if os.path.exists(local_img_path):
+            img_format = local_img_path.split(".")[-1]
+            bin_str = get_base64(local_img_path)
+            html_code = f'<img src="data:image/{img_format};base64,{bin_str}" style="max-width: {target_width}; height: auto; {extra_style}">'
+            return html_code
+    except:
+        pass
+    return None
+
+# â”€â”€â”€ SESSION STATE INITIALIZATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "username" not in st.session_state:
+    st.session_state.username = None
+if "role" not in st.session_state:
+    st.session_state.role = "User"
+if "allowed_pages" not in st.session_state:
+    st.session_state.allowed_pages = "" 
+if "show_loader" not in st.session_state:
+    st.session_state.show_loader = False
+
+# â”€â”€â”€ LOGIN SYSTEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
