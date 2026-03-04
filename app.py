@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import json
 import os
@@ -98,6 +99,25 @@ def login_page():
 
             user = st.text_input("Username", placeholder="Enter your username")
             pw = st.text_input("Password", type="password", placeholder="Enter your password")
+
+            # JavaScript hack for Enter-to-Next focus flow
+            components.html("""
+                <script>
+                const doc = window.parent.document;
+                const inputs = Array.from(doc.querySelectorAll('input'));
+                const userField = inputs.find(i => i.ariaLabel === "Username");
+                const passField = inputs.find(i => i.ariaLabel === "Password");
+                
+                if (userField && passField) {
+                    userField.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            passField.focus();
+                        }
+                    });
+                }
+                </script>
+                """, height=0)
 
             if st.form_submit_button("🔐  LOGIN", use_container_width=True):
                 user_record = db.verify_user(user, pw)
