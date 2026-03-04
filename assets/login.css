@@ -242,6 +242,11 @@ div[data-baseweb="base-input"] {
     box-shadow: none !important;
 }
 
+/* Remove 'Press Enter to submit form' helper text */
+div[data-testid="stTextInput"] p {
+    display: none !important;
+}
+
 /* ========== FORCED GRADIENT BUTTON ========== */
 button[kind="secondaryFormSubmit"],
 [data-testid="stFormSubmitButton"] button,
