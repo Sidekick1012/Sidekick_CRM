@@ -242,9 +242,18 @@ div[data-baseweb="base-input"] {
     box-shadow: none !important;
 }
 
-/* Remove 'Press Enter to submit form' helper text */
-div[data-testid="stTextInput"] p {
+/* Kill 'Press Enter to submit form' and all focus-triggered hints */
+div[data-testid="stTextInput"] p,
+div[data-testid="stTextInput"] small,
+div[data-testid="stTextInput"] [data-testid="stCaptionContainer"],
+div[data-testid="stTextInput"] span:contains("Press Enter"),
+.stTextInput small,
+.stTextInput p {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* ========== FORCED GRADIENT BUTTON ========== */
