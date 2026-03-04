@@ -96,16 +96,15 @@ def login_page():
             # Brand logo / name at top
             st.markdown(f"""
                 <div style="text-align:center; margin-bottom:30px;">
-                    {get_img_with_href("assets/SDK_LOGO.png", "90px", "margin-bottom:10px;") or
-                     '<div style="font-family:Inter; font-size:1.5rem; font-weight:800; color:#1b6656; letter-spacing:-0.03em; margin-bottom:10px;">⬟ Sidekick CRM</div>'}
+                    {get_img_with_href("assets/SDK_LOGO.png", "160px", "margin-bottom:10px;") or
+                     '<div style="font-family:Inter; font-size:2rem; font-weight:800; color:#1b6656; letter-spacing:-0.03em; margin-bottom:10px;">⬟ Sidekick CRM</div>'}
                 </div>
 
                 <div class="login-title-main">Login</div>
                 <div class="login-title-underline"></div>
 
                 <div class="login-subtitle">
-                    Welcome back! Login to access your CRM dashboard.<br>
-                    Did you <a href="#">forget your password?</a>
+                    Welcome back! Login to access your CRM dashboard.
                 </div>
             """, unsafe_allow_html=True)
 
