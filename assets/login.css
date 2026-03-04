@@ -1,10 +1,14 @@
-﻿:root {
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
     --primary: #1b6656;
     --secondary: #1d4354;
     --accent: #7bb06b;
-    --glass: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --text-glow: 0 0 10px rgba(123, 176, 107, 0.3);
+    --text-white: #ffffff;
+    --text-gray: #E0EAFc;
+    --input-bg: rgba(29, 67, 84, 0.6);
+    --shadow-soft: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --font-main: 'Inter', sans-serif;
 }
 
 section[data-testid="stSidebar"],
@@ -16,43 +20,25 @@ html,
 body,
 [data-testid="stAppViewContainer"],
 .stApp {
-    background: #0a110f !important;
+    background: linear-gradient(-45deg, var(--primary), var(--secondary), #0f1715, #132a24) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlow 15s ease infinite !important;
     overflow: hidden !important;
     height: 100vh !important;
-    font-family: 'Outfit', sans-serif !important;
+    font-family: var(--font-main) !important;
 }
 
-/* Luxury Animated Background */
-.stApp::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-    z-index: 0;
-}
-
-.stApp::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at center, rgba(123, 176, 107, 0.08) 0%, transparent 50%);
-    animation: bgRotate 20s infinite linear;
-    z-index: 1;
-}
-
-@keyframes bgRotate {
-    from {
-        transform: rotate(0deg);
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
     }
 
-    to {
-        transform: rotate(360deg);
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
     }
 }
 
@@ -68,101 +54,194 @@ body,
     height: 100vh !important;
     width: 100% !important;
     max-width: none !important;
-    z-index: 10;
 }
 
-/* Premium Glass Card */
+/* Glassmorphism Card Container */
 [data-testid="stForm"] {
-    background: var(--glass) !important;
-    backdrop-filter: blur(30px) saturate(150%) !important;
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 35px !important;
-    padding: 60px 50px 40px !important;
-    width: 480px !important;
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4) !important;
-    animation: cardEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden !important;
-}
-
-@keyframes cardEntrance {
-    from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.95);
-        filter: blur(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-    }
-}
-
-/* Sequential Animations */
-.login-header {
-    animation: slideDown 1s ease-out forwards;
-    opacity: 0;
-}
-
-[data-testid="stTextInput"]:nth-of-type(1) {
-    animation: slideUp 0.8s ease-out 0.4s forwards;
-    opacity: 0;
-}
-
-[data-testid="stTextInput"]:nth-of-type(2) {
-    animation: slideUp 0.8s ease-out 0.6s forwards;
-    opacity: 0;
-}
-
-.utils-row {
-    animation: fadeIn 1s ease-out 0.8s forwards;
-    opacity: 0;
-}
-
-[data-testid="stFormSubmitButton"] {
-    animation: bounceIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 1s forwards;
-    opacity: 0;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    padding: 50px 40px !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    box-shadow: var(--shadow-soft) !important;
+    margin: 0 auto !important;
+    animation: fadeIn 1s ease-out;
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
+        transform: scale(0.95);
     }
 
     to {
         opacity: 1;
+        transform: scale(1);
     }
+}
+
+/* Brand Logo Styling */
+.brand-logo {
+    width: 120px;
+    height: auto;
+    margin: 0 auto 30px;
+    display: block;
+    animation: slideDownFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+}
+
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Floating Label Input Logic */
+[data-testid="stTextInput"] {
+    margin-bottom: 24px !important;
+    position: relative !important;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+[data-testid="stTextInput"]:nth-of-type(1) {
+    animation-delay: 0.3s;
+}
+
+[data-testid="stTextInput"]:nth-of-type(2) {
+    animation-delay: 0.5s;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+input[type="text"],
+input[type="password"],
+input {
+    background: var(--input-bg) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    height: 58px !important;
+    border-radius: 12px !important;
+    color: var(--text-white) !important;
+    font-size: 16px !important;
+    padding: 24px 16px 8px 16px !important;
+    /* Space for labels */
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+input:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 15px rgba(123, 176, 107, 0.2) !important;
+    outline: none !important;
+    transform: translateY(-2px);
+    background: rgba(29, 67, 84, 0.8) !important;
+}
+
+/* Custom Floating Label (overriding Streamlit default) */
+label,
+.stTextInput label {
+    position: absolute !important;
+    top: 18px !important;
+    left: 16px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    pointer-events: none !important;
+    transition: all 0.3s ease !important;
+    z-index: 10 !important;
+    display: block !important;
+}
+
+/* Fix for Streamlit's label interaction and focus */
+[data-testid="stTextInput"]:focus-within label {
+    top: 6px !important;
+    font-size: 12px !important;
+    color: var(--accent) !important;
+}
+
+/* Sequential Animation delay for utilities */
+.utils-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.8s ease-out 0.7s forwards;
+    opacity: 0;
+}
+
+[data-testid="stCheckbox"] label p {
+    color: var(--text-gray) !important;
+    font-size: 14px !important;
+    transition: color 0.3s ease;
+}
+
+[data-testid="stCheckbox"]:hover label p {
+    color: var(--accent) !important;
+}
+
+.forgot-link {
+    color: var(--text-gray);
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+    color: var(--accent);
+}
+
+/* Login Button Styling */
+[data-testid="stFormSubmitButton"] {
+    animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.9s forwards;
+    opacity: 0;
+}
+
+.stButton>button {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%) !important;
+    height: 56px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 18px !important;
+    color: var(--text-white) !important;
+    border: none !important;
+    transition: all 0.4s ease !important;
+    box-shadow: 0 8px 16px rgba(27, 102, 86, 0.3) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.stButton>button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 24px rgba(27, 102, 86, 0.4) !important;
+    filter: brightness(1.1);
+}
+
+.stButton>button:active {
+    transform: scale(0.97) !important;
+    box-shadow: 0 4px 8px rgba(27, 102, 86, 0.3) !important;
 }
 
 @keyframes bounceIn {
     0% {
         opacity: 0;
-        transform: scale(0.8);
+        transform: scale(0.85);
     }
 
     70% {
@@ -176,103 +255,21 @@ body,
     }
 }
 
-/* Luxury Inputs */
-input[type="text"],
-input[type="password"],
-input {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    height: 60px !important;
-    line-height: 1.5 !important;
-    border-radius: 18px !important;
-    color: #ffffff !important;
-    font-size: 1.1rem !important;
-    padding: 0 24px !important;
-    margin-bottom: 5px !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    display: block !important;
-}
-
-input:focus {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 25px rgba(123, 176, 107, 0.2) !important;
-    outline: none !important;
-    transform: translateY(-2px);
-}
-
-label,
-.stTextInput label {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-weight: 500 !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.05em !important;
-    margin-bottom: 12px !important;
-    transition: all 0.3s ease;
-}
-
-[data-testid="stTextInput"]:focus-within label {
-    color: var(--accent) !important;
-    text-shadow: var(--text-glow);
-}
-
-/* Login Button */
-.stButton>button {
-    background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
-    height: 62px !important;
-    border-radius: 20px !important;
-    font-weight: 800 !important;
-    font-size: 1.2rem !important;
-    color: white !important;
-    border: none !important;
-    margin-top: 25px !important;
-    box-shadow: 0 10px 30px rgba(27, 102, 86, 0.3) !important;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-    position: relative;
-    overflow: hidden;
-}
-
-.stButton>button::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transform: rotate(25deg);
-    transition: 0.8s;
-}
-
-.stButton>button:hover {
-    transform: translateY(-4px) scale(1.02) !important;
-    box-shadow: 0 20px 40px rgba(27, 102, 86, 0.5) !important;
-}
-
-.stButton>button:hover::after {
-    left: 100%;
-}
-
-/* Footer & Extras */
-.form-footer {
+/* Footer Styling */
+.login-footer {
     text-align: center;
-    margin-top: 35px;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.3);
-    letter-spacing: 0.05em;
+    margin-top: 40px;
+    color: var(--text-gray);
+    font-size: 14px;
+    opacity: 0.8;
 }
 
-[data-testid="stCheckbox"] label p {
-    color: rgba(255, 255, 255, 0.5) !important;
-    font-size: 0.9rem !important;
-}
-
+/* Error Shake Effect */
 .stError {
-    background: rgba(255, 75, 75, 0.1) !important;
-    color: #ff4b4b !important;
-    border: 1px solid rgba(255, 75, 75, 0.2) !important;
-    border-radius: 12px !important;
     animation: shake 0.5s ease-in-out;
+    border: 1px solid #ff4b4b !important;
+    background: rgba(255, 75, 75, 0.1) !important;
+    border-radius: 12px !important;
 }
 
 @keyframes shake {
@@ -282,11 +279,13 @@ label,
         transform: translateX(0);
     }
 
-    25% {
-        transform: translateX(-8px);
+    20%,
+    60% {
+        transform: translateX(-10px);
     }
 
-    75% {
-        transform: translateX(8px);
+    40%,
+    80% {
+        transform: translateX(10px);
     }
 }

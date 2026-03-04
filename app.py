@@ -74,34 +74,36 @@ def login_page():
     # Layout wrapper
     with st.container():
         with st.form("login_form"):
-            # Brand Signature
+            # Animated Header Section
             st.markdown(f"""
-                <div class="login-header" style="text-align: center; margin-bottom: 40px;">
-                    <div style="margin-bottom: 15px;">
-                        {get_img_with_href("assets/SDK_LOGO.png", "140px", "filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(123,176,107,0.3));") or '<h1 style="color:#7bb06b; font-family:Outfit; font-size:3rem; font-weight:900; letter-spacing:-0.05em; margin:0;">SIDEKICK</h1>'}
-                    </div>
-                    <div style="color:rgba(255,255,255,0.9); font-size:1.6rem; font-weight:800; letter-spacing:-0.03em;">Command Center</div>
-                    <div style="color:rgba(255,255,255,0.4); font-size:0.85rem; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; margin-top:5px;">Enterprise Intelligence Suite</div>
+                <div class="brand-logo" style="text-align: center;">
+                    {get_img_with_href("assets/SDK_LOGO.png", "120px", "filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));") or '<h1 style="color:#7bb06b; font-family:Inter; font-size:32px; font-weight:800; letter-spacing:-0.05em; margin:0;">SIDEKICK</h1>'}
+                </div>
+                <div style="text-align: center; margin-bottom: 40px; color: #ffffff; opacity: 0.9;">
+                    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Access Your Workspace</h2>
+                    <p style="font-size: 14px; opacity: 0.7; font-weight: 500;">Secure enterprise authentication is active</p>
                 </div>
             """, unsafe_allow_html=True)
 
-            user = st.text_input("Log In Credentials", placeholder="Access Key / Email")
-            pw = st.text_input("Security Protocol", type="password", placeholder="Access Token")
+            # Input fields with floating-label-ready labels
+            user = st.text_input("Email / Username", placeholder=" ")
+            pw = st.text_input("Password", type="password", placeholder=" ")
 
-            # Flex Utils: Memory & Recovery
-            u1, u2 = st.columns([1.5, 1])
-            with u1:
-                st.checkbox("Persistent Access", key="rem_check_luxury")
-            with u2:
-                 st.markdown('<div style="text-align: right; padding-top:10px;"><a href="#" style="color:#7bb06b; font-size:0.85rem; font-weight:700; text-decoration:none; opacity:0.8;">Secure Recovery?</a></div>', unsafe_allow_html=True)
+            # Utilities Row: Remember Me & Forgot Password
+            u_col1, u_col2 = st.columns([1.2, 1])
+            with u_col1:
+                st.checkbox("Remember me", key="rem_box_master")
+            with u_col2:
+                st.markdown('<div style="text-align: right; padding-top:10px;"><a class="forgot-link" href="#">Forgot Password?</a></div>', unsafe_allow_html=True)
 
             # JavaScript hack for Enter-to-Next focus flow
             components.html("""
                 <script>
                 const doc = window.parent.document;
                 const inputs = Array.from(doc.querySelectorAll('input'));
-                const userField = inputs.find(i => i.placeholder === "Access Key / Email");
-                const passField = inputs.find(i => i.placeholder === "Access Token");
+                // Use the aria-label or specific indices to target the fields correctly
+                const userField = inputs[0];
+                const passField = inputs[1];
                 
                 if (userField && passField) {
                     userField.addEventListener('keydown', (e) => {
@@ -114,8 +116,8 @@ def login_page():
                 </script>
                 """, height=0)
 
-            # High-Refraction Login Action
-            if st.form_submit_button("AUTHENTICATE SESSION", use_container_width=True):
+            # Login Activation
+            if st.form_submit_button("LOGIN", use_container_width=True):
                 user_record = db.verify_user(user, pw)
                 if user_record:
                     st.session_state.authenticated = True
@@ -125,12 +127,12 @@ def login_page():
                     st.session_state.show_loader = True
                     st.rerun()
                 else:
-                    st.error("Access Denied: Invalid Authentication Protocol")
+                    st.error("Authentication Failed: Please verify credentials.")
 
+            # Professional Footer
             st.markdown("""
-                <div class="form-footer">
-                    © 2026 Sidekick CRM. All rights reserved.<br><br>
-                    <span style="opacity:0.3; font-size:0.75rem;">TLS 1.3 Encryption Active • Secure Datastream Verified</span>
+                <div class="login-footer">
+                    © 2026 Sidekick CRM. All rights reserved.
                 </div>
             """, unsafe_allow_html=True)
 
