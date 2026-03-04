@@ -1,17 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-:root {
-    --primary: #1b6656;
-    --secondary: #1d4354;
-    --accent: #7bb06b;
-    --text-white: #ffffff;
-    --text-gray: #E0EAFc;
-    --input-bg: rgba(29, 67, 84, 0.6);
-    --shadow-soft: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    --font-main: 'Inter', sans-serif;
-}
-
-section[data-testid="stSidebar"],
+﻿section[data-testid="stSidebar"],
 header[data-testid="stHeader"] {
     display: none !important;
 }
@@ -19,273 +6,85 @@ header[data-testid="stHeader"] {
 html,
 body,
 [data-testid="stAppViewContainer"],
-.stApp {
-    background: linear-gradient(-45deg, var(--primary), var(--secondary), #0f1715, #132a24) !important;
-    background-size: 400% 400% !important;
-    animation: gradientFlow 15s ease infinite !important;
+.stApp,
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"],
+.main,
+.block-container {
+    background: #f0f4f2 !important;
     overflow: hidden !important;
     height: 100vh !important;
-    font-family: var(--font-main) !important;
+    max-height: 100vh !important;
 }
 
-@keyframes gradientFlow {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-[data-testid="stMain"] {
-    background: transparent !important;
+[data-testid="stHorizontalBlock"] {
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100vh !important;
 }
 
 .block-container {
     padding: 0 !important;
+    height: 100vh !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    height: 100vh !important;
     width: 100% !important;
     max-width: none !important;
 }
 
-/* Glassmorphism Card Container */
 [data-testid="stForm"] {
-    background: rgba(255, 255, 255, 0.03) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 24px !important;
-    padding: 50px 40px !important;
-    width: 100% !important;
-    max-width: 440px !important;
-    box-shadow: var(--shadow-soft) !important;
+    background: linear-gradient(145deg, #1b3a30 0%, #1d3040 100%) !important;
+    border: none !important;
+    border-radius: 28px !important;
+    padding: 40px 45px 35px !important;
+    backdrop-filter: blur(30px) !important;
+    box-shadow: 0 30px 80px rgba(27, 102, 86, 0.35);
+    max-width: 500px !important;
     margin: 0 auto !important;
-    animation: fadeIn 1s ease-out;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Brand Logo Styling */
-.brand-logo {
-    width: 120px;
-    height: auto;
-    margin: 0 auto 30px;
-    display: block;
-    animation: slideDownFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0;
-}
-
-@keyframes slideDownFade {
-    from {
-        opacity: 0;
-        transform: translateY(-40px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Floating Label Input Logic */
-[data-testid="stTextInput"] {
-    margin-bottom: 24px !important;
-    position: relative !important;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out forwards;
-}
-
-[data-testid="stTextInput"]:nth-of-type(1) {
-    animation-delay: 0.3s;
-}
-
-[data-testid="stTextInput"]:nth-of-type(2) {
-    animation-delay: 0.5s;
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.stButton>button {
+    background: linear-gradient(135deg, #1b6656, #7bb06b) !important;
+    height: 55px !important;
+    border-radius: 14px !important;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    margin-top: 10px !important;
 }
 
 input[type="text"],
 input[type="password"],
 input {
-    background: var(--input-bg) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    height: 58px !important;
-    border-radius: 12px !important;
-    color: var(--text-white) !important;
-    font-size: 16px !important;
-    padding: 24px 16px 8px 16px !important;
-    /* Space for labels */
-    transition: all 0.3s ease !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    background: rgba(248, 250, 252, 0.95) !important;
+    border: 1px solid rgba(27, 102, 86, 0.2) !important;
+    height: 55px !important;
+    border-radius: 14px !important;
+    color: #0f172a !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    padding: 0 20px !important;
+    transition: all 0.2s ease-in-out !important;
 }
 
 input:focus {
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 15px rgba(123, 176, 107, 0.2) !important;
+    background: #ffffff !important;
+    border-color: #1b6656 !important;
+    box-shadow: 0 0 15px rgba(27, 102, 86, 0.2) !important;
     outline: none !important;
-    transform: translateY(-2px);
-    background: rgba(29, 67, 84, 0.8) !important;
 }
 
-/* Custom Floating Label (overriding Streamlit default) */
 label,
 .stTextInput label {
-    position: absolute !important;
-    top: 18px !important;
-    left: 16px !important;
-    color: rgba(255, 255, 255, 0.5) !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    pointer-events: none !important;
-    transition: all 0.3s ease !important;
-    z-index: 10 !important;
-    display: block !important;
-}
-
-/* Fix for Streamlit's label interaction and focus */
-[data-testid="stTextInput"]:focus-within label {
-    top: 6px !important;
-    font-size: 12px !important;
-    color: var(--accent) !important;
-}
-
-/* Sequential Animation delay for utilities */
-.utils-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    animation: fadeInUp 0.8s ease-out 0.7s forwards;
-    opacity: 0;
-}
-
-[data-testid="stCheckbox"] label p {
-    color: var(--text-gray) !important;
-    font-size: 14px !important;
-    transition: color 0.3s ease;
-}
-
-[data-testid="stCheckbox"]:hover label p {
-    color: var(--accent) !important;
-}
-
-.forgot-link {
-    color: var(--text-gray);
-    font-size: 14px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.forgot-link:hover {
-    text-decoration: underline;
-    color: var(--accent);
-}
-
-/* Login Button Styling */
-[data-testid="stFormSubmitButton"] {
-    animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.9s forwards;
-    opacity: 0;
-}
-
-.stButton>button {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%) !important;
-    height: 56px !important;
-    border-radius: 12px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
     font-weight: 700 !important;
-    font-size: 18px !important;
-    color: var(--text-white) !important;
-    border: none !important;
-    transition: all 0.4s ease !important;
-    box-shadow: 0 8px 16px rgba(27, 102, 86, 0.3) !important;
-    position: relative;
-    overflow: hidden;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 8px !important;
+    display: inline-block !important;
 }
 
-.stButton>button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 12px 24px rgba(27, 102, 86, 0.4) !important;
-    filter: brightness(1.1);
-}
-
-.stButton>button:active {
-    transform: scale(0.97) !important;
-    box-shadow: 0 4px 8px rgba(27, 102, 86, 0.3) !important;
-}
-
-@keyframes bounceIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.85);
-    }
-
-    70% {
-        opacity: 1;
-        transform: scale(1.05);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Footer Styling */
-.login-footer {
-    text-align: center;
-    margin-top: 40px;
-    color: var(--text-gray);
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-/* Error Shake Effect */
-.stError {
-    animation: shake 0.5s ease-in-out;
-    border: 1px solid #ff4b4b !important;
-    background: rgba(255, 75, 75, 0.1) !important;
-    border-radius: 12px !important;
-}
-
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    20%,
-    60% {
-        transform: translateX(-10px);
-    }
-
-    40%,
-    80% {
-        transform: translateX(10px);
-    }
+[data-testid="stTextInput"] {
+    margin-bottom: 20px !important;
 }

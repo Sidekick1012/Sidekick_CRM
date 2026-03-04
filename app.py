@@ -71,39 +71,45 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    # Layout wrapper
-    with st.container():
+    _, center_col, _ = st.columns([1, 2, 1])
+    with center_col:
         with st.form("login_form"):
-            # Animated Header Section
             st.markdown(f"""
-                <div class="brand-logo" style="text-align: center;">
-                    {get_img_with_href("assets/SDK_LOGO.png", "120px", "filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));") or '<h1 style="color:#7bb06b; font-family:Inter; font-size:32px; font-weight:800; letter-spacing:-0.05em; margin:0;">SIDEKICK</h1>'}
+            <div style="text-align: center; margin-bottom: 35px;">
+                <div style="margin-bottom: 18px;">
+                    {get_img_with_href("assets/SDK_LOGO.png", "180px", "filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(123,176,107,0.4));") or '<div style="font-family:Outfit; font-size:3rem; font-weight:900; color:#fff; letter-spacing:-0.05em;">SIDEKICK</div>'}
                 </div>
-                <div style="text-align: center; margin-bottom: 40px; color: #ffffff; opacity: 0.9;">
-                    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Access Your Workspace</h2>
-                    <p style="font-size: 14px; opacity: 0.7; font-weight: 500;">Secure enterprise authentication is active</p>
-                </div>
+                <div style="
+                    font-family: 'Outfit', sans-serif;
+                    font-size: 1.4rem;
+                    font-weight: 700;
+                    color: rgba(255,255,255,0.95);
+                    letter-spacing: 0.01em;
+                    margin-bottom: 5px;
+                ">Lead & Task Manager</div>
+                <div style="
+                    font-size: 0.72rem;
+                    font-weight: 700;
+                    color: #7bb06b;
+                    letter-spacing: 0.25em;
+                    text-transform: uppercase;
+                    margin-bottom: 25px;
+                ">Enterprise CRM Suite</div>
+                <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(123,176,107,0.55), transparent); width: 80%; margin: 0 auto;"></div>
+            </div>
             """, unsafe_allow_html=True)
 
-            # Input fields with floating-label-ready labels
-            user = st.text_input("Email / Username", placeholder=" ")
-            pw = st.text_input("Password", type="password", placeholder=" ")
-
-            # Utilities Row: Remember Me & Forgot Password
-            u_col1, u_col2 = st.columns([1.2, 1])
-            with u_col1:
-                st.checkbox("Remember me", key="rem_box_master")
-            with u_col2:
-                st.markdown('<div style="text-align: right; padding-top:10px;"><a class="forgot-link" href="#">Forgot Password?</a></div>', unsafe_allow_html=True)
+            user = st.text_input("Username", placeholder="Enter your username")
+            pw = st.text_input("Password", type="password", placeholder="Enter your password")
 
             # JavaScript hack for Enter-to-Next focus flow
             components.html("""
                 <script>
                 const doc = window.parent.document;
                 const inputs = Array.from(doc.querySelectorAll('input'));
-                // Use the aria-label or specific indices to target the fields correctly
-                const userField = inputs[0];
-                const passField = inputs[1];
+                // Standard targeting for the original layout
+                const userField = inputs.find(i => i.placeholder === "Enter your username");
+                const passField = inputs.find(i => i.placeholder === "Enter your password");
                 
                 if (userField && passField) {
                     userField.addEventListener('keydown', (e) => {
@@ -116,8 +122,7 @@ def login_page():
                 </script>
                 """, height=0)
 
-            # Login Activation
-            if st.form_submit_button("LOGIN", use_container_width=True):
+            if st.form_submit_button("🔐  LOGIN", use_container_width=True):
                 user_record = db.verify_user(user, pw)
                 if user_record:
                     st.session_state.authenticated = True
@@ -125,16 +130,10 @@ def login_page():
                     st.session_state.role = user_record['role']
                     st.session_state.allowed_pages = user_record['allowed_pages']
                     st.session_state.show_loader = True
+                    st.success(f"✅ Identity Verified. Welcome, {user}!")
                     st.rerun()
                 else:
-                    st.error("Authentication Failed: Please verify credentials.")
-
-            # Professional Footer
-            st.markdown("""
-                <div class="login-footer">
-                    © 2026 Sidekick CRM. All rights reserved.
-                </div>
-            """, unsafe_allow_html=True)
+                    st.error("❌ Invalid username or password.")
 
 if not st.session_state.authenticated:
     login_page()
