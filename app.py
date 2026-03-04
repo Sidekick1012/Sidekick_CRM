@@ -71,75 +71,48 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    # Floating blobs via injected HTML (CSS ::before/::after handles main blobs)
+    # Replicating the "Sweet" blob layout (Top-Right, Right-Middle, Bottom-Right)
     components.html("""
         <style>
-        /* Secondary top-right inner blob */
-        .blob-tr2 {
-            position: fixed; top: 30px; right: 80px;
-            width: 220px; height: 220px;
-            background: linear-gradient(135deg, #1d4354, #1b6656);
-            border-radius: 45% 60% 55% 65% / 60% 45% 65% 50%;
-            z-index: 0; opacity: 0.55;
-            animation: blobFloat 10s ease-in-out 1s infinite reverse;
-        }
-        /* Right-side large circle */
-        .blob-rc1 {
-            position: fixed; top: 45%; right: -40px;
-            width: 180px; height: 180px;
-            background: linear-gradient(135deg, #1b6656, #2a8a70);
-            border-radius: 50%;
-            z-index: 0; opacity: 0.5;
-            animation: blobFloat 8s ease-in-out 0.5s infinite;
-        }
-        /* Right-side overlapping smaller circle */
-        .blob-rc2 {
-            position: fixed; top: 52%; right: 80px;
-            width: 120px; height: 120px;
-            background: #7bb06b;
-            border-radius: 50%;
-            z-index: 0; opacity: 0.45;
-            animation: blobFloat 7s ease-in-out 1.5s infinite reverse;
-        }
-        /* Small accent dot */
-        .blob-dot {
-            position: fixed; bottom: 80px; right: 70px;
-            width: 50px; height: 50px;
-            background: #7bb06b;
-            border-radius: 50%;
-            z-index: 0; opacity: 0.65;
-            animation: blobFloat 5s ease-in-out 2s infinite;
-        }
-        /* Bottom-left inner circle */
-        .blob-bl2 {
-            position: fixed; bottom: 50px; left: 80px;
-            width: 130px; height: 130px;
-            background: linear-gradient(135deg, #7bb06b, #1b6656);
-            border-radius: 50%;
-            z-index: 0; opacity: 0.4;
-            animation: blobFloat 9s ease-in-out 3s infinite;
-        }
-        @keyframes blobFloat {
-            0%,100%{ transform:translate(0,0) scale(1); }
-            33%    { transform:translate(-10px,8px) scale(1.04); }
-            66%    { transform:translate(8px,-8px) scale(0.96); }
+        .sweet-blob { position:fixed; border-radius:50%; z-index:-1; pointer-events:none; }
+        
+        /* Orange circle equivalent */
+        .blob-1 { top:35%; right:140px; width:130px; height:130px; 
+                  background:#7bb06b; opacity:0.8; animation: float 8s infinite alternate ease-in-out; }
+        
+        /* Large green circle overlapping */
+        .blob-2 { top:42%; right:-50px; width:280px; height:280px; 
+                  background:linear-gradient(135deg, #1b6656, #2d8a76); opacity:0.6; 
+                  animation: float 12s infinite alternate ease-in-out -2s; z-index:-2; }
+        
+        /* Smaller blue circle overlapping bottom of large circle */
+        .blob-3 { top:25%; right:-90px; width:260px; height:260px; 
+                  background:linear-gradient(135deg, #1d4354, #2c637a); opacity:0.75; 
+                  animation: float 10s infinite alternate-reverse ease-in-out; z-index:-3; }
+
+        /* Tiny dot at bottom-right */
+        .blob-dot { bottom:80px; right:100px; width:50px; height:50px; 
+                    background:#7bb06b; opacity:0.9; animation: float 6s infinite alternate ease-in-out 1s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(15px, -15px) scale(1.05); }
         }
         </style>
-        <div class="blob-tr2"></div>
-        <div class="blob-rc1"></div>
-        <div class="blob-rc2"></div>
-        <div class="blob-dot"></div>
-        <div class="blob-bl2"></div>
+        <div class="sweet-blob blob-1"></div>
+        <div class="sweet-blob blob-2"></div>
+        <div class="sweet-blob blob-3"></div>
+        <div class="sweet-blob blob-dot"></div>
     """, height=0)
 
-    _, center_col, _ = st.columns([1, 1.8, 1])
+    _, center_col, _ = st.columns([1, 1.6, 1])
     with center_col:
         with st.form("login_form"):
-            # Brand logo / name at top
+            # Sidekick CRM Logo (Top Center of form)
             st.markdown(f"""
-                <div style="text-align:center; margin-bottom:30px;">
-                    {get_img_with_href("assets/SDK_LOGO.png", "160px", "margin-bottom:10px;") or
-                     '<div style="font-family:Inter; font-size:2rem; font-weight:800; color:#1b6656; letter-spacing:-0.03em; margin-bottom:10px;">⬟ Sidekick CRM</div>'}
+                <div class="sidekick-logo-container">
+                    {get_img_with_href("assets/SDK_LOGO.png", "190px") or
+                     '<div style="font-family:Inter; font-size:2.5rem; font-weight:900; color:#1b6656; letter-spacing:-0.03em;">⬟ Sidekick CRM</div>'}
                 </div>
 
                 <div class="login-title-main">Login</div>
@@ -150,30 +123,31 @@ def login_page():
                 </div>
             """, unsafe_allow_html=True)
 
-            # Underline-style inputs
-            user = st.text_input("", placeholder="Username")
-            pw   = st.text_input("", type="password", placeholder="Password")
+            # Minimalist Underline Inputs
+            user = st.text_input("Username", placeholder="Enter your username")
+            pw   = st.text_input("Password", type="password", placeholder="Enter your password")
 
-            # Enter-to-next JS
+            # JavaScript Enter-to-Next focus logic
             components.html("""
                 <script>
                 (function() {
                     const doc = window.parent.document;
                     const check = setInterval(() => {
                         const inputs = Array.from(doc.querySelectorAll('input'));
-                        const u = inputs.find(i => i.placeholder === 'Username');
-                        const p = inputs.find(i => i.placeholder === 'Password');
+                        const u = inputs.find(i => i.placeholder === 'Enter your username');
+                        const p = inputs.find(i => i.placeholder === 'Enter your password');
                         if (u && p) {
                             clearInterval(check);
                             u.addEventListener('keydown', e => {
                                 if (e.key === 'Enter') { e.preventDefault(); p.focus(); }
                             });
                         }
-                    }, 300);
+                    }, 500);
                 })();
                 </script>
             """, height=0)
 
+            # Gradient Pill Button
             if st.form_submit_button("→  CONTINUE", use_container_width=True):
                 user_record = db.verify_user(user, pw)
                 if user_record:
@@ -184,7 +158,13 @@ def login_page():
                     st.session_state.show_loader      = True
                     st.rerun()
                 else:
-                    st.error("❌ Invalid username or password.")
+                    st.error("Authentication Failed: Invalid Credentials")
+
+            st.markdown("""
+                <div class="login-footer">
+                    © 2026 Sidekick CRM. All rights reserved.
+                </div>
+            """, unsafe_allow_html=True)
 
             st.markdown("""
                 <div class="login-footer">

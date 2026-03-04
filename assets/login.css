@@ -5,8 +5,8 @@
     --secondary: #1d4354;
     --accent: #7bb06b;
     --white: #ffffff;
-    --text-dark: #2d3748;
-    --text-muted: #a0aec0;
+    --text-dark: #202e42;
+    --text-muted: #8a99af;
 }
 
 /* Hide sidebar & header */
@@ -15,7 +15,7 @@ header[data-testid="stHeader"] {
     display: none !important;
 }
 
-/* Full-page white background */
+/* Base App Styling */
 html,
 body,
 [data-testid="stAppViewContainer"],
@@ -24,6 +24,7 @@ body,
     overflow: hidden !important;
     height: 100vh !important;
     font-family: 'Inter', sans-serif !important;
+    color: var(--text-dark) !important;
 }
 
 [data-testid="stMain"],
@@ -41,111 +42,94 @@ body,
     justify-content: center !important;
 }
 
-/* ========== DECORATIVE BLOBS ========== */
-/* Top-right large blob */
+/* ========== DECORATIVE BLOBS (Sweet Marketplace Style) ========== */
+
+/* Top-Left Organic Blob (like pink one in Sweet) */
 .stApp::before {
     content: "";
     position: fixed;
-    top: -130px;
-    right: -130px;
-    width: 480px;
-    height: 430px;
-    background: linear-gradient(135deg, #7bb06b 0%, #1b6656 55%, #1d4354 100%);
-    border-radius: 50% 65% 70% 38% / 48% 42% 72% 58%;
+    top: -150px;
+    left: -100px;
+    width: 600px;
+    height: 500px;
+    background: linear-gradient(135deg, #1b6656 0%, #7bb06b 60%, rgba(123, 176, 107, 0.4) 100%);
+    border-radius: 0 0 100% 50% / 0 0 80% 60%;
     z-index: 0;
-    animation: blobFloat 9s ease-in-out infinite;
-    opacity: 0.88;
+    animation: blobWave 15s ease-in-out infinite alternate;
+    opacity: 0.9;
 }
 
-/* Bottom-left blob */
-.stApp::after {
-    content: "";
+@keyframes blobWave {
+    from {
+        transform: rotate(0deg) scale(1);
+    }
+
+    to {
+        transform: rotate(-5deg) scale(1.05);
+    }
+}
+
+/* Overlapping Circles on Right Side (Injected via app.py) */
+/* This CSS handles their movement/blur if needed */
+.sweet-blob {
     position: fixed;
-    bottom: -140px;
-    left: -100px;
-    width: 400px;
-    height: 380px;
-    background: linear-gradient(135deg, #1d4354 0%, #1b6656 50%, #7bb06b 100%);
-    border-radius: 60% 40% 55% 65% / 55% 65% 40% 55%;
+    border-radius: 50%;
     z-index: 0;
-    animation: blobFloat 11s ease-in-out 2s infinite reverse;
-    opacity: 0.7;
+    pointer-events: none;
+    animation: blobFloat 8s ease-in-out infinite;
 }
 
 @keyframes blobFloat {
 
     0%,
     100% {
-        transform: translate(0, 0) scale(1);
+        transform: translate(0, 0);
     }
 
-    33% {
-        transform: translate(-15px, 10px) scale(1.03);
-    }
-
-    66% {
-        transform: translate(10px, -10px) scale(0.97);
+    50% {
+        transform: translate(10px, -15px);
     }
 }
 
-/* Extra dot blob (bottom-right corner) */
-.blob-dot {
-    position: fixed;
-    bottom: 60px;
-    right: 60px;
-    width: 55px;
-    height: 55px;
-    background: var(--accent);
-    border-radius: 50%;
-    z-index: 0;
-    animation: blobFloat 6s ease-in-out 1s infinite;
-    opacity: 0.7;
-}
-
-/* Extra circle blob */
-.blob-circle {
-    position: fixed;
-    top: 170px;
-    right: 30px;
-    width: 170px;
-    height: 170px;
-    background: linear-gradient(135deg, #7bb06b 0%, #1b6656 100%);
-    border-radius: 50%;
-    z-index: 0;
-    opacity: 0.45;
-    animation: blobFloat 9s ease-in-out 3s infinite;
-}
-
-/* ========== FORM CARD (transparent on white bg) ========== */
+/* ========== FORM CARD ========== */
 [data-testid="stForm"] {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 20px 30px 40px !important;
-    width: 520px !important;
-    max-width: 520px !important;
+    padding: 20px 0 !important;
+    width: 480px !important;
+    max-width: 90% !important;
     margin: 0 auto !important;
     z-index: 10;
     position: relative;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-/* ========== TITLE (injected via markdown) ========== */
-.login-title-main {
-    font-size: 3.2rem;
-    font-weight: 800;
-    color: var(--text-dark);
+/* ========== LOGO AT TOP ========== */
+.sidekick-logo-container {
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 25px;
+    animation: slideDownFade 0.8s ease-out;
+}
+
+/* ========== TITLES ========== */
+.login-title-main {
+    font-size: 3.5rem !important;
+    font-weight: 800 !important;
+    color: var(--secondary) !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
     animation: slideDownFade 0.8s ease-out forwards;
-    opacity: 0;
 }
 
 .login-title-underline {
-    width: 60px;
-    height: 4px;
+    width: 80px;
+    height: 5px;
     background: linear-gradient(90deg, var(--accent), var(--primary));
-    border-radius: 4px;
-    margin: 0 auto 20px;
+    border-radius: 10px;
+    margin: 15px auto 30px !important;
     animation: slideDownFade 0.9s ease-out 0.1s forwards;
     opacity: 0;
 }
@@ -153,21 +137,12 @@ body,
 .login-subtitle {
     text-align: center;
     color: var(--text-muted);
-    font-size: 1rem;
-    line-height: 1.7;
-    margin-bottom: 35px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 50px;
+    font-weight: 500;
     animation: slideDownFade 1s ease-out 0.2s forwards;
     opacity: 0;
-}
-
-.login-subtitle a {
-    color: var(--accent);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.login-subtitle a:hover {
-    text-decoration: underline;
 }
 
 @keyframes slideDownFade {
@@ -184,28 +159,15 @@ body,
 
 /* ========== UNDERLINE INPUTS ========== */
 [data-testid="stTextInput"] {
-    animation: fadeInUp 0.7s ease-out forwards;
-    opacity: 0;
+    margin-bottom: 35px !important;
+    background: transparent !important;
 }
 
-[data-testid="stTextInput"]:nth-of-type(1) {
-    animation-delay: 0.3s;
-}
-
-[data-testid="stTextInput"]:nth-of-type(2) {
-    animation-delay: 0.45s;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+[data-testid="stTextInput"] label {
+    margin-bottom: 0px !important;
+    color: var(--text-muted) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
 }
 
 input[type="text"],
@@ -213,30 +175,23 @@ input[type="password"],
 input {
     background: transparent !important;
     border: none !important;
-    border-bottom: 2px solid #e2e8f0 !important;
+    border-bottom: 2.5px solid #edf2f7 !important;
     border-radius: 0 !important;
-    color: var(--text-dark) !important;
-    font-size: 1rem !important;
-    font-family: 'Inter', sans-serif !important;
-    padding: 12px 4px !important;
-    height: 52px !important;
+    color: var(--secondary) !important;
+    font-size: 1.1rem !important;
+    padding: 10px 0 !important;
+    height: 50px !important;
     box-shadow: none !important;
-    transition: border-color 0.3s ease !important;
-}
-
-input::placeholder {
-    color: var(--text-muted) !important;
-    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
 }
 
 input:focus {
-    border-bottom: 2px solid var(--primary) !important;
-    box-shadow: 0 4px 6px -6px rgba(27, 102, 86, 0.4) !important;
-    outline: none !important;
+    border-bottom: 2.5px solid var(--accent) !important;
     background: transparent !important;
+    outline: none !important;
 }
 
-/* Override Streamlit wrapper borders */
+/* Remove Streamlit borders */
 [data-testid="stTextInput"]>div,
 div[data-baseweb="input"],
 div[data-baseweb="base-input"] {
@@ -245,54 +200,76 @@ div[data-baseweb="base-input"] {
     box-shadow: none !important;
 }
 
-label,
-.stTextInput label {
-    color: var(--text-muted) !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.03em !important;
-    margin-bottom: 0 !important;
-}
-
-/* ========== GRADIENT BUTTON ========== */
-[data-testid="stFormSubmitButton"] {
-    animation: fadeInUp 0.8s ease-out 0.6s forwards;
-    opacity: 0;
-}
-
+/* ========== GRADIENT BUTTON (Multi-Selector Force) ========== */
+button[kind="secondaryFormSubmit"],
+button[data-testid="stBaseButton-secondaryFormSubmit"],
+button[data-testid="stBaseButton-primaryFormSubmit"],
+[data-testid="stFormSubmitButton"] button,
 .stButton>button {
     background: linear-gradient(135deg, #1b6656 0%, #7bb06b 50%, #1d4354 100%) !important;
     background-size: 200% auto !important;
-    height: 56px !important;
+    height: 60px !important;
     border-radius: 50px !important;
-    font-weight: 700 !important;
-    font-size: 1rem !important;
-    letter-spacing: 0.08em !important;
+    font-weight: 800 !important;
+    font-size: 1.1rem !important;
     color: #ffffff !important;
     border: none !important;
-    margin-top: 30px !important;
-    box-shadow: 0 6px 20px rgba(27, 102, 86, 0.35) !important;
+    margin-top: 20px !important;
+    width: 100% !important;
+    box-shadow: 0 10px 25px rgba(27, 102, 86, 0.3) !important;
     transition: all 0.4s ease !important;
-    text-transform: uppercase;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    outline: none !important;
 }
 
-.stButton>button:hover {
+button[kind="secondaryFormSubmit"]:hover,
+button[data-testid="stBaseButton-secondaryFormSubmit"]:hover,
+[data-testid="stFormSubmitButton"] button:hover {
     background-position: right center !important;
-    box-shadow: 0 12px 28px rgba(27, 102, 86, 0.45) !important;
-    transform: translateY(-2px) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 15px 35px rgba(27, 102, 86, 0.45) !important;
+    color: #ffffff !important;
 }
 
-.stButton>button:active {
-    transform: scale(0.97) !important;
+button[kind="secondaryFormSubmit"]:active {
+    transform: scale(0.96) !important;
+}
+
+/* Red error shake */
+.stError {
+    animation: shake 0.5s;
+    background: rgba(255, 75, 75, 0.1) !important;
+    border: 1px solid #ff4b4b !important;
+    color: #ff4b4b !important;
+    border-radius: 12px !important;
+    padding: 15px !important;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
 }
 
 /* ========== FOOTER ========== */
 .login-footer {
     text-align: center;
     color: var(--text-muted);
-    font-size: 0.78rem;
-    margin-top: 30px;
-    opacity: 0.8;
-    animation: fadeInUp 0.8s ease-out 0.9s forwards;
-    opacity: 0;
+    font-size: 0.9rem;
+    margin-top: 40px;
+    font-weight: 500;
 }
