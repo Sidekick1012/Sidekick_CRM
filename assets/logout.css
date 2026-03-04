@@ -1,0 +1,99 @@
+.logout-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1d4354;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    animation: fade-in 0.5s ease-out forwards;
+}
+
+.logout-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    padding: 50px 70px;
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.logout-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: wave 2s infinite ease-in-out;
+}
+
+.logout-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    font-family: 'Outfit', sans-serif;
+}
+
+.logout-status {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #7bb06b;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.8;
+}
+
+.shimmer-bar {
+    width: 200px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-top: 30px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.shimmer-bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(123, 176, 107, 0.6), transparent);
+    animation: shimmer-load 1.5s infinite linear;
+}
+
+@keyframes shimmer-load {
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(15deg);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

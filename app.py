@@ -64,6 +64,8 @@ if "allowed_pages" not in st.session_state:
     st.session_state.allowed_pages = "" 
 if "show_loader" not in st.session_state:
     st.session_state.show_loader = False
+if "logging_out" not in st.session_state:
+    st.session_state.logging_out = False
 
 # === LOGIN SYSTEM =============================================================
 def login_page():
@@ -154,6 +156,27 @@ def display_luxury_loader():
             </div>
         </div>
     """, unsafe_allow_html=True)
+
+def display_logout_loader():
+    local_css("assets/logout.css")
+    st.markdown("""
+        <div class="logout-wrapper">
+            <div class="logout-card">
+                <div class="logout-icon">👋</div>
+                <div class="logout-title">Signing Out</div>
+                <div class="logout-status">Securing Your Session</div>
+                <div class="shimmer-bar"></div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+# Handle Logout Animation Sequence
+if st.session_state.logging_out:
+    display_logout_loader()
+    time.sleep(1.2)
+    st.session_state.authenticated = False
+    st.session_state.logging_out = False
+    st.rerun()
 
 # Data Sync Handler
 if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring_clients"]) or st.session_state.show_loader:
@@ -383,7 +406,7 @@ with st.sidebar:
     
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     if st.button("🚪 LOGOUT ACCESS", key="logout_btn", use_container_width=True):
-        st.session_state.authenticated = False
+        st.session_state.logging_out = True
         st.rerun()
 
 
