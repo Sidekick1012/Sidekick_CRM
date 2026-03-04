@@ -105,14 +105,14 @@ def login_page():
         <div class="sweet-blob blob-dot"></div>
     """, height=0)
 
-    _, center_col, _ = st.columns([1, 1.6, 1])
+    _, center_col, _ = st.columns([1, 1.4, 1])
     with center_col:
         with st.form("login_form"):
             # Sidekick CRM Logo (Top Center of form)
             st.markdown(f"""
                 <div class="sidekick-logo-container">
-                    {get_img_with_href("assets/SDK_LOGO.png", "190px") or
-                     '<div style="font-family:Inter; font-size:2.5rem; font-weight:900; color:#1b6656; letter-spacing:-0.03em;">⬟ Sidekick CRM</div>'}
+                    {get_img_with_href("assets/SDK_LOGO.png", "140px") or
+                     '<div style="font-family:Inter; font-size:2rem; font-weight:900; color:#1b6656; letter-spacing:-0.03em;">⬟ Sidekick CRM</div>'}
                 </div>
 
                 <div class="login-title-main">Login</div>

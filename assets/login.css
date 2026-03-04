@@ -91,13 +91,13 @@ body,
     }
 }
 
-/* ========== FORM CARD ========== */
+/* ========== FORM CARD (Compact Version) ========== */
 [data-testid="stForm"] {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 20px 0 !important;
-    width: 480px !important;
+    padding: 0px !important;
+    width: 440px !important;
     max-width: 90% !important;
     margin: 0 auto !important;
     z-index: 10;
@@ -109,13 +109,13 @@ body,
 /* ========== LOGO AT TOP ========== */
 .sidekick-logo-container {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
     animation: slideDownFade 0.8s ease-out;
 }
 
 /* ========== TITLES ========== */
 .login-title-main {
-    font-size: 3.5rem !important;
+    font-size: 2.8rem !important;
     font-weight: 800 !important;
     color: var(--secondary) !important;
     text-align: center !important;
@@ -125,11 +125,11 @@ body,
 }
 
 .login-title-underline {
-    width: 80px;
-    height: 5px;
+    width: 60px;
+    height: 4px;
     background: linear-gradient(90deg, var(--accent), var(--primary));
     border-radius: 10px;
-    margin: 15px auto 30px !important;
+    margin: 10px auto 20px !important;
     animation: slideDownFade 0.9s ease-out 0.1s forwards;
     opacity: 0;
 }
@@ -137,9 +137,9 @@ body,
 .login-subtitle {
     text-align: center;
     color: var(--text-muted);
-    font-size: 1.1rem;
-    line-height: 1.5;
-    margin-bottom: 50px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 30px;
     font-weight: 500;
     animation: slideDownFade 1s ease-out 0.2s forwards;
     opacity: 0;
@@ -159,14 +159,14 @@ body,
 
 /* ========== UNDERLINE INPUTS ========== */
 [data-testid="stTextInput"] {
-    margin-bottom: 35px !important;
+    margin-bottom: 20px !important;
     background: transparent !important;
 }
 
 [data-testid="stTextInput"] label {
-    margin-bottom: 0px !important;
+    margin-bottom: -5px !important;
     color: var(--text-muted) !important;
-    font-size: 0.95rem !important;
+    font-size: 0.85rem !important;
     font-weight: 600 !important;
 }
 
@@ -175,12 +175,12 @@ input[type="password"],
 input {
     background: transparent !important;
     border: none !important;
-    border-bottom: 2.5px solid #edf2f7 !important;
+    border-bottom: 2px solid #edf2f7 !important;
     border-radius: 0 !important;
     color: var(--secondary) !important;
-    font-size: 1.1rem !important;
-    padding: 10px 0 !important;
-    height: 50px !important;
+    font-size: 1rem !important;
+    padding: 6px 0 !important;
+    height: 44px !important;
     box-shadow: none !important;
     transition: all 0.3s ease !important;
 }
@@ -208,18 +208,18 @@ button[data-testid="stBaseButton-primaryFormSubmit"],
 .stButton>button {
     background: linear-gradient(135deg, #1b6656 0%, #7bb06b 50%, #1d4354 100%) !important;
     background-size: 200% auto !important;
-    height: 60px !important;
+    height: 52px !important;
     border-radius: 50px !important;
-    font-weight: 800 !important;
-    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
     color: #ffffff !important;
     border: none !important;
-    margin-top: 20px !important;
+    margin-top: 15px !important;
     width: 100% !important;
-    box-shadow: 0 10px 25px rgba(27, 102, 86, 0.3) !important;
+    box-shadow: 0 8px 20px rgba(27, 102, 86, 0.25) !important;
     transition: all 0.4s ease !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.1em !important;
+    letter-spacing: 0.08em !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -269,7 +269,7 @@ button[kind="secondaryFormSubmit"]:active {
 .login-footer {
     text-align: center;
     color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-top: 40px;
+    font-size: 0.8rem;
+    margin-top: 25px;
     font-weight: 500;
 }
