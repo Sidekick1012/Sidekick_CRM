@@ -71,44 +71,36 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    _, center_col, _ = st.columns([1, 2, 1])
-    with center_col:
+    # Split side-by-side layout
+    col1, col2 = st.columns([1.2, 1])
+
+    with col1:
+        st.markdown("""
+            <div class="welcome-section">
+                <div class="welcome-title">Welcome Back .!</div>
+                <div class="skip_lag">Skip the lag ?</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
         with st.form("login_form"):
             st.markdown(f"""
-            <div style="text-align: center; margin-bottom: 35px;">
-                <div style="margin-bottom: 18px;">
-                    {get_img_with_href("assets/SDK_LOGO.png", "180px", "filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(123,176,107,0.4));") or '<div style="font-family:Outfit; font-size:3rem; font-weight:900; color:#fff; letter-spacing:-0.05em;">SIDEKICK</div>'}
+                <div class="login-header">
+                    <h2>Login</h2>
+                    <p>Glad you're back..!</p>
                 </div>
-                <div style="
-                    font-family: 'Outfit', sans-serif;
-                    font-size: 1.4rem;
-                    font-weight: 700;
-                    color: rgba(255,255,255,0.95);
-                    letter-spacing: 0.01em;
-                    margin-bottom: 5px;
-                ">Lead & Task Manager</div>
-                <div style="
-                    font-size: 0.72rem;
-                    font-weight: 700;
-                    color: #7bb06b;
-                    letter-spacing: 0.25em;
-                    text-transform: uppercase;
-                    margin-bottom: 25px;
-                ">Enterprise CRM Suite</div>
-                <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(123,176,107,0.55), transparent); width: 80%; margin: 0 auto;"></div>
-            </div>
             """, unsafe_allow_html=True)
 
-            user = st.text_input("Username", placeholder="Enter your username")
-            pw = st.text_input("Password", type="password", placeholder="Enter your password")
+            user = st.text_input("Username", placeholder="Username")
+            pw = st.text_input("Password", type="password", placeholder="Password")
 
             # JavaScript hack for Enter-to-Next focus flow
             components.html("""
                 <script>
                 const doc = window.parent.document;
                 const inputs = Array.from(doc.querySelectorAll('input'));
-                const userField = inputs.find(i => i.ariaLabel === "Username");
-                const passField = inputs.find(i => i.ariaLabel === "Password");
+                const userField = inputs.find(i => i.placeholder === "Username");
+                const passField = inputs.find(i => i.placeholder === "Password");
                 
                 if (userField && passField) {
                     userField.addEventListener('keydown', (e) => {
@@ -121,7 +113,7 @@ def login_page():
                 </script>
                 """, height=0)
 
-            if st.form_submit_button("🔐  LOGIN", use_container_width=True):
+            if st.form_submit_button("LOGIN", use_container_width=True):
                 user_record = db.verify_user(user, pw)
                 if user_record:
                     st.session_state.authenticated = True
@@ -129,10 +121,22 @@ def login_page():
                     st.session_state.role = user_record['role']
                     st.session_state.allowed_pages = user_record['allowed_pages']
                     st.session_state.show_loader = True
-                    st.success(f"✅ Identity Verified. Welcome, {user}!")
                     st.rerun()
                 else:
-                    st.error("❌ Invalid username or password.")
+                    st.error("Invalid username or password.")
+
+            st.markdown("""
+                <div class="forgot-link">Forgot password?</div>
+                <div class="social-icons">
+                    <span style="font-size:1.5rem;">🌐</span>
+                    <span style="font-size:1.5rem;">📱</span>
+                    <span style="font-size:1.5rem;">💼</span>
+                </div>
+                <div class="footer-links">
+                    Don't have an account? Signup<br><br>
+                    Terms & Conditions | Support | Customer Care
+                </div>
+            """, unsafe_allow_html=True)
 
 if not st.session_state.authenticated:
     login_page()
