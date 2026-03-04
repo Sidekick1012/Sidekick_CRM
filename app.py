@@ -74,20 +74,62 @@ def login_page():
     # Floating blobs via injected HTML (CSS ::before/::after handles main blobs)
     components.html("""
         <style>
-        .blob-dot   { position:fixed; bottom:60px; right:60px; width:55px; height:55px;
-                      background:#7bb06b; border-radius:50%; z-index:0; opacity:0.7;
-                      animation: blobFloat 6s ease-in-out 1s infinite; }
-        .blob-circle{ position:fixed; top:170px; right:30px; width:170px; height:170px;
-                      background:linear-gradient(135deg,#7bb06b,#1b6656); border-radius:50%;
-                      z-index:0; opacity:0.35; animation: blobFloat 9s ease-in-out 3s infinite; }
+        /* Secondary top-right inner blob */
+        .blob-tr2 {
+            position: fixed; top: 30px; right: 80px;
+            width: 220px; height: 220px;
+            background: linear-gradient(135deg, #1d4354, #1b6656);
+            border-radius: 45% 60% 55% 65% / 60% 45% 65% 50%;
+            z-index: 0; opacity: 0.55;
+            animation: blobFloat 10s ease-in-out 1s infinite reverse;
+        }
+        /* Right-side large circle */
+        .blob-rc1 {
+            position: fixed; top: 45%; right: -40px;
+            width: 180px; height: 180px;
+            background: linear-gradient(135deg, #1b6656, #2a8a70);
+            border-radius: 50%;
+            z-index: 0; opacity: 0.5;
+            animation: blobFloat 8s ease-in-out 0.5s infinite;
+        }
+        /* Right-side overlapping smaller circle */
+        .blob-rc2 {
+            position: fixed; top: 52%; right: 80px;
+            width: 120px; height: 120px;
+            background: #7bb06b;
+            border-radius: 50%;
+            z-index: 0; opacity: 0.45;
+            animation: blobFloat 7s ease-in-out 1.5s infinite reverse;
+        }
+        /* Small accent dot */
+        .blob-dot {
+            position: fixed; bottom: 80px; right: 70px;
+            width: 50px; height: 50px;
+            background: #7bb06b;
+            border-radius: 50%;
+            z-index: 0; opacity: 0.65;
+            animation: blobFloat 5s ease-in-out 2s infinite;
+        }
+        /* Bottom-left inner circle */
+        .blob-bl2 {
+            position: fixed; bottom: 50px; left: 80px;
+            width: 130px; height: 130px;
+            background: linear-gradient(135deg, #7bb06b, #1b6656);
+            border-radius: 50%;
+            z-index: 0; opacity: 0.4;
+            animation: blobFloat 9s ease-in-out 3s infinite;
+        }
         @keyframes blobFloat {
             0%,100%{ transform:translate(0,0) scale(1); }
-            33%    { transform:translate(-10px,8px) scale(1.03); }
-            66%    { transform:translate(8px,-8px) scale(0.97); }
+            33%    { transform:translate(-10px,8px) scale(1.04); }
+            66%    { transform:translate(8px,-8px) scale(0.96); }
         }
         </style>
+        <div class="blob-tr2"></div>
+        <div class="blob-rc1"></div>
+        <div class="blob-rc2"></div>
         <div class="blob-dot"></div>
-        <div class="blob-circle"></div>
+        <div class="blob-bl2"></div>
     """, height=0)
 
     _, center_col, _ = st.columns([1, 1.8, 1])
