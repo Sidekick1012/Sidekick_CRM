@@ -31,10 +31,7 @@ body,
     width: 100vw !important;
     font-family: 'Inter', sans-serif !important;
     color: var(--text-dark) !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 999999 !important;
+    z-index: 1 !important;
 }
 
 [data-testid="stMain"],
@@ -63,11 +60,12 @@ body,
     position: fixed;
     top: -200px;
     right: -150px;
-    width: 700px;
-    height: 600px;
+    width: 400px;
+    height: 350px;
     background: linear-gradient(135deg, #7bb06b 0%, #1b6656 60%, rgba(29, 67, 84, 0.4) 100%);
     border-radius: 50% 100% 40% 90% / 100% 50% 100% 40%;
-    z-index: 0;
+    z-index: 2;
+    animation: blobWave 18s ease-in-out infinite alternate;
     opacity: 0.85;
 }
 
@@ -77,15 +75,34 @@ body,
     position: fixed;
     top: -120px;
     left: -120px;
-    width: 350px;
-    height: 350px;
+    width: 200px;
+    height: 200px;
     background: linear-gradient(135deg, #1b6656, rgba(123, 176, 107, 0.3));
     border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-    z-index: 0;
+    z-index: 2;
+    animation: float 12s ease-in-out infinite alternate;
     opacity: 0.7;
 }
 
-/* Animations removed */
+@keyframes blobWave {
+    from {
+        transform: rotate(0deg) scale(1) translate(0, 0);
+    }
+
+    to {
+        transform: rotate(5deg) scale(1.08) translate(-20px, 20px);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(15px, -20px) scale(1.05);
+    }
+}
 
 /* Utility for overlapping circles on right side */
 .sweet-blob {
@@ -93,6 +110,7 @@ body,
     border-radius: 50%;
     z-index: 1;
     pointer-events: none;
+    animation: float 10s ease-in-out infinite alternate;
 }
 
 /* ========== FORM CARD (Ultra Compact) ========== */
@@ -114,6 +132,7 @@ body,
 .sidekick-logo-container {
     text-align: center;
     margin-bottom: 5px;
+    animation: slideDownFade 0.8s ease-out;
 }
 
 /* ========== TITLES ========== */
@@ -124,6 +143,7 @@ body,
     text-align: center !important;
     margin: 0 !important;
     padding: 0 !important;
+    animation: slideDownFade 0.8s ease-out forwards;
 }
 
 .login-title-underline {
@@ -132,7 +152,8 @@ body,
     background: linear-gradient(90deg, var(--accent), var(--primary));
     border-radius: 10px;
     margin: 8px auto 15px !important;
-    opacity: 1;
+    animation: slideDownFade 0.9s ease-out 0.1s forwards;
+    opacity: 0;
 }
 
 .login-subtitle {
@@ -145,10 +166,21 @@ body,
     max-width: 80%;
     margin-left: auto;
     margin-right: auto;
-    opacity: 1;
+    animation: slideDownFade 1s ease-out 0.2s forwards;
+    opacity: 0;
 }
 
-/* slideDownFade removed */
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 /* ========== UNDERLINE INPUTS ========== */
 [data-testid="stTextInput"] {

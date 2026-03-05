@@ -96,8 +96,25 @@ def login_page():
         </script>
     """, height=0)
 
-    # Removed background circles as per user request
-    pass
+    st.markdown("""
+        <div class="sweet-circle sc-1"></div>
+        <div class="sweet-circle sc-2"></div>
+        <div class="sweet-circle sc-3"></div>
+        <div class="sweet-circle sc-dot1"></div>
+        <div class="sweet-circle sc-dot2"></div>
+        <style>
+            .sweet-circle { position:fixed; border-radius:50%; pointer-events:none; z-index:3; }
+            .sc-1 { top:35%; right:-50px; width:180px; height:180px; background:linear-gradient(135deg, #1b6656, #2d8a76); opacity:0.4; animation: float 14s infinite alternate ease-in-out; }
+            .sc-2 { top:28%; right:-30px; width:140px; height:140px; background:linear-gradient(135deg, #1d4354, #2c637a); opacity:0.5; animation: float 12s infinite alternate-reverse ease-in-out; }
+            .sc-3 { top:48%; right:100px; width:80px; height:80px; background:#7bb06b; opacity:0.6; animation: float 9s infinite alternate ease-in-out 1s; }
+            .sc-dot1 { bottom:120px; right:120px; width:35px; height:35px; background:#7bb06b; opacity:0.6; animation: float 7s infinite alternate ease-in-out; }
+            .sc-dot2 { top:150px; left:80px; width:25px; height:25px; background:#1b6656; opacity:0.3; animation: float 10s infinite alternate-reverse ease-in-out; }
+            @keyframes float {
+                0% { transform: translate(0, 0) scale(1); }
+                100% { transform: translate(15px, -15px) scale(1.05); }
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
     _, center_col, _ = st.columns([1, 1.4, 1])
     with center_col:
