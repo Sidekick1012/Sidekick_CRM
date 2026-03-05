@@ -1,15 +1,21 @@
-﻿.loader-wrapper {
+﻿/* Hide sidebar & header during loading */
+section[data-testid="stSidebar"],
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+
+.loader-wrapper {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: #f8fafc;
+    width: 100vw;
+    height: 100vh;
+    background: #f8fafc !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 999999 !important;
 }
 
 .orb-glow {

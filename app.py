@@ -34,7 +34,7 @@ def local_css(file_name):
         with open(file_name, encoding="utf8") as f:
             st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-local_css("assets/style.css")
+# local_css("assets/style.css") # Moved to after authentication check
 
 import base64
 def get_base64(bin_file):
@@ -96,25 +96,8 @@ def login_page():
         </script>
     """, height=0)
 
-    st.markdown("""
-        <div class="sweet-circle sc-1"></div>
-        <div class="sweet-circle sc-2"></div>
-        <div class="sweet-circle sc-3"></div>
-        <div class="sweet-circle sc-dot1"></div>
-        <div class="sweet-circle sc-dot2"></div>
-        <style>
-            .sweet-circle { position:fixed; border-radius:50%; pointer-events:none; z-index:1; }
-            .sc-1 { top:35%; right:-100px; width:340px; height:340px; background:linear-gradient(135deg, #1b6656, #2d8a76); opacity:0.6; animation: float 14s infinite alternate ease-in-out; }
-            .sc-2 { top:28%; right:-70px; width:280px; height:280px; background:linear-gradient(135deg, #1d4354, #2c637a); opacity:0.75; animation: float 12s infinite alternate-reverse ease-in-out; }
-            .sc-3 { top:48%; right:150px; width:150px; height:150px; background:#7bb06b; opacity:0.85; animation: float 9s infinite alternate ease-in-out 1s; }
-            .sc-dot1 { bottom:120px; right:120px; width:65px; height:65px; background:#7bb06b; opacity:0.8; animation: float 7s infinite alternate ease-in-out; }
-            .sc-dot2 { top:150px; left:80px; width:40px; height:40px; background:#1b6656; opacity:0.5; animation: float 10s infinite alternate-reverse ease-in-out; }
-            @keyframes float {
-                0% { transform: translate(0, 0) scale(1); }
-                100% { transform: translate(20px, -20px) scale(1.05); }
-            }
-        </style>
-    """, unsafe_allow_html=True)
+    # Removed background circles as per user request
+    pass
 
     _, center_col, _ = st.columns([1, 1.4, 1])
     with center_col:
@@ -166,7 +149,7 @@ def login_page():
                     st.session_state.username         = user_record['username']
                     st.session_state.role             = user_record['role']
                     st.session_state.allowed_pages    = user_record['allowed_pages']
-                    st.session_state.show_loader      = True
+                    # Removed show_loader trigger
                     st.rerun()
                 else:
                     st.error("Authentication Failed: Invalid Credentials")
@@ -181,50 +164,20 @@ if not st.session_state.authenticated:
     login_page()
     st.stop()
 
-# === LUXURY DATA LOADER =======================================================
-def display_luxury_loader():
-    local_css("assets/loader.css")
-    st.markdown("""
-        <div class="loader-wrapper">
-            <div class="orb-glow"></div>
-            <div class="loader-card">
-                <div class="circular-progress">
-                    <svg>
-                        <circle class="bg" cx="60" cy="60" r="50"></circle>
-                        <circle class="bar" cx="60" cy="60" r="50"></circle>
-                    </svg>
-                </div>
-                <div class="loader-title">SIDEKICK</div>
-                <div class="loader-status">Synchronizing Intelligence</div>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+# Load main app styles AFTER login
+if not st.session_state.logging_out:
+    local_css("assets/style.css")
 
-def display_logout_loader():
-    local_css("assets/logout.css")
-    st.markdown("""
-        <div class="logout-wrapper">
-            <div class="logout-card">
-                <div class="logout-icon">👋</div>
-                <div class="logout-title">Signing Out</div>
-                <div class="logout-status">Securing Your Session</div>
-                <div class="shimmer-bar"></div>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+# Loading animations removed as per user request
 
-# Handle Logout Animation Sequence
+# Handle Logout (Instant)
 if st.session_state.logging_out:
-    display_logout_loader()
-    time.sleep(1.2)
     st.session_state.authenticated = False
     st.session_state.logging_out = False
     st.rerun()
 
-# Data Sync Handler
-if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring_clients"]) or st.session_state.show_loader:
-    display_luxury_loader()
-    
+# Data Sync Handler (No visual loader)
+if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring_clients"]):
     # Actually load data from DB
     st.session_state.leads = db.get_all_leads()
     st.session_state.tasks = db.get_all_tasks()
@@ -240,11 +193,6 @@ if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring
         "last_auto_run": ""
     })
     st.session_state.recurring_clients = db.get_recurring_clients()
-    
-    # Optimized for speed - no artificial delays
-    if st.session_state.show_loader:
-        st.session_state.show_loader = False
-        st.rerun()
 
 # === AUTOMATED TASKS ==========================================================
 def run_daily_checks():
@@ -382,75 +330,88 @@ def send_email(subject, body, to_email=None):
     except Exception as e: return False, str(e)
 
 # ─── NAVIGATION & GLOBAL FILTERS ───
-with st.sidebar:
-    st.markdown(f"""
-    <div style='padding: 15px 5px 25px 5px; margin-top: -45px; text-align:center;'>
-        <div style='margin-bottom: 8px;'>
-            {get_img_with_href("assets/SDK_LOGO.png", "225px", "filter: brightness(0) invert(1) drop-shadow(0 0 18px rgba(27, 102, 86, 0.4));") or '<h2 style="color:white; font-family:Outfit; font-size:2.2rem; font-weight:900; letter-spacing:-0.05em; margin:0;">SIDEKICK</h2>'}
+# ─── NAVIGATION & GLOBAL FILTERS ───
+if not st.session_state.logging_out:
+    with st.sidebar:
+        st.markdown(f"""
+        <div style='padding: 15px 5px 25px 5px; margin-top: -45px; text-align:center;'>
+            <div style='margin-bottom: 8px;'>
+                {get_img_with_href("assets/SDK_LOGO.png", "225px", "filter: brightness(0) invert(1) drop-shadow(0 0 18px rgba(27, 102, 86, 0.4));") or '<h2 style="color:white; font-family:Outfit; font-size:2.2rem; font-weight:900; letter-spacing:-0.05em; margin:0;">SIDEKICK</h2>'}
+            </div>
+            <div style="font-size: 0.58rem; color: #7bb06b; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase; opacity: 1; margin-top: 5px;">Enterprise CRM</div>
         </div>
-        <div style="font-size: 0.58rem; color: #7bb06b; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase; opacity: 1; margin-top: 5px;">Enterprise CRM</div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    # Initial year check to avoid bootstrap error
-    years_temp = [datetime.now().year]
-    
-    st.markdown('<div class="filter-container" style="background:rgba(255,255,255,0.05); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">', unsafe_allow_html=True)
-    temp_sel_year = st.selectbox("Year Filter", options=[datetime.now().year], key="temp_y", label_visibility="collapsed") # Placeholder
-    month_names = ["Full Year Intel", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    selected_month_name = st.selectbox("Month Filter", options=month_names, index=0)
-    selected_month = month_names.index(selected_month_name)
-    st.markdown('</div>', unsafe_allow_html=True)
+        # Initial year check to avoid bootstrap error
+        years_temp = [datetime.now().year]
+        
+        st.markdown('<div class="filter-container" style="background:rgba(255,255,255,0.05); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">', unsafe_allow_html=True)
+        temp_sel_year = st.selectbox("Year Filter", options=[datetime.now().year], key="temp_y", label_visibility="collapsed") # Placeholder
+        month_names = ["Full Year Intel", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        selected_month_name = st.selectbox("Month Filter", options=month_names, index=0)
+        selected_month = month_names.index(selected_month_name)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # PROCESS DATA (CACHED)
-    raw_l = st.session_state.leads
-    raw_t = st.session_state.tasks
-    
-    # We need a first pass to get years
-    data_bundle = get_processed_data(raw_l, raw_t, datetime.now().year, 0)
-    available_years = data_bundle["available_years"]
-    
-    # Correct the selectbox with real years
-    st.markdown("""<style>div[data-testid="stSelectbox"]+div { margin-top: -85px !important; }</style>""", unsafe_allow_html=True) # visual fix
-    # RE-DOING Filtering logic cleaner
-    selected_year = st.selectbox("Select Year", options=available_years, index=0, key="nav_year")
-    
-    # Get final data
-    data = get_processed_data(raw_l, raw_t, selected_year, selected_month)
-    leads = data["leads"]
-    tasks = data["tasks"]
-    df_l_active = data["df_leads"]
-    df_t_active = data["df_tasks"]
-    stats = data["stats"]
-    l_map = data["lead_map"]
+        # PROCESS DATA (CACHED)
+        raw_l = st.session_state.leads
+        raw_t = st.session_state.tasks
+        
+        # We need a first pass to get years
+        data_bundle = get_processed_data(raw_l, raw_t, datetime.now().year, 0)
+        available_years = data_bundle["available_years"]
+        
+        # Correct the selectbox with real years
+        st.markdown("""<style>div[data-testid="stSelectbox"]+div { margin-top: -85px !important; }</style>""", unsafe_allow_html=True) # visual fix
+        # RE-DOING Filtering logic cleaner
+        selected_year = st.selectbox("Select Year", options=available_years, index=0, key="nav_year")
+        
+        # Get final data
+        data = get_processed_data(raw_l, raw_t, selected_year, selected_month)
+        leads = data["leads"]
+        tasks = data["tasks"]
+        df_l_active = data["df_leads"]
+        df_t_active = data["df_tasks"]
+        stats = data["stats"]
+        l_map = data["lead_map"]
 
-    all_nav_items = ["📊 Dashboard", "💰 Sales Report", "👥 Leads", "✅ Tasks", "📧 Reminders", "📢 Email Marketing", "⚙️ Settings", "👤 User Management"]
-    if st.session_state.role == "Admin": nav_options = all_nav_items
-    else:
-        allowed = st.session_state.allowed_pages.split(",") if st.session_state.allowed_pages else []
-        nav_options = [item for item in all_nav_items if item in allowed] or ["🚫 Access Restricted"]
+        all_nav_items = ["📊 Dashboard", "💰 Sales Report", "👥 Leads", "✅ Tasks", "📧 Reminders", "📢 Email Marketing", "⚙️ Settings", "👤 User Management"]
+        if st.session_state.role == "Admin": nav_options = all_nav_items
+        else:
+            allowed = st.session_state.allowed_pages.split(",") if st.session_state.allowed_pages else []
+            nav_options = [item for item in all_nav_items if item in allowed] or ["🚫 Access Restricted"]
 
-    page = st.radio("Navigate", nav_options, label_visibility="collapsed")
-    
-    st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
-    st.markdown(f"""
-    <div style='padding: 10px 15px;'>
-    <div class="luxury-container" style="margin-bottom: 12px; border-color: rgba(123, 176, 107, 0.3); background: rgba(255,255,255,0.05); padding: 15px;">
-    <div style="font-size: 0.7rem; color: #ffffff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; opacity: 0.9;">Active Leads</div>
-    <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{stats['total_leads']}</div>
-    </div>
-    <div class="luxury-container" style="background: rgba(255,255,255,0.03); border-color: rgba(123, 176, 107, 0.15); padding: 15px;">
-    <div style="font-size: 0.7rem; color: #ffffff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; opacity: 0.9;">Open Tasks</div>
-    <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{stats['open_tasks']}</div>
-    {f'<div style="font-size: 0.65rem; color: #ff9999; margin-top: 5px; font-weight: 600;">⚠️ {stats["overdue"]} OVERDUE</div>' if stats["overdue"] > 0 else ''}
-    </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-    if st.button("🚪 LOGOUT ACCESS", key="logout_btn", use_container_width=True):
-        st.session_state.logging_out = True
-        st.rerun()
+        page = st.radio("Navigate", nav_options, label_visibility="collapsed")
+        
+        st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style='padding: 10px 15px;'>
+        <div class="luxury-container" style="margin-bottom: 12px; border-color: rgba(123, 176, 107, 0.3); background: rgba(255,255,255,0.05); padding: 15px;">
+        <div style="font-size: 0.7rem; color: #ffffff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; opacity: 0.9;">Active Leads</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{stats['total_leads']}</div>
+        </div>
+        <div class="luxury-container" style="background: rgba(255,255,255,0.03); border-color: rgba(123, 176, 107, 0.15); padding: 15px;">
+        <div style="font-size: 0.7rem; color: #ffffff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; opacity: 0.9;">Open Tasks</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff;">{stats['open_tasks']}</div>
+        {f'<div style="font-size: 0.65rem; color: #ff9999; margin-top: 5px; font-weight: 600;">⚠️ {stats["overdue"]} OVERDUE</div>' if stats["overdue"] > 0 else ''}
+        </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+        if st.button("🚪 LOGOUT ACCESS", key="logout_btn", use_container_width=True):
+            st.session_state.logging_out = True
+            st.rerun()
+else:
+    # Set default variables so the dashboard logic doesn't crash during logout animation
+    leads = st.session_state.get('leads', [])
+    tasks = st.session_state.get('tasks', [])
+    stats = {'total_leads': 0, 'open_tasks': 0, 'overdue': 0}
+    page = ""
+    selected_year = datetime.now().year
+    selected_month_name = "Full Year Intel"
+    selected_month = 0
+    df_l_active = pd.DataFrame()
+    df_t_active = pd.DataFrame()
 
 
 def confirm_delete_user(usr_id, username):
@@ -476,7 +437,7 @@ def confirm_delete_lead(lead_id, name):
 # ═══════════════════════════════════════════════════════════════════════════════
 if page == "📊 Dashboard":
     st.markdown("""
-    <div class='page-header animate-in' style='margin-bottom: 40px;'>
+    <div class='page-header' style='margin-bottom: 40px;'>
         <div style='display:flex; justify-content:space-between; align-items:center;'>
             <div>
                 <div class='page-title'>Command Center</div>
@@ -500,7 +461,7 @@ if page == "📊 Dashboard":
     hot_leads = sum(1 for l in leads if l.get("temperature") == "Hot")
 
     st.markdown(f"""
-    <div class="kpi-container animate-in">
+    <div class="kpi-container">
         <div class="kpi-card" style="--accent-gradient: linear-gradient(90deg, #1b6656, #7bb06b);">
             <div class="kpi-icon">👥</div>
             <div class="kpi-value" style="color:#1b6656">{len(leads)}</div>
@@ -703,7 +664,7 @@ if page == "📊 Dashboard":
             sc = STATUS_COLORS.get(l.get("status", "New"), "badge-new")
             tc = TEMP_COLORS.get(l.get("temperature", "Warm"), "badge-warm")
             st.markdown(f"""
-            <div class="glass-card animate-in" style="padding: 18px 24px; margin-bottom: 12px; border-left: 4px solid var(--primary);">
+            <div class="glass-card" style="padding: 18px 24px; margin-bottom: 12px; border-left: 4px solid var(--primary);">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
                         <div style="font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:700; color:#1d4354; margin-bottom:4px;">{l['name']}</div>
@@ -761,7 +722,7 @@ if page == "📊 Dashboard":
             lname = get_lead_name(t.get("lead_id")) if t.get("lead_id") else "—"
             pcolor = {"High": "#ef4444", "Medium": "#fbbf24", "Low": "#10b981"}.get(t.get("priority","Medium"), "#ffffff")
             st.markdown(f"""
-            <div class="glass-card animate-in" style="padding: 18px 24px; margin-bottom: 12px; border-left: 4px solid { '#ef4444' if is_overdue else 'var(--primary)' };">
+            <div class="glass-card" style="padding: 18px 24px; margin-bottom: 12px; border-left: 4px solid { '#ef4444' if is_overdue else 'var(--primary)' };">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
                         <div style="font-family:'Outfit',sans-serif; font-size:1.05rem; font-weight:700; color:#1d4354; margin-bottom:4px;">{t['title']}</div>
@@ -1321,7 +1282,7 @@ elif page == "👥 Leads":
                             confirm_delete_lead(l['id'], l['name'])
 
                 st.markdown(f"""
-                <div class="glass-card animate-in" style="padding: 24px 30px; margin-bottom: 24px; border-left: 6px solid { '#1b6656' if l.get('status') == 'Closed' else '#7bb06b' }; box-shadow: 0 10px 30px -15px rgba(0,0,0,0.1);">
+                <div class="glass-card" style="padding: 24px 30px; margin-bottom: 24px; border-left: 6px solid { '#1b6656' if l.get('status') == 'Closed' else '#7bb06b' }; box-shadow: 0 10px 30px -15px rgba(0,0,0,0.1);">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
                         <div>
                             <div style="font-family:'Outfit',sans-serif; font-size:1.3rem; font-weight:800; color:#1a2e26; letter-spacing:-0.01em;">{l['name']}</div>
