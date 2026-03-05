@@ -68,6 +68,8 @@ if "logging_out" not in st.session_state:
     st.session_state.logging_out = False
 if "pending_note" not in st.session_state:
     st.session_state.pending_note = None
+if "confirm_delete_lead_id" not in st.session_state:
+    st.session_state.confirm_delete_lead_id = None
 
 # === LOGIN SYSTEM =============================================================
 def login_page():
@@ -493,6 +495,7 @@ def confirm_delete_lead(lead_id, name):
         db.delete_lead(lead_id)
         st.session_state.leads = db.get_all_leads()
         st.toast(f"Lead {name} deleted.")
+        st.session_state.confirm_delete_lead_id = None
         st.rerun()
 
 # Add/Edit Dialogs removed as per revert request
@@ -1345,7 +1348,14 @@ elif page == "👥 Leads":
                             st.session_state.pending_note = {"msg": "Lead intelligence updated successfully!", "title": "Update Success", "type": "success"}
                             st.rerun()
                         if u_purge.form_submit_button("🗑️ PURGE RECORD", use_container_width=True):
-                            confirm_delete_lead(l['id'], l['name'])
+                            st.session_state.confirm_delete_lead_id = l['id']
+                            st.rerun()
+                    
+                    if st.session_state.confirm_delete_lead_id == l['id']:
+                        confirm_delete_lead(l['id'], l['name'])
+                        if st.button("❌ CANCEL", key=f"cancel_del_{l['id']}", use_container_width=True):
+                            st.session_state.confirm_delete_lead_id = None
+                            st.rerun()
 
                 st.markdown(f"""
                 <div class="glass-card" style="padding: 24px 30px; margin-bottom: 24px; border-left: 6px solid { '#1b6656' if l.get('status') == 'Closed' else '#7bb06b' }; box-shadow: 0 10px 30px -15px rgba(0,0,0,0.1);">
