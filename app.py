@@ -2023,6 +2023,15 @@ elif page == "⚙️ Settings":
             st.warning("Session memory cleared. Physical sectors remain intact.")
             st.rerun()
 
+    if st.button("🚀 GENERATE DEMO INTELLIGENCE (2025-2026)", use_container_width=True):
+        with st.spinner("Injecting 24 months of operational data..."):
+            db.generate_dummy_data()
+            st.session_state.leads = db.get_all_leads()
+            st.session_state.tasks = db.get_all_tasks()
+            st.session_state.sales = db.get_all_sales()
+            st.success("2025/2026 Intelligence successfully integrated!")
+            st.rerun()
+
     st.markdown('<div class="section-heading">🗄️ Database Governance</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:

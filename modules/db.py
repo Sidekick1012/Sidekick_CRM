@@ -4,7 +4,8 @@ import json
 import os
 import hashlib
 import secrets
-from datetime import datetime
+import random
+from datetime import datetime, timedelta
 try:
     import psycopg2
     from psycopg2 import pool
@@ -574,6 +575,81 @@ def add_campaign_log(campaign_id, email, status, error_message=""):
     db_call("INSERT INTO campaign_logs (campaign_id, email, status, error_message, sent_at) VALUES (?, ?, ?, ?, ?)",
             (campaign_id, email, status, error_message, str(datetime.now())))
     get_campaign_logs.cache_clear() if hasattr(get_campaign_logs, 'cache_clear') else None
+
+def generate_dummy_data():
+    """Generates two years of realistic dummy data (leads, tasks, and sales) for 2025 and 2026."""
+    import random
+    
+    # 1. GENERATE LEADS (15 records)
+    lead_names = [
+        "Ahmed Khan", "Sara Malik", "Zainab Ali", "Usman Sheikh", "Faizan Qureshi",
+        "Ayesha Siddiqa", "Bilal Ahmed", "Hira Shah", "Imran Abbas", "Kiran Noor",
+        "Muneeb Farooq", "Nida Yasir", "Omar Lodhi", "Rabia Batool", "Sami Ullah"
+    ]
+    companies = ["Global Tech", "Marketing Pro", "Real Estate Co", "Freelance Hub", "Retail Group", "Hospitality Solutions", "Education Inst"]
+    sources = ["Website", "Referral", "Ads", "Other"]
+    temps = ["Hot", "Warm", "Cold"]
+    statuses = ["New", "In Progress", "Closed"]
+
+    for i in range(15):
+        name = lead_names[i]
+        comp = random.choice(companies)
+        temp = random.choice(temps)
+        stat = random.choice(statuses)
+        src = random.choice(sources)
+        followup = (datetime.now() + timedelta(days=random.randint(-30, 365))).strftime('%Y-%m-%d')
+        
+        add_lead({
+            "name": name,
+            "company": comp,
+            "email": f"{name.lower().replace(' ', '.')}@example.com",
+            "phone": f"03{random.randint(10, 45)}-{random.randint(1000000, 9999999)}",
+            "status": stat,
+            "temperature": temp,
+            "source": src,
+            "notes": f"High potential lead from {src} looking for {comp} services.",
+            "followup_date": followup,
+            "created_at": str(datetime.now() - timedelta(days=random.randint(1, 365)))
+        })
+
+    # 2. GENERATE SALES (Weekly for 2 years)
+    categories = ["Software License", "Professional Services", "System Integration", "Cloud Hosting", "Training & Support"]
+    months_2025 = [f"2025-{str(m).zfill(2)}" for m in range(1, 13)]
+    months_2026 = [f"2026-{str(m).zfill(2)}" for m in range(1, 13)]
+    all_months = months_2025 + months_2026
+
+    for m_y in all_months:
+        # Create 2 random sales records per month
+        for _ in range(2):
+            add_sale({
+                "month_year": m_y,
+                "category": random.choice(categories),
+                "client": random.choice(lead_names),
+                "amount": round(random.uniform(500, 15000), 2),
+                "notes": "Automated dummy entry for performance testing.",
+                "created_at": f"{m_y}-15 10:00:00"
+            })
+
+    # 3. GENERATE TASKS (30 records)
+    all_leads = get_all_leads()
+    task_titles = ["Follow up email", "Initial pitch", "Requirement gathering", "Proposal submission", "Contract signing", "System setup"]
+    
+    if all_leads:
+        for i in range(30):
+            lead = random.choice(all_leads)
+            due = (datetime.now() + timedelta(days=random.randint(-15, 60))).strftime('%Y-%m-%d')
+            add_task({
+                "lead_id": lead['id'],
+                "title": f"{random.choice(task_titles)} — {lead['name']}",
+                "description": "Standard operational task for the sales pipeline.",
+                "priority": random.choice(["High", "Medium", "Low"]),
+                "due_date": due,
+                "done": random.choice([True, False]),
+                "status": "Completed" if random.random() > 0.5 else "Pending",
+                "created_at": str(datetime.now())
+            })
+    
+    return True
 
 @st.cache_data
 def get_campaign_logs(campaign_id):
