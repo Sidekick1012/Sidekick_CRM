@@ -166,7 +166,7 @@ def login_page():
                     st.session_state.username         = user_record['username']
                     st.session_state.role             = user_record['role']
                     st.session_state.allowed_pages    = user_record['allowed_pages']
-                    # Removed show_loader trigger
+                    st.session_state.show_loader      = True
                     st.rerun()
                 else:
                     st.error("Authentication Failed: Invalid Credentials")
@@ -186,6 +186,19 @@ if not st.session_state.logging_out:
     local_css("assets/style.css")
 
 # Loading animations removed as per user request
+def display_premium_loader():
+    local_css("assets/premium_loader.css")
+    st.markdown("""
+        <div class="premium-loader-wrapper">
+            <div class="loader-container">
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
+                <div class="loader-center"></div>
+            </div>
+            <div class="loader-text">Initialize Intelligence</div>
+        </div>
+    """, unsafe_allow_html=True)
 
 # Handle Logout (Instant)
 if st.session_state.logging_out:
@@ -193,9 +206,14 @@ if st.session_state.logging_out:
     st.session_state.logging_out = False
     st.rerun()
 
-# Data Sync Handler (No visual loader)
-if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring_clients"]):
-    # Actually load data from DB
+# Data Sync Handler (With Premium Loader)
+if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring_clients"]) or st.session_state.show_loader:
+    display_premium_loader()
+    
+    # Actually load data from DB (Simulated delay for animation visibility)
+    if st.session_state.show_loader:
+        time.sleep(1.2) 
+
     st.session_state.leads = db.get_all_leads()
     st.session_state.tasks = db.get_all_tasks()
     st.session_state.sales = db.get_all_sales()
@@ -210,6 +228,10 @@ if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring
         "last_auto_run": ""
     })
     st.session_state.recurring_clients = db.get_recurring_clients()
+
+    if st.session_state.show_loader:
+        st.session_state.show_loader = False
+        st.rerun()
 
 # === AUTOMATED TASKS ==========================================================
 def run_daily_checks():
