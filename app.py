@@ -71,26 +71,30 @@ if "logging_out" not in st.session_state:
 def login_page():
     local_css("assets/login.css")
 
-    # Kill 'Press Enter to submit form' tooltip using MutationObserver (JS-level fix)
-    st.markdown("""
+    # Kill 'Press Enter to submit form' tooltip via components.html (actually runs JS)
+    components.html("""
         <script>
         (function() {
             function removeHints() {
                 const doc = window.parent.document;
-                doc.querySelectorAll('small, p').forEach(el => {
-                    if (el.textContent && el.textContent.includes('Press Enter')) {
-                        el.style.display = 'none';
-                        el.style.visibility = 'hidden';
-                        el.style.height = '0';
+                doc.querySelectorAll('small, p, div').forEach(el => {
+                    if (el.textContent && el.textContent.trim() === 'Press Enter to submit form') {
+                        el.style.cssText = 'display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;';
                     }
                 });
             }
+            // Run immediately
             removeHints();
-            const observer = new MutationObserver(removeHints);
-            observer.observe(window.parent.document.body, { childList: true, subtree: true });
+            // Watch for Streamlit re-injecting it
+            const observer = new MutationObserver(() => removeHints());
+            observer.observe(window.parent.document.body, {
+                childList: true, subtree: true, characterData: true
+            });
+            // Also run on each focus event
+            window.parent.document.addEventListener('focusin', () => removeHints(), true);
         })();
         </script>
-    """, unsafe_allow_html=True)
+    """, height=0)
 
     st.markdown("""
         <div class="sweet-circle sc-1"></div>
