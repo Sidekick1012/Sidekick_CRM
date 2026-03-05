@@ -466,8 +466,8 @@ def update_lead(lead_id, data):
     get_all_leads.clear()
 
 def delete_lead(lead_id):
-    db_call("DELETE FROM leads WHERE id = ?", (lead_id,))
     db_call("DELETE FROM tasks WHERE lead_id = ?", (lead_id,))
+    db_call("DELETE FROM leads WHERE id = ?", (lead_id,))
     get_all_leads.clear()
     get_all_tasks.clear()
 
