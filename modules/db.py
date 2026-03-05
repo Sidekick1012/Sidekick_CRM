@@ -178,6 +178,10 @@ def init_db():
         cursor.execute("ALTER TABLE tasks ADD COLUMN status TEXT DEFAULT 'Pending'")
         conn.commit()
     except Exception:
+        # In Postgres, if a command fails, the transaction is poisoned.
+        # We must rollback to continue using the connection.
+        if DB_TYPE == "postgres":
+            conn.rollback()
         pass 
     
     # Settings Table
