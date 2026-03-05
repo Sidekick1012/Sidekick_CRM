@@ -1067,6 +1067,7 @@ elif page == "💰 Sales Report":
                             "created_at": str(datetime.now())
                         })
                 st.session_state.sales = db.get_all_sales()
+                st.session_state.show_loader = True
                 st.session_state.pending_note = {"msg": "Sales Ledger Synchronized!", "title": "Success", "type": "success"}
                 st.rerun()
 
@@ -1341,6 +1342,7 @@ elif page == "👥 Leads":
                         if u_commit.form_submit_button("✅ SYNC CHANGES", use_container_width=True):
                             db.update_lead(l["id"], {"name": u_name, "company": u_comp, "email": u_email, "phone": u_phone, "status": u_status, "temperature": u_temp, "source": u_source, "followup_date": str(u_date), "notes": u_notes})
                             st.session_state.leads = db.get_all_leads()
+                            st.session_state.show_loader = True
                             st.session_state.pending_note = {"msg": "Intelligence Record Synchronized!", "title": "Success", "type": "success"}
                             st.rerun()
                         if u_purge.form_submit_button("🗑️ PURGE RECORD", use_container_width=True):
@@ -1431,6 +1433,7 @@ elif page == "👥 Leads":
                     }
                     db.add_lead(lead_data)
                     st.session_state.leads = db.get_all_leads()
+                    st.session_state.show_loader = True
                     st.session_state.pending_note = {"msg": f"Lead {name} added to pipeline.", "title": "Success", "type": "success"}
                     st.rerun()
 
@@ -1558,6 +1561,7 @@ elif page == "✅ Tasks":
                     }
                     db.add_task(task_data)
                     st.session_state.tasks = db.get_all_tasks()
+                    st.session_state.show_loader = True
                     st.session_state.pending_note = {"msg": "Task deployed to matrix.", "title": "Success", "type": "success"}
                     st.rerun()
 
@@ -1661,6 +1665,7 @@ elif page == "✅ Tasks":
                             }
                             db.update_task(t["id"], upd_task)
                             st.session_state.tasks = db.get_all_tasks()
+                            st.session_state.show_loader = True
                             st.session_state.pending_note = {"msg": "Task Matrix Updated!", "title": "Success", "type": "success"}
                             st.rerun()
 
@@ -1980,7 +1985,9 @@ elif page == "⚙️ Settings":
                 "last_auto_run": s.get("last_auto_run", "")
             }
             db.save_settings(st.session_state.settings)
-            st.success("Core Configuration Synchronized!")
+            st.session_state.show_loader = True
+            st.session_state.pending_note = {"msg": "Core Configuration Synchronized!", "title": "Success", "type": "success"}
+            st.rerun()
 
     st.markdown('<div class="section-heading">🧪 Protocol Verification</div>', unsafe_allow_html=True)
     with st.form("test_email"):
