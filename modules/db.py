@@ -1,17 +1,97 @@
-psycopg2.errors.UniqueViolation: This app has encountered an error. The original error message is redacted to prevent data leaks. Full error details have been recorded in the logs (if you're on Streamlit Cloud, click on 'Manage app' in the lower right of your app).
-Traceback:
-File "/mount/src/sidekick_crm/app.py", line 1562, in <module>
-    db.add_task(task_data)
-    ~~~~~~~~~~~^^^^^^^^^^^
-File "/mount/src/sidekick_crm/modules/db.py", line 443, in add_task
-    db_call(sql, list(data.values()))
-    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/mount/src/sidekick_crm/modules/db.py", line 304, in db_call
-    cursor.execute(query, params)
-    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
-File "/home/adminuser/venv/lib/python3.13/site-packages/psycopg2/extras.py", line 236, in execute
-    return super().execute(query, vars)
-           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^    # Adjust placeholders for Postgres if needed
+import streamlit as st
+import sqlite3
+import json
+import os
+import hashlib
+import secrets
+from datetime import datetime
+try:
+    import psycopg2
+    from psycopg2 import pool
+    from psycopg2.extras import RealDictCursor
+except ImportError:
+    psycopg2 = None
+
+# --- DATABASE CONFIGURATION ---
+# We check if Supabase/Postgres secrets are available.
+# If available, we use PostgreSQL. Otherwise, we fallback to SQLite.
+DB_PATH = "database/crm_database.db"
+
+def get_db_config():
+    """Determine if we should use Cloud (Postgres) or Local (SQLite)."""
+    # Try multiple ways to get the URL
+    url = None
+    try:
+        # Check standard Streamlit connections format
+        if "connections" in st.secrets and "postgresql" in st.secrets["connections"]:
+            url = st.secrets["connections"]["postgresql"].get("url")
+        # Check a flattened format as fallback
+        elif "SUPABASE_URL" in st.secrets:
+            url = st.secrets["SUPABASE_URL"]
+    except Exception:
+        pass
+    
+    if url and url != "" and "[YOUR-PASSWORD]" not in url:
+        return "postgres", url
+    return "sqlite", DB_PATH
+
+DB_TYPE, DB_URL = get_db_config()
+
+# --- CONNECTION POOLING ---
+@st.cache_resource
+def get_connection_pool():
+    if DB_TYPE == "postgres" and psycopg2:
+        try:
+            # Threaded pool is better for Streamlit's architecture
+            return psycopg2.pool.ThreadedConnectionPool(1, 20, DB_URL)
+        except Exception as e:
+            st.error(f"Failed to create connection pool: {e}")
+            return None
+    return None
+
+POSTGRES_POOL = get_connection_pool()
+
+def get_connection():
+    if DB_TYPE == "postgres":
+        if not psycopg2:
+            st.error("psycopg2 not installed. Please run 'pip install psycopg2-binary'")
+            return None
+        
+        if POSTGRES_POOL:
+            try:
+                return POSTGRES_POOL.getconn()
+            except Exception as e:
+                st.error(f"Error getting connection from pool: {e}")
+                # Fallback to direct connection if pool fails
+                return psycopg2.connect(DB_URL)
+        else:
+            return psycopg2.connect(DB_URL)
+    else:
+        # Ensure directory exists for local setups
+        db_dir = os.path.dirname(DB_PATH)
+        if db_dir and not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        return conn
+
+def release_connection(conn):
+    if DB_TYPE == "postgres" and POSTGRES_POOL and conn:
+        try:
+            POSTGRES_POOL.putconn(conn)
+        except Exception:
+            conn.close()
+    elif conn:
+        conn.close()
+
+def execute_query(query, params=(), commit=False, fetch="all"):
+    """
+    Unified query executor that handles placeholder differences between SQLite (?) and Postgres (%s).
+    """
+    conn = get_connection()
+    if not conn: return None
+    
+    # Adjust placeholders for Postgres if needed
     if DB_TYPE == "postgres":
         query = query.replace('?', '%s')
         cursor = conn.cursor(cursor_factory=RealDictCursor)
