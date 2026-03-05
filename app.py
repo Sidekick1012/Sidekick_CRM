@@ -1068,7 +1068,7 @@ elif page == "💰 Sales Report":
                             "created_at": str(datetime.now())
                         })
                 st.session_state.sales = db.get_all_sales()
-                st.toast("✅ Sales Ledger Synchronized!")
+                st.session_state.pending_note = {"msg": "Sales ledger successfully synchronized with ledger!", "title": "Sync Completed", "type": "success"}
                 st.rerun()
 
             # Excel Export
@@ -1662,7 +1662,7 @@ elif page == "✅ Tasks":
                             }
                             db.update_task(t["id"], upd_task)
                             st.session_state.tasks = db.get_all_tasks()
-                            st.toast("✅ Task Matrix Updated!")
+                            st.session_state.pending_note = {"msg": "Task protocol successfully updated!", "title": "Update: Success", "type": "success"}
                             st.rerun()
 
                 col1, col2, col3 = st.columns([8, 1, 1])
@@ -1686,16 +1686,16 @@ elif page == "✅ Tasks":
                     """, unsafe_allow_html=True)
                 with col2:
                     if st.button("🔄" if done else "✓", key=f"toggle_{t['id']}", use_container_width=True):
-                        for task in st.session_state.tasks:
-                            if task["id"] == t["id"]:
-                                task["done"] = not task["done"]
-                                task["status"] = "Completed" if task["done"] else "Pending"
-                        save_tasks()
+                        new_done = not t.get('done', False)
+                        new_status = "Completed" if new_done else "Pending"
+                        db.update_task(t['id'], {"done": new_done, "status": new_status})
+                        st.session_state.tasks = db.get_all_tasks()
                         st.rerun()
                 with col3:
                     if st.button("✕", key=f"deltask_{t['id']}", use_container_width=True):
-                        st.session_state.tasks = [x for x in st.session_state.tasks if x["id"] != t["id"]]
-                        save_tasks()
+                        db.delete_task(t['id'])
+                        st.session_state.tasks = db.get_all_tasks()
+                        st.session_state.pending_note = {"msg": "Task purged from matrix.", "title": "Protocol: Deleted", "type": "warning"}
                         st.rerun()
 
             # --- BOTTOM PAGINATION ---
