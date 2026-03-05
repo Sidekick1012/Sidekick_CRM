@@ -2018,17 +2018,15 @@ elif page == "⚙️ Settings":
         if st.button("TERMINATE SESSION", key="logout_settings", use_container_width=True):
             st.session_state.authenticated = False
             st.rerun()
+        st.markdown("<p style='font-size:0.75rem; opacity:0.7; margin-top:-5px;'>فوری طور پر سیشن ختم کر کے لاگ آؤٹ ہو جائیں۔</p>", unsafe_allow_html=True)
+        
     with c2:
         if st.button("PURGE TEMPORARY CACHE", use_container_width=True):
             st.warning("Session memory cleared. Physical sectors remain intact.")
             st.rerun()
+        st.markdown("<p style='font-size:0.75rem; opacity:0.7; margin-top:-5px;'>سافٹ ویئر کی عارضی میموری صاف کریں (ڈیٹا محفوظ رہے گا)۔</p>", unsafe_allow_html=True)
 
-    if st.button("🚀 GENERATE DEMO INTELLIGENCE (2025-2026)", use_container_width=True):
-        with st.spinner("Injecting 24 months of operational data..."):
-            db.generate_dummy_data()
-            st.success("2025/2026 Intelligence successfully integrated!")
-            st.rerun()
-
+    st.markdown("<br>", unsafe_allow_html=True)
     if st.button("🔄 FORCE RESYNC FROM SOURCE", use_container_width=True):
         db.clear_all_db_caches()
         # Also clean session state pointers to force reload on next page load
@@ -2037,17 +2035,18 @@ elif page == "⚙️ Settings":
         st.session_state.show_loader = True
         st.success("Database synchronization complete. Refreshing segments...")
         st.rerun()
+    st.markdown("<p style='font-size:0.75rem; opacity:0.7; margin-top:-5px; text-align:center;'>تمام ڈیٹا براہِ راست ڈیٹا بیس سے دوبارہ لوڈ کریں (اگر ڈیٹا شو نہ ہو رہا ہو)۔</p>", unsafe_allow_html=True)
 
     st.markdown('<div class="section-heading">🗄️ Database Governance</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         if st.button("SECURE ERASE: LEAD PORTFOLIO", use_container_width=True):
-            # This should actually call db.delete all or similar
-            # For safety, let's not implement a mass delete here yet, but fix the call
             st.warning("Feature deactivated for safety. Use individual purge.")
+        st.markdown("<p style='font-size:0.75rem; opacity:0.7; margin-top:-5px;'>تمام لیڈز کو مستقل طور پر ختم کرنے کے لیے (فی الحال لاک ہے)۔</p>", unsafe_allow_html=True)
     with col2:
         if st.button("SECURE ERASE: OPERATIONS MATRIX", use_container_width=True):
             st.warning("Feature deactivated for safety. Use individual purge.")
+        st.markdown("<p style='font-size:0.75rem; opacity:0.7; margin-top:-5px;'>تمام ٹاسک اور سیلز ریکارڈز کو ختم کرنے کے لیے (فی الحال لاک ہے)۔</p>", unsafe_allow_html=True)
 
 # EMAIL MARKETING HUB
 # ═══════════════════════════════════════════════════════════════════════════════
