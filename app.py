@@ -511,6 +511,62 @@ if page == "📊 Dashboard":
             📊 Current Analysis Period: <span style="color:#1d4354">{selected_year}</span> {f' - <span style="color:#1d4354">{selected_month_name}</span>' if selected_month > 0 else ''}
         </div>
     """, unsafe_allow_html=True)
+
+    # 🚨 TACTICAL ALERTS (TODAY'S FOLLOW-UPS)
+    today = date.today()
+    followups_due = [l for l in leads if l.get("followup_date") and datetime.strptime(l["followup_date"], "%Y-%m-%d").date() <= today and l.get("status") != "Closed"]
+    
+    if followups_due:
+        st.markdown('<div class="section-heading" style="color:#ef4444; border-left-color:#ef4444;">🚨 Tactical Follow-up Alerts</div>', unsafe_allow_html=True)
+        for l in followups_due[:3]: # Limit to top 3 for dashboard sanity
+            overdue_days = (today - datetime.strptime(l["followup_date"], "%Y-%m-%d").date()).days
+            overdue_label = "DUE TODAY" if overdue_days == 0 else f"{overdue_days} DAYS OVERDUE"
+            st.markdown(f"""
+            <div class="glass-card" style="margin-bottom:12px; padding:15px; border-left:4px solid #ef4444; background:rgba(239, 68, 68, 0.05);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="font-size:0.7rem; font-weight:800; color:#ef4444; text-transform:uppercase;">{overdue_label}</span>
+                        <div style="font-weight:800; color:#1d4354; font-size:1.1rem; margin:2px 0;">{l['name']}</div>
+                        <div style="font-size:0.8rem; opacity:0.7;">🏢 {l.get('company','-')} | 📧 {l.get('email','-')}</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        if len(followups_due) > 3:
+            st.info(f"And {len(followups_due)-3} more urgent follow-ups. Check the Outreach Queue in Email Marketing.")
+
+    # ✨ AI STRATEGIC BRIEFING
+    if st.session_state.settings.get("gemini_api_key"):
+        st.markdown('<div class="section-heading" style="color:#1b6656; border-left-color:#7bb06b;">✨ AI Neural Strategic Briefing</div>', unsafe_allow_html=True)
+        if st.button("🧠 GENERATE TODAY'S TACTICAL FOCUS", use_container_width=True):
+            with st.spinner("AI analyzing portfolio dynamics..."):
+                try:
+                    import google.generativeai as genai
+                    genai.configure(api_key=st.session_state.settings["gemini_api_key"])
+                    model = genai.GenerativeModel('gemini-2.5-flash')
+                    
+                    # Prepare Context
+                    active_leads = [l for l in leads if l.get("status") != "Closed"][:10]
+                    active_tasks = [t for t in tasks if not t.get("done")][:10]
+                    
+                    context = f"Leads: {[{'name':l['name'], 'temp':l.get('temperature','Warm'), 'source':l.get('source','-')} for l in active_leads]}\n"
+                    context += f"Tasks: {[{'title':t['title'], 'priority':t.get('priority','Medium')} for t in active_tasks]}"
+                    
+                    prompt = f"System Context: Specialized CRM. Objective: Daily efficiency. Data: {context}. Task: Analyze this data and provide exactly 3 bullet points of high-priority tactical advice for the user today. Keep it short, authoritative, and professional. Start with 'Strategic Focus:'"
+                    
+                    response = model.generate_content(prompt)
+                    st.markdown(f"""
+                    <div class="luxury-container" style="background:rgba(27,102,86,0.03); border-color:#7bb06b; padding:20px; border-left-width:8px;">
+                        <div style="font-weight:700; color:#1b6656; margin-bottom:10px;">TACTICAL ROADMAP GENERATED:</div>
+                        <div style="font-size:0.95rem; line-height:1.6; color:#1d4354; font-style:italic;">
+                            {response.text.replace('Strategic Focus:', '').strip()}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                except Exception as e:
+                    st.error(f"Neural Core Offline: {e}")
+    else:
+        st.warning("AI Strategic Briefing is inactive. Configure Gemini API Key in Settings to enable.")
     
     # Premium KPI Stats
     active = sum(1 for l in leads if l.get("status") == "New" or l.get("status") == "In Progress")
@@ -2038,7 +2094,81 @@ elif page == "📢 Email Marketing":
     </div>
     """, unsafe_allow_html=True)
 
-    tab1, tab2, tab3 = st.tabs(["📥 Bulk Dispatch", "📄 Templates", "📊 Campaign History"])
+    tab1, tab2, tab2_5, tab3 = st.tabs(["📥 Bulk Dispatch", "📄 Templates", "🎯 Outreach Queue", "📊 Campaign History"])
+
+    with tab2_5:
+        st.markdown('<div class="section-heading">🎯 High-Value Outreach Queue</div>', unsafe_allow_html=True)
+        today = date.today()
+        # Ensure we check the current session leads
+        raw_leads = st.session_state.leads
+        queue = [l for l in raw_leads if l.get("followup_date") and datetime.strptime(l["followup_date"], "%Y-%m-%d").date() <= today and l.get("status") != "Closed"]
+        
+        if not queue:
+            st.success("Target analysis complete: No urgent follow-ups required today. System status: Optimal.")
+        else:
+            for l in queue:
+                with st.expander(f"👤 {l['name']} — {l.get('temperature','Warm')} | Due: {l['followup_date']}"):
+                    st.markdown(f"**Context:** {l.get('notes','No context notes available.')}")
+                    if l.get('last_followup_notes'):
+                        st.markdown(f"**Last Interaction ({l.get('last_followup_date','N/A')}):** {l['last_followup_notes']}")
+                    
+                    # Generate AI Followup
+                    if st.button(f"✨ GENERATE AI FOLLOW-UP FOR {l['name'].upper()}", key=f"ai_queue_{l['id']}"):
+                        with st.spinner("AI analyzing lead context..."):
+                            import google.generativeai as genai
+                            if st.session_state.settings.get("gemini_api_key"):
+                                try:
+                                    genai.configure(api_key=st.session_state.settings["gemini_api_key"])
+                                    model = genai.GenerativeModel('gemini-2.5-flash')
+                                    prompt = f"Craft a short, professional Pakistani-style CRM follow-up email for {l['name']} from {l.get('company','Unknown')}. Business Context: {l.get('notes','N/A')}. Reference last chat: {l.get('last_followup_notes','N/A')}. Personalize."
+                                    response = model.generate_content(prompt)
+                                    st.session_state[f"draft_{l['id']}"] = response.text
+                                except Exception as e: st.error(f"AI Error: {e}")
+                            else: st.error("Gemini API key is required in Settings.")
+                    
+                    if f"draft_{l['id']}" in st.session_state:
+                         draft = st.text_area("Finalized Draft", value=st.session_state[f"draft_{l['id']}"], key=f"final_{l['id']}", height=150)
+                         c1, c2 = st.columns(2)
+                         if c1.button("🚀 TRANSMIT NOW", key=f"send_q_{l['id']}", use_container_width=True):
+                             ok, msg = send_email(f"Following Up: {l['name']}", draft, l.get("email",""))
+                             if ok:
+                                 today_str = str(today)
+                                 # Update lead history
+                                 db.update_lead(l['id'], {
+                                     "last_followup_date": today_str,
+                                     "last_followup_notes": draft[:200] + "...",
+                                     "followup_date": str(today + timedelta(days=7))
+                                 })
+                                 # Log to followup history
+                                 db.add_followup_log({
+                                     "lead_id": l['id'],
+                                     "timestamp": str(datetime.now()),
+                                     "method": "Email",
+                                     "result": "Sent",
+                                     "notes": draft[:300]
+                                 })
+                                 st.session_state.leads = db.get_all_leads()
+                                 st.success("✅ Communication dispatched. Next milestone auto-scheduled for +7 days.")
+                                 st.rerun()
+                             else: st.error(f"Transmission failed: {msg}")
+                         if c2.button("🗑️ DISCARD DRAFT", key=f"drop_q_{l['id']}", use_container_width=True):
+                             del st.session_state[f"draft_{l['id']}"]
+                             st.rerun()
+                    
+                    # --- Interaction History ---
+                    f_logs = db.get_followup_logs(l['id'])
+                    if f_logs:
+                        st.markdown("---")
+                        st.markdown("<div style='font-size:0.75rem; font-weight:800; text-transform:uppercase; color:var(--primary); margin-bottom:8px;'>📋 Interaction Timeline</div>", unsafe_allow_html=True)
+                        for fl in f_logs:
+                            st.markdown(f"""
+                            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:0.78rem;">
+                                <b>📅 {fl['timestamp'][:16]}</b> &nbsp;|&nbsp; 
+                                <span style="color:#1b6656;">{fl.get('method','Email')}</span> &nbsp;|&nbsp;
+                                <span style="color:#7bb06b;">{fl.get('result','Sent')}</span>
+                                <div style="margin-top:4px; opacity:0.7;">{fl.get('notes','')[:150]}...</div>
+                            </div>
+                            """, unsafe_allow_html=True)
 
     with tab2:
         st.markdown('<div class="section-heading">✦ Template Management</div>', unsafe_allow_html=True)
@@ -2184,90 +2314,118 @@ elif page == "📢 Email Marketing":
         st.markdown('<div class="section-heading">📥 High-Volume Bulk Dispatch</div>', unsafe_allow_html=True)
         st.markdown('<div class="luxury-container" style="padding:25px;">', unsafe_allow_html=True)
         
-        uploaded_file = st.file_uploader("Upload External Distribution List (Excel/CSV)", type=["xlsx", "csv", "xls"])
+        dispatch_mode = st.radio("Intelligence Selection Mode", ["📂 Upload Distribution List", "🧩 Internal Intelligence Segments"], horizontal=True)
         
-        if uploaded_file:
-            try:
-                if uploaded_file.name.endswith('.csv'):
-                    df_bulk = pd.read_csv(uploaded_file)
-                else:
-                    df_bulk = pd.read_excel(uploaded_file)
-                
-                st.write("📊 **File Preview (First 5 Rows):**")
-                st.dataframe(df_bulk.head(), use_container_width=True)
-                
-                cols = df_bulk.columns.tolist()
-                c_email, c_name = st.columns(2)
-                email_col = c_email.selectbox("Identify Email Column", cols, index=0)
-                name_col = c_name.selectbox("Identify Name Column (Optional)", ["None"] + cols, index=0)
-                
-                # Compose from Template or Manual
-                templates = db.get_all_templates()
-                t_opts = ["— Manual Composition —"] + [t['name'] for t in templates]
-                sel_bt = st.selectbox("Select Campaign Template", t_opts, key="bt_sel")
-                
-                b_subj = ""
-                b_body = ""
-                if sel_bt != "— Manual Composition —":
-                    st_match = next(t for t in templates if t['name'] == sel_bt)
-                    b_subj = st_match['subject']
-                    b_body = st_match['body']
-                
-                final_b_subj = st.text_input("Broadcast Subject", value=b_subj)
-                final_b_body = st.text_area("Broadcast Message (HTML)", value=b_body, height=200)
-                
-                if st.button("🚀 INITIATE BULK DISPATCH PROTOCOL", use_container_width=True):
-                    if not final_b_subj or not final_b_body:
-                        st.error("Subject and Body are required.")
+        df_bulk = pd.DataFrame()
+        email_col = ""
+        name_col = ""
+
+        if dispatch_mode == "📂 Upload Distribution List":
+            uploaded_file = st.file_uploader("Upload External Distribution List (Excel/CSV)", type=["xlsx", "csv", "xls"])
+            if uploaded_file:
+                try:
+                    if uploaded_file.name.endswith('.csv'):
+                        df_bulk = pd.read_csv(uploaded_file)
                     else:
-                        bulk_targets = []
-                        for _, row in df_bulk.iterrows():
-                            e_val = str(row[email_col]).strip()
-                            if "@" in e_val:
-                                n_val = str(row[name_col]) if name_col != "None" else "Client"
-                                bulk_targets.append({"email": e_val, "name": n_val})
-                        
-                        if not bulk_targets:
-                            st.error("No valid emails found in the selected column.")
-                        else:
-                            # Log as a mega campaign
-                            camp_id = db.add_campaign({
-                                "name": f"Bulk_Import_{uploaded_file.name}_{date.today()}",
-                                "template_id": None,
-                                "subject": final_b_subj,
-                                "body": final_b_body,
-                                "status": "Running",
-                                "created_at": str(datetime.now())
-                            })
-                            
-                            p_bar = st.progress(0, text="Starting Bulk Relay...")
-                            ok_count = 0
-                            fail_count = 0
-                            
-                            for i, t in enumerate(bulk_targets):
-                                ready_body = final_b_body.replace("{{name}}", t['name'])
-                                ok, msg = send_email(final_b_subj, ready_body, t['email'])
-                                
-                                if ok:
-                                    ok_count += 1
-                                    db.add_campaign_log(camp_id, t['email'], "Success")
-                                else:
-                                    fail_count += 1
-                                    db.add_campaign_log(camp_id, t['email'], "Failed", msg)
-                                
-                                p_bar.progress(int(((i + 1) / len(bulk_targets)) * 100), 
-                                               text=f"Processing {i+1}/{len(bulk_targets)} -> {t['email']}")
-                                time.sleep(1.5) # Anti-spam delay
-                            
-                            db.update_campaign_stats(camp_id, ok_count, fail_count)
-                            p_bar.empty()
-                            st.success(f"Bulk Dispatch Complete! Sent: {ok_count}, Failed: {fail_count}")
-                            st.balloons()
-                            
-            except Exception as e:
-                st.error(f"Error processing file: {e}")
+                        df_bulk = pd.read_excel(uploaded_file)
+                    
+                    st.write("📊 **File Preview (First 5 Rows):**")
+                    st.dataframe(df_bulk.head(), use_container_width=True)
+                    
+                    cols = df_bulk.columns.tolist()
+                    c_email, c_name = st.columns(2)
+                    email_col = c_email.selectbox("Identify Email Column", cols, index=0)
+                    name_col = c_name.selectbox("Identify Name Column (Optional)", ["None"] + cols, index=0)
+                except Exception as e: st.error(f"Error processing file: {e}")
+            else:
+                st.info("Upload an Excel/CSV file to begin bulk processing.")
+        
         else:
-            st.info("Upload an Excel/CSV file to begin bulk processing.")
+            # Internal Segments
+            seg_col1, seg_col2 = st.columns(2)
+            seg_type = seg_col1.selectbox("Target Lead Category", ["All Leads", "Hot Leads", "Warm Leads", "Cold Leads", "Closed Clients"])
+            
+            raw_leads = st.session_state.leads
+            if seg_type == "All Leads": f_leads = raw_leads
+            elif seg_type == "Hot Leads": f_leads = [l for l in raw_leads if l.get("temperature") == "Hot"]
+            elif seg_type == "Warm Leads": f_leads = [l for l in raw_leads if l.get("temperature") == "Warm"]
+            elif seg_type == "Cold Leads": f_leads = [l for l in raw_leads if l.get("temperature") == "Cold"]
+            elif seg_type == "Closed Clients": f_leads = [l for l in raw_leads if l.get("status") == "Closed"]
+            
+            if not f_leads:
+                st.warning(f"Tactical Error: No leads found in '{seg_type}' segment.")
+            else:
+                df_bulk = pd.DataFrame(f_leads)
+                email_col = "email"
+                name_col = "name"
+                st.success(f"Objective Targeted: {len(df_bulk)} leads identified in '{seg_type}' segment.")
+
+        if not df_bulk.empty:
+            st.markdown("---")
+            # Compose from Template or Manual
+            templates = db.get_all_templates()
+            t_opts = ["— Manual Composition —"] + [t['name'] for t in templates]
+            sel_bt = st.selectbox("Select Campaign Template", t_opts, key="bt_sel")
+            
+            b_subj = ""
+            b_body = ""
+            if sel_bt != "— Manual Composition —":
+                st_match = next(t for t in templates if t['name'] == sel_bt)
+                b_subj = st_match['subject']
+                b_body = st_match['body']
+            
+            final_b_subj = st.text_input("Broadcast Subject", value=b_subj)
+            final_b_body = st.text_area("Broadcast Message (HTML)", value=b_body, height=200)
+            
+            if st.button("🚀 INITIATE BULK DISPATCH PROTOCOL", use_container_width=True):
+                if not final_b_subj or not final_b_body:
+                    st.error("Subject and Body are required.")
+                else:
+                    bulk_targets = []
+                    for _, row in df_bulk.iterrows():
+                        e_val = str(row[email_col]).strip()
+                        if "@" in e_val:
+                            n_val = str(row[name_col]) if name_col != "None" else "Client"
+                            bulk_targets.append({"email": e_val, "name": n_val})
+                    
+                    if not bulk_targets:
+                        st.error("No valid emails found in the selected column.")
+                    else:
+                        # Log as a mega campaign
+                        camp_name = f"Campaign_{date.today()}_{len(bulk_targets)}_Leads"
+                        camp_id = db.add_campaign({
+                            "name": camp_name,
+                            "template_id": None,
+                            "subject": final_b_subj,
+                            "body": final_b_body,
+                            "status": "Running",
+                            "created_at": str(datetime.now())
+                        })
+                        
+                        p_bar = st.progress(0, text="Starting Bulk Relay...")
+                        ok_count = 0
+                        fail_count = 0
+                        
+                        for i, t in enumerate(bulk_targets):
+                            ready_body = final_b_body.replace("{{name}}", t['name'])
+                            ok, msg = send_email(final_b_subj, ready_body, t['email'])
+                            
+                            if ok:
+                                ok_count += 1
+                                db.add_campaign_log(camp_id, t['email'], "Success")
+                            else:
+                                fail_count += 1
+                                db.add_campaign_log(camp_id, t['email'], "Failed", msg)
+                            
+                            p_bar.progress(int(((i + 1) / len(bulk_targets)) * 100), 
+                                           text=f"Processing {i+1}/{len(bulk_targets)} -> {t['email']}")
+                            time.sleep(1.5) # Anti-spam delay
+                        
+                        db.update_campaign_stats(camp_id, ok_count, fail_count)
+                        p_bar.empty()
+                        st.success(f"Bulk Dispatch Complete! Sent: {ok_count}, Failed: {fail_count}")
+                        st.balloons()
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     with tab3:

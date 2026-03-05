@@ -244,6 +244,19 @@ def init_db():
         )
     ''')
 
+    # Tactical Follow-up Intelligence Logs
+    cursor.execute(f'''
+        CREATE TABLE IF NOT EXISTS followup_logs (
+            id {pk_type},
+            lead_id INTEGER,
+            timestamp TEXT,
+            method TEXT,
+            result TEXT,
+            notes TEXT,
+            FOREIGN KEY (lead_id) REFERENCES leads (id)
+        )
+    ''')
+
     # Sales Report
     cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS sales_report (
@@ -661,3 +674,16 @@ def generate_dummy_data():
 @st.cache_data
 def get_campaign_logs(campaign_id):
     return db_call("SELECT * FROM campaign_logs WHERE campaign_id = ?", (campaign_id,))
+
+@st.cache_data
+def get_followup_logs(lead_id):
+    return db_call("SELECT * FROM followup_logs WHERE lead_id = ? ORDER BY timestamp DESC", (lead_id,))
+
+def add_followup_log(data):
+    keys = data.keys()
+    columns = ', '.join(keys)
+    placeholders = ', '.join(['?' for _ in keys])
+    sql = f"INSERT INTO followup_logs ({columns}) VALUES ({placeholders})"
+    db_call(sql, list(data.values()))
+    get_followup_logs.clear()
+    return True
