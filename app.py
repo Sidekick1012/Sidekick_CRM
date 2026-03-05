@@ -2026,11 +2026,17 @@ elif page == "⚙️ Settings":
     if st.button("🚀 GENERATE DEMO INTELLIGENCE (2025-2026)", use_container_width=True):
         with st.spinner("Injecting 24 months of operational data..."):
             db.generate_dummy_data()
-            st.session_state.leads = db.get_all_leads()
-            st.session_state.tasks = db.get_all_tasks()
-            st.session_state.sales = db.get_all_sales()
             st.success("2025/2026 Intelligence successfully integrated!")
             st.rerun()
+
+    if st.button("🔄 FORCE RESYNC FROM SOURCE", use_container_width=True):
+        db.clear_all_db_caches()
+        # Also clean session state pointers to force reload on next page load
+        for key in ["leads", "tasks", "sales", "recurring_clients"]:
+            if key in st.session_state: del st.session_state[key]
+        st.session_state.show_loader = True
+        st.success("Database synchronization complete. Refreshing segments...")
+        st.rerun()
 
     st.markdown('<div class="section-heading">🗄️ Database Governance</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)

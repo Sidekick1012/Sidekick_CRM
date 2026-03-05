@@ -576,12 +576,22 @@ def add_campaign_log(campaign_id, email, status, error_message=""):
             (campaign_id, email, status, error_message, str(datetime.now())))
     get_campaign_logs.cache_clear() if hasattr(get_campaign_logs, 'cache_clear') else None
 
+def clear_all_db_caches():
+    """Manually clear all Streamlit caches for database functions."""
+    try:
+        get_all_leads.clear()
+        get_all_tasks.clear()
+        get_all_sales.clear()
+        get_recurring_clients.clear()
+        if hasattr(get_settings, 'clear'): get_settings.clear()
+        if hasattr(get_all_campaigns, 'clear'): get_all_campaigns.clear()
+        if hasattr(get_campaign_logs, 'clear'): get_campaign_logs.clear()
+    except Exception:
+        pass
+
 def generate_dummy_data():
     """Generates two years of realistic dummy data (leads, tasks, and sales) for 2025 and 2026."""
     import random
-    
-    conn = get_connection()
-    if not conn: return False
     
     # 1. GENERATE LEADS (15 records)
     lead_names = [
@@ -602,24 +612,13 @@ def generate_dummy_data():
         src = random.choice(sources)
         followup = (datetime.now() + timedelta(days=random.randint(-30, 365))).strftime('%Y-%m-%d')
         
-        # Use a list of values to avoid repeating the keys
-        data = {
-            "name": name,
-            "company": comp,
-            "email": f"{name.lower().replace(' ', '.')}@example.com",
+        add_lead({
+            "name": name, "company": comp, "email": f"{name.lower().replace(' ', '.')}@example.com",
             "phone": f"03{random.randint(10, 45)}-{random.randint(1000000, 9999999)}",
-            "status": stat,
-            "temperature": temp,
-            "source": src,
+            "status": stat, "temperature": temp, "source": src,
             "notes": f"High potential lead from {src} looking for {comp} services.",
-            "followup_date": followup,
-            "created_at": str(datetime.now() - timedelta(days=random.randint(1, 365)))
-        }
-        keys = data.keys()
-        cols = ', '.join(keys)
-        ph = ', '.join(['?' for _ in keys])
-        query = f"INSERT INTO leads ({cols}) VALUES ({ph})"
-        db_call(query, list(data.values()), commit=False)
+            "followup_date": followup, "created_at": str(datetime.now() - timedelta(days=random.randint(1, 365)))
+        })
 
     # 2. GENERATE SALES (Weekly for 2 years)
     categories = ["Software License", "Professional Services", "System Integration", "Cloud Hosting", "Training & Support"]
@@ -629,24 +628,14 @@ def generate_dummy_data():
 
     for m_y in all_months:
         for _ in range(2):
-            data = {
+            add_sale({
                 "month_year": m_y,
                 "category": random.choice(categories),
                 "client": random.choice(lead_names),
                 "amount": round(random.uniform(500, 15000), 2),
                 "notes": "Automated dummy entry for performance testing.",
                 "created_at": f"{m_y}-15 10:00:00"
-            }
-            keys = data.keys()
-            cols = ', '.join(keys)
-            ph = ', '.join(['?' for _ in keys])
-            query = f"INSERT INTO sales_report ({cols}) VALUES ({ph})"
-            db_call(query, list(data.values()), commit=False)
-
-    # Final commit for leads and sales
-    conn.commit()
-    get_all_leads.clear()
-    get_all_sales.clear()
+            })
 
     # 3. GENERATE TASKS (30 records)
     all_leads = get_all_leads()
@@ -656,24 +645,17 @@ def generate_dummy_data():
         for i in range(30):
             lead = random.choice(all_leads)
             due = (datetime.now() + timedelta(days=random.randint(-15, 60))).strftime('%Y-%m-%d')
-            data = {
+            add_task({
                 "lead_id": lead['id'],
                 "title": f"{random.choice(task_titles)} — {lead['name']}",
                 "description": "Standard operational task for the sales pipeline.",
                 "priority": random.choice(["High", "Medium", "Low"]),
-                "due_date": due,
-                "done": random.choice([True, False]),
+                "due_date": due, "done": random.choice([True, False]),
                 "status": "Completed" if random.random() > 0.5 else "Pending",
                 "created_at": str(datetime.now())
-            }
-            keys = data.keys()
-            cols = ', '.join(keys)
-            ph = ', '.join(['?' for _ in keys])
-            query = f"INSERT INTO tasks ({cols}) VALUES ({ph})"
-            db_call(query, list(data.values()), commit=False)
+            })
     
-    conn.commit()
-    get_all_tasks.clear()
+    clear_all_db_caches()
     return True
 
 @st.cache_data
