@@ -66,8 +66,6 @@ if "show_loader" not in st.session_state:
     st.session_state.show_loader = False
 if "logging_out" not in st.session_state:
     st.session_state.logging_out = False
-if "pending_note" not in st.session_state:
-    st.session_state.pending_note = None
 
 # === LOGIN SYSTEM =============================================================
 def login_page():
@@ -202,30 +200,6 @@ def display_premium_loader():
         </div>
     """, unsafe_allow_html=True)
 
-def display_custom_notification(message, title="Protocol Update", note_type="success"):
-    local_css("assets/notifications.css")
-    icon = "✅" if note_type == "success" else ("❌" if note_type == "error" else "⚠️")
-    st.markdown(f"""
-        <div class="notification-container">
-            <div class="notification-box {note_type}">
-                <div class="notification-icon">{icon}</div>
-                <div class="notification-content">
-                    <div class="notification-title">{title}</div>
-                    <div class="notification-message">{message}</div>
-                </div>
-                <div class="notification-progress">
-                    <div class="notification-progress-bar"></div>
-                </div>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-# Show pending notifications
-if st.session_state.pending_note:
-    n = st.session_state.pending_note
-    display_custom_notification(n['msg'], n['title'], n['type'])
-    st.session_state.pending_note = None
-
 # Handle Logout (Instant)
 if st.session_state.logging_out:
     st.session_state.authenticated = False
@@ -236,9 +210,10 @@ if st.session_state.logging_out:
 if any(x not in st.session_state for x in ["leads", "tasks", "sales", "recurring_clients"]) or st.session_state.show_loader:
     display_premium_loader()
     
-    # Actually load data from DB (Simulated delay for animation visibility)
+    # Actually load data from DB
     if st.session_state.show_loader:
-        time.sleep(1.2) 
+        # Reduced delay or no delay for instant feel
+        pass 
 
     st.session_state.leads = db.get_all_leads()
     st.session_state.tasks = db.get_all_tasks()
@@ -1067,8 +1042,7 @@ elif page == "💰 Sales Report":
                             "created_at": str(datetime.now())
                         })
                 st.session_state.sales = db.get_all_sales()
-                st.session_state.show_loader = True
-                st.session_state.pending_note = {"msg": "Sales Ledger Synchronized!", "title": "Success", "type": "success"}
+                st.toast("✅ Sales Ledger Synchronized!")
                 st.rerun()
 
             # Excel Export
@@ -1342,8 +1316,7 @@ elif page == "👥 Leads":
                         if u_commit.form_submit_button("✅ SYNC CHANGES", use_container_width=True):
                             db.update_lead(l["id"], {"name": u_name, "company": u_comp, "email": u_email, "phone": u_phone, "status": u_status, "temperature": u_temp, "source": u_source, "followup_date": str(u_date), "notes": u_notes})
                             st.session_state.leads = db.get_all_leads()
-                            st.session_state.show_loader = True
-                            st.session_state.pending_note = {"msg": "Intelligence Record Synchronized!", "title": "Success", "type": "success"}
+                            st.toast("Intelligence Record Synchronized!")
                             st.rerun()
                         if u_purge.form_submit_button("🗑️ PURGE RECORD", use_container_width=True):
                             confirm_delete_lead(l['id'], l['name'])
@@ -1433,8 +1406,7 @@ elif page == "👥 Leads":
                     }
                     db.add_lead(lead_data)
                     st.session_state.leads = db.get_all_leads()
-                    st.session_state.show_loader = True
-                    st.session_state.pending_note = {"msg": f"Lead {name} added to pipeline.", "title": "Success", "type": "success"}
+                    st.toast(f"✅ Lead {name} added!")
                     st.rerun()
 
 
@@ -1561,8 +1533,7 @@ elif page == "✅ Tasks":
                     }
                     db.add_task(task_data)
                     st.session_state.tasks = db.get_all_tasks()
-                    st.session_state.show_loader = True
-                    st.session_state.pending_note = {"msg": "Task deployed to matrix.", "title": "Success", "type": "success"}
+                    st.toast("✅ Task added!")
                     st.rerun()
 
 
@@ -1665,8 +1636,7 @@ elif page == "✅ Tasks":
                             }
                             db.update_task(t["id"], upd_task)
                             st.session_state.tasks = db.get_all_tasks()
-                            st.session_state.show_loader = True
-                            st.session_state.pending_note = {"msg": "Task Matrix Updated!", "title": "Success", "type": "success"}
+                            st.toast("✅ Task Matrix Updated!")
                             st.rerun()
 
                 col1, col2, col3 = st.columns([8, 1, 1])
@@ -1985,9 +1955,7 @@ elif page == "⚙️ Settings":
                 "last_auto_run": s.get("last_auto_run", "")
             }
             db.save_settings(st.session_state.settings)
-            st.session_state.show_loader = True
-            st.session_state.pending_note = {"msg": "Core Configuration Synchronized!", "title": "Success", "type": "success"}
-            st.rerun()
+            st.success("Core Configuration Synchronized!")
 
     st.markdown('<div class="section-heading">🧪 Protocol Verification</div>', unsafe_allow_html=True)
     with st.form("test_email"):
@@ -2134,10 +2102,10 @@ elif page == "📢 Email Marketing":
                     payload = {"name": t_name, "subject": t_subject, "body": t_body, "created_at": str(datetime.now())}
                     if edit_id:
                         db.update_template(edit_id, payload)
-                        st.session_state.pending_note = {"msg": "Template Synchronized!", "title": "Success", "type": "success"}
+                        st.toast("✅ Template Synchronized!")
                     else:
                         db.add_template(payload)
-                        st.session_state.pending_note = {"msg": "New Protocol Template Authorized!", "title": "Success", "type": "success"}
+                        st.toast("✨ New Protocol Template Authorized!")
                     st.session_state.edit_template_id = None
                     st.session_state.pop(f"ai_gen_{edit_id or 'new'}", None)
                     st.rerun()
