@@ -1555,6 +1555,7 @@ elif page == "✅ Tasks":
                         "title": title, "lead_id": lead_id, "priority": priority,
                         "due_date": str(due_date), "description": description,
                         "remind_email": remind_email, "done": t_status == "Completed",
+                        "status": t_status,
                         "created_at": str(datetime.now())
                     }
                     db.add_task(task_data)
@@ -1658,6 +1659,7 @@ elif page == "✅ Tasks":
                                 "due_date": str(e_due),
                                 "remind_email": e_remind,
                                 "done": e_status == "Completed",
+                                "status": e_status,
                                 "description": e_desc
                             }
                             db.update_task(t["id"], upd_task)
