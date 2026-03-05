@@ -167,10 +167,18 @@ def init_db():
             due_date TEXT,
             remind_email TEXT,
             done {bool_type},
+            status TEXT DEFAULT 'Pending',
             created_at TEXT,
             FOREIGN KEY (lead_id) REFERENCES leads (id)
         )
     ''')
+
+    # Migration for Status Column in Tasks
+    try:
+        cursor.execute("ALTER TABLE tasks ADD COLUMN status TEXT DEFAULT 'Pending'")
+        conn.commit()
+    except Exception:
+        pass 
     
     # Settings Table
     cursor.execute('''
