@@ -2026,16 +2026,6 @@ elif page == "⚙️ Settings":
             st.rerun()
         st.markdown("<p style='font-size:0.75rem; opacity:0.7; margin-top:-5px;'>سافٹ ویئر کی عارضی میموری صاف کریں (ڈیٹا محفوظ رہے گا)۔</p>", unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🔄 FORCE RESYNC FROM SOURCE", use_container_width=True):
-        db.clear_all_db_caches()
-        # Also clean session state pointers to force reload on next page load
-        for key in ["leads", "tasks", "sales", "recurring_clients"]:
-            if key in st.session_state: del st.session_state[key]
-        st.session_state.show_loader = True
-        st.success("Database synchronization complete. Refreshing segments...")
-        st.rerun()
-    st.markdown("<p style='font-size:0.75rem; opacity:0.7; margin-top:-5px; text-align:center;'>تمام ڈیٹا براہِ راست ڈیٹا بیس سے دوبارہ لوڈ کریں (اگر ڈیٹا شو نہ ہو رہا ہو)۔</p>", unsafe_allow_html=True)
 
     st.markdown('<div class="section-heading">🗄️ Database Governance</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
