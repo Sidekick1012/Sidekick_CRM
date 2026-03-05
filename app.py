@@ -410,30 +410,20 @@ if not st.session_state.logging_out:
         </div>
         """, unsafe_allow_html=True)
 
-        # Initial year check to avoid bootstrap error
-        years_temp = [datetime.now().year]
+        # PROCESS DATA (CACHED PASS FOR YEARS)
+        raw_l = st.session_state.leads
+        raw_t = st.session_state.tasks
+        data_bundle_pass = get_processed_data(raw_l, raw_t, datetime.now().year, 0)
+        available_years = data_bundle_pass["available_years"]
         
         st.markdown('<div class="filter-container" style="background:rgba(255,255,255,0.05); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">', unsafe_allow_html=True)
-        temp_sel_year = st.selectbox("Year Filter", options=[datetime.now().year], key="temp_y", label_visibility="collapsed") # Placeholder
+        selected_year = st.selectbox("Intelligence Year", options=available_years, index=0, key="nav_year")
         month_names = ["Full Year Intel", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        selected_month_name = st.selectbox("Month Filter", options=month_names, index=0)
+        selected_month_name = st.selectbox("Intelligence Month", options=month_names, index=0)
         selected_month = month_names.index(selected_month_name)
         st.markdown('</div>', unsafe_allow_html=True)
 
-        # PROCESS DATA (CACHED)
-        raw_l = st.session_state.leads
-        raw_t = st.session_state.tasks
-        
-        # We need a first pass to get years
-        data_bundle = get_processed_data(raw_l, raw_t, datetime.now().year, 0)
-        available_years = data_bundle["available_years"]
-        
-        # Correct the selectbox with real years
-        st.markdown("""<style>div[data-testid="stSelectbox"]+div { margin-top: -85px !important; }</style>""", unsafe_allow_html=True) # visual fix
-        # RE-DOING Filtering logic cleaner
-        selected_year = st.selectbox("Select Year", options=available_years, index=0, key="nav_year")
-        
-        # Get final data
+        # Get final data based on actual selection
         data = get_processed_data(raw_l, raw_t, selected_year, selected_month)
         leads = data["leads"]
         tasks = data["tasks"]
