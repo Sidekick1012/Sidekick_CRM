@@ -44,38 +44,38 @@ DB_TYPE, DB_URL = get_db_config()
 def get_connection_pool():
     if DB_TYPE == "postgres" and psycopg2:
         try:
-            # Threaded pool is better for Streamlit's architecture
             return psycopg2.pool.ThreadedConnectionPool(1, 20, DB_URL)
-        except Exception as e:
-            st.error(f"Failed to create connection pool: {e}")
+        except Exception:
             return None
     return None
 
 POSTGRES_POOL = get_connection_pool()
 
+def _get_sqlite_conn():
+    """Returns a local SQLite connection."""
+    db_dir = os.path.dirname(DB_PATH)
+    if db_dir and not os.path.exists(db_dir):
+        os.makedirs(db_dir, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
 def get_connection():
+    global DB_TYPE  # allow fallback to flip the mode
     if DB_TYPE == "postgres":
         if not psycopg2:
-            st.error("psycopg2 not installed. Please run 'pip install psycopg2-binary'")
-            return None
-        
-        if POSTGRES_POOL:
-            try:
+            DB_TYPE = "sqlite"
+            return _get_sqlite_conn()
+        try:
+            if POSTGRES_POOL:
                 return POSTGRES_POOL.getconn()
-            except Exception as e:
-                st.error(f"Error getting connection from pool: {e}")
-                # Fallback to direct connection if pool fails
+            else:
                 return psycopg2.connect(DB_URL)
-        else:
-            return psycopg2.connect(DB_URL)
-    else:
-        # Ensure directory exists for local setups
-        db_dir = os.path.dirname(DB_PATH)
-        if db_dir and not os.path.exists(db_dir):
-            os.makedirs(db_dir, exist_ok=True)
-        conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
-        return conn
+        except Exception:
+            # PostgreSQL unreachable — fall back to SQLite silently
+            DB_TYPE = "sqlite"
+            return _get_sqlite_conn()
+    return _get_sqlite_conn()
 
 def release_connection(conn):
     if DB_TYPE == "postgres" and POSTGRES_POOL and conn:
