@@ -26,13 +26,14 @@ def get_db_config():
         # Check standard Streamlit connections format
         if "connections" in st.secrets and "postgresql" in st.secrets["connections"]:
             url = st.secrets["connections"]["postgresql"].get("url")
-        # Check a flattened format as fallback
+        elif "DATABASE_URL" in st.secrets:
+            url = st.secrets["DATABASE_URL"]
         elif "SUPABASE_URL" in st.secrets:
             url = st.secrets["SUPABASE_URL"]
     except Exception:
         pass
     
-    if url and url != "" and "[YOUR-PASSWORD]" not in url:
+    if url and url != "" and "[YOUR-PASSWORD]" not in url and url.startswith(("postgres://", "postgresql://")):
         return "postgres", url
     return "sqlite", DB_PATH
 

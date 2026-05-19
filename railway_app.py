@@ -145,6 +145,8 @@ if menu == "📊 Dashboard":
     bookings = db.get_bookings()
     schedules = db.get_schedules()
     
+    total_rev = sum([b['price'] for b in bookings if 'price' in b]) # Simplified
+    # In my DB schema, price is in schedules. Let's fix that calculation.
     total_rev = 0
     for b in bookings:
         for s in schedules:
