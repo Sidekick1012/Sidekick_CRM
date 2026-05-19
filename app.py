@@ -11,44 +11,31 @@ st.set_page_config(page_title="Sidekick CRM", page_icon="🤝", layout="wide",
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
 :root {
-    --primary: #7c3aed;
-    --primary-glow: rgba(124, 58, 237, 0.15);
-    --primary-light: #a78bfa;
-    --bg: #090b11;
-    --card-bg: rgba(17, 24, 39, 0.6);
-    --card-border: rgba(255, 255, 255, 0.07);
-    --text-main: #f3f4f6;
-    --text-muted: #9ca3af;
-    --success: #10b981;
-    --success-glow: rgba(16, 185, 129, 0.15);
-    --warning: #f59e0b;
-    --warning-glow: rgba(245, 158, 11, 0.15);
-    --danger: #f43f5e;
-    --danger-glow: rgba(244, 63, 94, 0.15);
-    --sky: #06b6d4;
-    --sky-glow: rgba(6, 182, 212, 0.15);
+    --bg-color: #030303;
+    --surface-color: #0A0A0B;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #F4F4F5;
+    --text-secondary: #A1A1AA;
+    --accent-solid: #FFFFFF;
 }
 
 /* Global modifications */
 html, body, .stApp {
-    background-color: var(--bg) !important;
+    background-color: var(--bg-color) !important;
     background-image: 
-        radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.05) 0%, transparent 50%) !important;
-    background-attachment: fixed !important;
-    color: var(--text-main) !important;
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 70%),
+        radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.02) 0%, transparent 50%) !important;
+    color: var(--text-primary) !important;
     font-family: 'Inter', sans-serif !important;
 }
 
 /* Sidebar styling */
 section[data-testid="stSidebar"] {
-    background: rgba(10, 11, 18, 0.8) !important;
-    border-right: 1px solid var(--card-border) !important;
-    backdrop-filter: blur(25px) saturate(180%) !important;
+    background: #050505 !important;
+    border-right: 1px solid var(--border-color) !important;
 }
 
 section[data-testid="stSidebar"] .stRadio > label {
@@ -57,158 +44,154 @@ section[data-testid="stSidebar"] .stRadio > label {
 
 /* Sidebar active indicators */
 section[data-testid="stSidebar"] div[role="radiogroup"] {
-    gap: 8px;
+    gap: 4px;
 }
 
 section[data-testid="stSidebar"] div[role="radiogroup"] label {
-    background: rgba(255, 255, 255, 0.02) !important;
-    border: 1px solid var(--card-border) !important;
-    border-radius: 12px !important;
-    padding: 10px 16px !important;
-    color: var(--text-muted) !important;
-    font-weight: 600 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: 6px !important;
+    padding: 12px 16px !important;
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
 }
 
 section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    border-color: rgba(255, 255, 255, 0.15) !important;
-    transform: translateX(2px) !important;
+    color: var(--text-primary) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
 }
 
 section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
-    color: #ffffff !important;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(6, 182, 212, 0.05)) !important;
-    border-color: rgba(124, 58, 237, 0.25) !important;
-    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1) !important;
+    color: #000000 !important;
+    background: var(--accent-solid) !important;
+    font-weight: 600 !important;
 }
 
 /* Premium cards */
 .card {
-    background: var(--card-bg) !important;
-    border: 1px solid var(--card-border) !important;
-    border-radius: 24px !important;
-    padding: 28px !important;
+    background: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 32px !important;
     margin-bottom: 24px !important;
-    backdrop-filter: blur(20px) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease !important;
 }
 
 .card:hover {
-    border-color: rgba(124, 58, 237, 0.3) !important;
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        0 0 25px rgba(124, 58, 237, 0.1) !important;
-    transform: translateY(-4px) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px) !important;
 }
 
 .metric-val {
-    font-family: 'Outfit', sans-serif !important;
-    font-size: 2.6rem !important;
-    font-weight: 800 !important;
-    letter-spacing: -1px !important;
-    background: linear-gradient(135deg, #ffffff, #a78bfa) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    margin-bottom: 4px !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 3.2rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -1.5px !important;
+    color: var(--text-primary) !important;
+    line-height: 1.1 !important;
 }
 
 .metric-lbl {
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
     font-size: 0.75rem !important;
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     text-transform: uppercase !important;
     letter-spacing: 2px !important;
-    color: var(--text-muted) !important;
+    color: var(--text-secondary) !important;
+    margin-top: 8px !important;
 }
 
 .page-title {
-    font-family: 'Outfit', sans-serif !important;
-    font-size: 2.6rem !important;
-    font-weight: 800 !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
     letter-spacing: -1px !important;
-    background: linear-gradient(135deg, #ffffff, #9ca3af) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    margin-bottom: 32px !important;
+    color: var(--text-primary) !important;
+    margin-bottom: 40px !important;
+    text-transform: uppercase !important;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
 }
 
 /* Badges */
 .badge {
     display: inline-block !important;
-    padding: 4px 12px !important;
-    border-radius: 100px !important;
-    font-size: 0.75rem !important;
-    font-weight: 700 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    padding: 6px 14px !important;
+    border-radius: 4px !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
+    letter-spacing: 1px !important;
+    border: 1px solid var(--border-color) !important;
+    background: #111111 !important;
+    color: var(--text-primary) !important;
 }
 
-.badge-hot { background: var(--danger-glow) !important; color: var(--danger) !important; border: 1px solid rgba(244, 63, 94, 0.15) !important; }
-.badge-warm { background: var(--warning-glow) !important; color: var(--warning) !important; border: 1px solid rgba(245, 158, 11, 0.15) !important; }
-.badge-cold { background: var(--sky-glow) !important; color: var(--sky) !important; border: 1px solid rgba(6, 182, 212, 0.15) !important; }
-.badge-new { background: var(--primary-glow) !important; color: var(--primary-light) !important; border: 1px solid rgba(124, 58, 237, 0.15) !important; }
-.badge-progress { background: var(--success-glow) !important; color: var(--success) !important; border: 1px solid rgba(16, 185, 129, 0.15) !important; }
-.badge-closed { background: rgba(255, 255, 255, 0.05) !important; color: var(--text-muted) !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; }
+.badge-hot, .badge-warm, .badge-cold, .badge-new, .badge-progress, .badge-closed {
+    /* Unifying badges for a sleek, serious monochrome look */
+    background: #0A0A0B !important; 
+    color: #E4E4E7 !important; 
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.badge-hot { border-color: rgba(244, 63, 94, 0.5) !important; color: #f43f5e !important; }
+.badge-progress { border-color: rgba(16, 185, 129, 0.5) !important; color: #10b981 !important; }
 
 /* Buttons */
 .stButton>button {
-    background: linear-gradient(135deg, var(--primary), #6d28d9) !important;
-    color: white !important;
+    background: var(--accent-solid) !important;
+    color: #000000 !important;
     border: none !important;
-    padding: 12px 24px !important;
-    border-radius: 14px !important;
-    font-weight: 700 !important;
-    font-family: 'Outfit', sans-serif !important;
+    padding: 14px 28px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
     cursor: pointer !important;
-    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.3s ease !important;
 }
 
 .stButton>button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5) !important;
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+    background: #E4E4E7 !important;
+    transform: scale(1.02) !important;
 }
 
 /* Forms and containers */
 div[data-testid="stForm"], .stExpander {
-    background: var(--card-bg) !important;
-    border: 1px solid var(--card-border) !important;
-    border-radius: 20px !important;
+    background: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
     padding: 24px !important;
-    backdrop-filter: blur(20px) !important;
 }
 
 /* Inputs, Selectboxes, Textareas */
 .stTextInput>div>div>input, .stSelectbox>div>div, .stTextArea>div>div>textarea {
-    background: rgba(10, 11, 18, 0.6) !important;
-    border: 1px solid var(--card-border) !important;
-    color: #ffffff !important;
-    border-radius: 14px !important;
-    padding: 10px 14px !important;
+    background: #000000 !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px !important;
+    padding: 12px 16px !important;
     transition: all 0.3s !important;
 }
 
 .stTextInput>div>div>input:focus, .stSelectbox>div>div:focus-within, .stTextArea>div>div>textarea:focus {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.25) !important;
-    background: rgba(10, 11, 18, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: none !important;
+    background: #050505 !important;
 }
 
 /* Dataframe & Tables */
 .stDataFrame, div[data-testid="stTable"] {
-    border-radius: 16px !important;
+    border-radius: 8px !important;
     overflow: hidden !important;
-    border: 1px solid var(--card-border) !important;
+    border: 1px solid var(--border-color) !important;
 }
 
 hr {
-    border-color: var(--card-border) !important;
+    border-color: var(--border-color) !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -236,9 +219,9 @@ if not st.session_state.user:
         st.markdown("<br><br>", unsafe_allow_html=True)
         st.markdown("""
         <div style='text-align:center;margin-bottom:32px;'>
-            <div style='font-size:3rem;'>🤝</div>
-            <h1 style='font-size:2rem;font-weight:800;color:#6366f1;margin:0;'>Sidekick CRM</h1>
-            <p style='color:#94a3b8;font-size:.85rem;letter-spacing:2px;'>SIGN IN TO CONTINUE</p>
+            <div style='font-size:3.5rem;font-weight:700;letter-spacing:-2px;font-family:"Space Grotesk", sans-serif;color:#FFFFFF;'>S.</div>
+            <h1 style='font-size:2rem;font-weight:700;color:#F4F4F5;margin:8px 0 0 0;font-family:"Space Grotesk", sans-serif;letter-spacing:-1px;'>Sidekick CRM</h1>
+            <p style='color:#A1A1AA;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;margin-top:8px;'>Secure Access</p>
         </div>
         """, unsafe_allow_html=True)
         with st.form("login"):
@@ -259,14 +242,14 @@ role = user.get("role", "User")
 
 with st.sidebar:
     st.markdown(f"""
-    <div style='text-align:center;padding:16px 0 24px;'>
-        <div style='font-size:2rem;'>🤝</div>
-        <h2 style='color:#6366f1;margin:4px 0;font-size:1.4rem;'>Sidekick CRM</h2>
-        <p style='color:#94a3b8;font-size:.7rem;letter-spacing:2px;'>INTELLIGENCE PLATFORM</p>
+    <div style='text-align:center;padding:16px 0 32px;'>
+        <div style='font-size:2.5rem;font-weight:700;letter-spacing:-2px;font-family:"Space Grotesk", sans-serif;color:#FFFFFF;'>S.</div>
+        <h2 style='color:#F4F4F5;margin:4px 0;font-size:1.2rem;font-family:"Space Grotesk", sans-serif;letter-spacing:-0.5px;'>Sidekick</h2>
+        <p style='color:#A1A1AA;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;'>System Core</p>
     </div>
-    <div class='card' style='text-align:center;padding:12px;margin-bottom:16px;'>
-        <div style='font-weight:700;font-size:.95rem;'>👤 {user['username']}</div>
-        <div style='color:#818cf8;font-size:.75rem;'>{role}</div>
+    <div class='card' style='text-align:center;padding:16px;margin-bottom:24px;border-radius:8px;'>
+        <div style='font-weight:600;font-size:.9rem;color:#F4F4F5;letter-spacing:0.5px;'>{user['username']}</div>
+        <div style='color:#A1A1AA;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;margin-top:4px;'>{role}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -306,7 +289,7 @@ if menu == "📊 Dashboard":
             df_s["amount"] = pd.to_numeric(df_s["amount"], errors="coerce")
             monthly = df_s.groupby("month_year")["amount"].sum().reset_index().sort_values("month_year")
             fig = px.area(monthly, x="month_year", y="amount", title="Revenue Over Time",
-                          color_discrete_sequence=["#6366f1"])
+                          color_discrete_sequence=["#FFFFFF"])
             fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                               font_color="white", title_font_color="white")
             st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -319,7 +302,7 @@ if menu == "📊 Dashboard":
             status_counts = df_l["status"].value_counts()
             fig2 = px.pie(values=status_counts.values, names=status_counts.index,
                           hole=0.6, title="Lead Status",
-                          color_discrete_sequence=["#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe"])
+                          color_discrete_sequence=["#FFFFFF", "#A1A1AA", "#52525B", "#27272A"])
             fig2.update_layout(paper_bgcolor="rgba(0,0,0,0)", font_color="white",
                                title_font_color="white", showlegend=True)
             st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -495,13 +478,13 @@ elif menu == "💰 Sales":
         with col_l:
             monthly = df.groupby("month_year")["amount"].sum().reset_index().sort_values("month_year")
             fig = px.bar(monthly, x="month_year", y="amount", title="Monthly Revenue",
-                         color_discrete_sequence=["#6366f1"])
+                         color_discrete_sequence=["#FFFFFF"])
             fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font_color="white")
             st.plotly_chart(fig, use_container_width=True)
         with col_r:
             cat = df.groupby("category")["amount"].sum().reset_index()
             fig2 = px.pie(cat, values="amount", names="category", hole=0.5, title="Revenue by Category",
-                          color_discrete_sequence=px.colors.sequential.Purp)
+                          color_discrete_sequence=["#FFFFFF", "#D4D4D8", "#A1A1AA", "#71717A", "#52525B", "#3F3F46"])
             fig2.update_layout(paper_bgcolor="rgba(0,0,0,0)", font_color="white")
             st.plotly_chart(fig2, use_container_width=True)
 
