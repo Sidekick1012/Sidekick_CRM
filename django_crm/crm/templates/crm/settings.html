@@ -1,0 +1,79 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Settings - Sidekick CRM{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+    <div>
+        <p style="color: var(--primary-light); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700;">System Preferences</p>
+        <h1 class="page-title">Settings & Automations</h1>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Left column: SMTP / Email preferences -->
+    <div>
+        <div class="card">
+            <h3 style="margin-bottom: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-envelope-circle-check" style="color: var(--primary);"></i> SMTP Credentials Config
+            </h3>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <div class="grid-2" style="grid-template-columns: 2fr 1fr; gap: 16px;">
+                    <div>
+                        <label>SMTP Host</label>
+                        <input type="text" name="smtp_host" value="{{ settings.smtp_host }}" placeholder="smtp.gmail.com">
+                    </div>
+                    <div>
+                        <label>SMTP Port</label>
+                        <input type="text" name="smtp_port" value="{{ settings.smtp_port }}" placeholder="587">
+                    </div>
+                </div>
+                
+                <label>SMTP Username / Email address</label>
+                <input type="email" name="smtp_user" value="{{ settings.smtp_user }}" placeholder="user@gmail.com">
+                
+                <label>SMTP App Password / Access key</label>
+                <input type="password" name="smtp_pass" value="{{ settings.smtp_pass }}" placeholder="••••••••••••••••">
+                
+                <label>Default Dispatch Notification CC Email</label>
+                <input type="email" name="notify_email" value="{{ settings.notify_email }}" placeholder="notifications@example.com">
+                
+                <h3 style="margin: 24px 0 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); padding-top: 24px;">
+                    <i class="fa-solid fa-robot" style="color: var(--primary);"></i> Artificial Intelligence Config
+                </h3>
+                
+                <label>Gemini Generative AI secret key</label>
+                <input type="password" name="gemini_api_key" value="{{ settings.gemini_api_key }}" placeholder="AIzaSy...">
+                
+                <button type="submit" class="btn" style="width: 100%; margin-top: 16px;">💾 Save CRM Preferences</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Right column: Database / Data management utils -->
+    <div>
+        <div class="card">
+            <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-database" style="color: var(--primary);"></i> DB Pipeline Utilities
+            </h3>
+            <p style="color: var(--muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 24px;">
+                Populate your pipeline with rich mock customer details, tasks, and historical invoice ledgers for standard dashboard testing.
+            </p>
+            
+            <a href="{% url 'generate_dummy_data' %}" class="btn" style="width: 100%; background: var(--success);"><i class="fa-solid fa-seedling"></i> Generate Sample Data Pipeline</a>
+            
+            <div style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px; text-align: left;">
+                <h4 style="margin-bottom: 12px; font-weight: 700; color: var(--primary-light);">System Status Details</h4>
+                <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border); font-family: monospace; font-size: 0.8rem;">
+                    <p style="margin-bottom: 6px;">Engine Version: 4.1.2-Enterprise-LTS</p>
+                    <p style="margin-bottom: 6px;">DB Connection: Standard PostgreSQL / SQLite</p>
+                    <p style="margin-bottom: 6px;">Session state: STABLE</p>
+                    <p style="color: var(--success); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> System Operational</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

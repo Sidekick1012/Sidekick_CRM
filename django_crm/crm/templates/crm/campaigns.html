@@ -1,0 +1,107 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Email Campaigns - Sidekick CRM{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+    <div>
+        <p style="color: var(--primary-light); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700;">Marketing Automation</p>
+        <h1 class="page-title">Campaigns & Templates</h1>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Left Column: Templates Management -->
+    <div>
+        <div class="card">
+            <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-file-invoice" style="color: var(--primary);"></i> Saved Templates
+            </h3>
+            
+            <details style="margin-bottom: 24px;">
+                <summary class="btn" style="width: 100%;">
+                    <i class="fa-solid fa-plus"></i> Create New Template
+                </summary>
+                <div class="card" style="margin-top: 16px; background: rgba(0,0,0,0.1);">
+                    <form action="{% url 'add_template' %}" method="POST">
+                        {% csrf_token %}
+                        <label>Template Name</label>
+                        <input type="text" name="name" required placeholder="Promotional Offer A">
+                        <label>Subject</label>
+                        <input type="text" name="subject" required placeholder="Exclusive discount for your business!">
+                        <label>Body (HTML / CSS Supported)</label>
+                        <textarea name="body" required placeholder="&lt;div style='color: #333;'&gt;Hi [Lead Name]...&lt;/div&gt;" style="height: 180px;"></textarea>
+                        <button type="submit" class="btn" style="width: 100%;">Save Email Template</button>
+                    </form>
+                </div>
+            </details>
+
+            <!-- Templates List -->
+            <div>
+                {% for t in templates %}
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h4 style="margin: 0; font-weight: 700;">{{ t.name }}</h4>
+                            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Subject: {{ t.subject }}</p>
+                        </div>
+                        <a href="{% url 'delete_template' t.id %}" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.75rem;"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="text-align: center; color: var(--muted); padding: 20px;">No email templates registered.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Campaigns Executer -->
+    <div>
+        <div class="card">
+            <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-paper-plane" style="color: var(--primary);"></i> Marketing Campaigns
+            </h3>
+            
+            <details style="margin-bottom: 24px;">
+                <summary class="btn" style="width: 100%;">
+                    <i class="fa-solid fa-plus"></i> Dispatch Campaign
+                </summary>
+                <div class="card" style="margin-top: 16px; background: rgba(0,0,0,0.1);">
+                    <form action="{% url 'add_campaign' %}" method="POST">
+                        {% csrf_token %}
+                        <label>Campaign Name</label>
+                        <input type="text" name="name" required placeholder="Q2 Product Re-engagement">
+                        <label>Select template source</label>
+                        <select name="template" required>
+                            {% for t in templates %}
+                            <option value="{{ t.id }}">{{ t.name }}</option>
+                            {% empty %}
+                            <option value="">Create a template first!</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn" style="width: 100%;" {% if not templates %}disabled{% endif %}>Dispatch to Leads Pipeline</button>
+                    </form>
+                </div>
+            </details>
+
+            <!-- Campaigns List -->
+            <div>
+                {% for c in campaigns %}
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0; font-weight: 700;">{{ c.name }}</h4>
+                        <span class="badge badge-progress">{{ c.status }}</span>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 16px; font-size: 0.8rem; color: var(--muted);">
+                        <span><i class="fa-solid fa-check" style="color: var(--success);"></i> Sent: {{ c.stats_sent }}</span>
+                        <span><i class="fa-solid fa-xmark" style="color: var(--danger);"></i> Failed: {{ c.stats_failed }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="text-align: center; color: var(--muted); padding: 20px;">No campaigns logged.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

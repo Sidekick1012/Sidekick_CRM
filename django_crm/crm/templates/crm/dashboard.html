@@ -1,0 +1,163 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Dashboard - Sidekick CRM{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+    <div>
+        <p style="color: var(--primary-light); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700;">Operational Hub</p>
+        <h1 class="page-title">Executive Dashboard</h1>
+    </div>
+</div>
+
+<div class="metric-grid">
+    <div class="card metric-card">
+        <div class="metric-val">{{ metrics.total_leads }}</div>
+        <div class="metric-lbl">Total Leads</div>
+    </div>
+    <div class="card metric-card">
+        <div class="metric-val">{{ metrics.active_leads }}</div>
+        <div class="metric-lbl">Active Leads</div>
+    </div>
+    <div class="card metric-card">
+        <div class="metric-val">{{ metrics.pending_tasks }}</div>
+        <div class="metric-lbl">Pending Tasks</div>
+    </div>
+    <div class="card metric-card">
+        <div class="metric-val">${{ metrics.total_revenue|floatformat:0 }}</div>
+        <div class="metric-lbl">Total Revenue</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Revenue Dynamics -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Revenue Performance
+        </h3>
+        <div style="height: 300px; position: relative;">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Status Breakdown -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Pipeline Status
+        </h3>
+        <div style="height: 300px; position: relative;">
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Leads -->
+<div class="card" style="margin-top: 24px;">
+    <h3 style="margin-bottom: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-circle-notch" style="color: var(--primary);"></i> Recent Pipeline Submissions
+    </h3>
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Temperature</th>
+                    <th>Source</th>
+                    <th>Followup Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in recent_leads %}
+                <tr>
+                    <td style="font-weight: 600;">{{ lead.name }}</td>
+                    <td>{{ lead.company|default:"—" }}</td>
+                    <td>
+                        <span class="badge {% if lead.status == 'New' %}badge-new{% elif lead.status == 'In Progress' %}badge-progress{% else %}badge-closed{% endif %}">
+                            {{ lead.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge {% if lead.temperature == 'Hot' %}badge-hot{% elif lead.temperature == 'Warm' %}badge-warm{% else %}badge-cold{% endif %}">
+                            {{ lead.temperature }}
+                        </span>
+                    </td>
+                    <td>{{ lead.source }}</td>
+                    <td>{{ lead.followup_date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--muted);">No leads currently inside your pipeline. Go to settings to populate dummy data!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Revenue Performance Chart
+    const revCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revCtx, {
+        type: 'line',
+        data: {
+            labels: {{ revenue_labels|safe }},
+            datasets: [{
+                label: 'Monthly Revenue ($)',
+                data: {{ revenue_data|safe }},
+                borderColor: '#818cf8',
+                backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#94a3b8' }
+                },
+                y: {
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#94a3b8' }
+                }
+            }
+        }
+    });
+
+    // Pipeline Status Pie Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusData = {
+        labels: [{% for item in status_counts %}'{{ item.status }}',{% endfor %}],
+        datasets: [{
+            data: [{% for item in status_counts %}{{ item.count }},{% endfor %}],
+            backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe'],
+            borderWidth: 0
+        }]
+    };
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: statusData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#f1f5f9', boxWidth: 12 }
+                }
+            },
+            cutout: '70%'
+        }
+    });
+</script>
+{% endblock %}

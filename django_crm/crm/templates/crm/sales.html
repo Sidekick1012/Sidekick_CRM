@@ -1,0 +1,183 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Sales Report - Sidekick CRM{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+    <div>
+        <p style="color: var(--primary-light); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700;">Financial Metrics</p>
+        <h1 class="page-title">Sales & Revenues</h1>
+    </div>
+    
+    <details>
+        <summary class="btn">
+            <i class="fa-solid fa-plus"></i> Record Sale
+        </summary>
+        <div class="card" style="margin-top: 16px; text-align: left;">
+            <form action="{% url 'add_sale' %}" method="POST">
+                {% csrf_token %}
+                <div class="grid-3">
+                    <div>
+                        <label>Month (YYYY-MM)</label>
+                        <input type="text" name="month_year" required value="2026-05" placeholder="YYYY-MM">
+                    </div>
+                    <div>
+                        <label>Category</label>
+                        <select name="category">
+                            <option value="Software License">Software License</option>
+                            <option value="Professional Services">Professional Services</option>
+                            <option value="System Integration">System Integration</option>
+                            <option value="Cloud Hosting">Cloud Hosting</option>
+                            <option value="Training & Support">Training & Support</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Client Name</label>
+                        <input type="text" name="client" required placeholder="Ahmed Khan">
+                    </div>
+                </div>
+                <div>
+                    <label>Amount ($)</label>
+                    <input type="number" name="amount" step="0.01" min="0" required placeholder="5000">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label>Notes</label>
+                    <textarea name="notes" placeholder="Specify project deliverables or items sold..." style="height: 100px;"></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Commit Sale Record</button>
+            </form>
+        </div>
+    </details>
+</div>
+
+<div class="metric-grid">
+    <div class="card metric-card">
+        <div class="metric-val">${{ total_revenue|floatformat:2 }}</div>
+        <div class="metric-lbl">Total Sales revenue</div>
+    </div>
+    <div class="card metric-card">
+        <div class="metric-val">{{ total_entries }}</div>
+        <div class="metric-lbl">Total Invoice entries</div>
+    </div>
+    <div class="card metric-card">
+        <div class="metric-val" style="font-size: 1.4rem; padding-top: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ top_client }}</div>
+        <div class="metric-lbl">Valued VIP Client</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Categories Breakdown -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-wallet" style="color: var(--primary);"></i> Revenue by Category
+        </h3>
+        <div style="height: 300px; position: relative;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Monthly Revenue -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-cubes" style="color: var(--primary);"></i> Monthly Performance
+        </h3>
+        <div style="height: 300px; position: relative;">
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Sales Invoices Ledger -->
+<div class="card" style="margin-top: 24px;">
+    <h3 style="margin-bottom: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Sales Invoice Ledger
+    </h3>
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Client</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td style="font-family: monospace; font-weight: 700;">{{ sale.month_year }}</td>
+                    <td style="font-weight: 600;">{{ sale.client }}</td>
+                    <td>{{ sale.category }}</td>
+                    <td style="color: var(--success); font-weight: 700;">${{ sale.amount }}</td>
+                    <td style="font-size: 0.8rem; color: var(--muted);">{{ sale.notes|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'delete_sale' sale.id %}" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="return confirm('Are you sure?');">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--muted);">No sales record logged yet. Go to Settings and generate sample data!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Categories Doughnut Chart
+    const catCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(catCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for c in category_sales %}'{{ c.category }}',{% endfor %}],
+            datasets: [{
+                data: [{% for c in category_sales %}{{ c.total }},{% endfor %}],
+                backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#f1f5f9', boxWidth: 12 }
+                }
+            },
+            cutout: '60%'
+        }
+    });
+
+    // Monthly Bar Chart
+    const monCtx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(monCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for m in monthly_sales %}'{{ m.month_year }}',{% endfor %}],
+            datasets: [{
+                data: [{% for m in monthly_sales %}{{ m.total }},{% endfor %}],
+                backgroundColor: '#6366f1',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+</script>
+{% endblock %}

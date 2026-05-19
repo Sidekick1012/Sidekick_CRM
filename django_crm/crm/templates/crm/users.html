@@ -1,0 +1,86 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}User Management - Sidekick CRM{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+    <div>
+        <p style="color: var(--primary-light); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700;">System Access Controls</p>
+        <h1 class="page-title">User Accounts & Roles</h1>
+    </div>
+    
+    <details>
+        <summary class="btn">
+            <i class="fa-solid fa-user-plus"></i> Create User Account
+        </summary>
+        <div class="card" style="margin-top: 16px; text-align: left;">
+            <form action="{% url 'add_user' %}" method="POST">
+                {% csrf_token %}
+                <div class="grid-3">
+                    <div>
+                        <label>Username</label>
+                        <input type="text" name="username" required placeholder="manager1">
+                    </div>
+                    <div>
+                        <label>Password</label>
+                        <input type="password" name="password" required placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label>User Role</label>
+                        <select name="role">
+                            <option value="User" selected>User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 8px;">Create System User</button>
+            </form>
+        </div>
+    </details>
+</div>
+
+<!-- Users List card -->
+<div class="card">
+    <h3 style="margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Registered Users Directory
+    </h3>
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Permissions Role</th>
+                    <th>Status</th>
+                    <th>Last Active</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users_list %}
+                <tr>
+                    <td style="font-weight: 600;">{{ u.username }}</td>
+                    <td>
+                        <span class="badge {% if u.is_superuser %}badge-hot{% else %}badge-new{% endif %}">
+                            {% if u.is_superuser %}Admin / Superuser{% else %}Standard User{% endif %}
+                        </span>
+                    </td>
+                    <td><span class="badge badge-progress">Active</span></td>
+                    <td style="color: var(--muted); font-size: 0.85rem;">{{ u.last_login|default:"Never logged in" }}</td>
+                    <td>
+                        {% if u != request.user %}
+                        <a href="{% url 'delete_user' u.id %}" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                        {% else %}
+                        <span style="color: var(--muted); font-size: 0.8rem; font-style: italic;">Self (Current User)</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--muted);">No users found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

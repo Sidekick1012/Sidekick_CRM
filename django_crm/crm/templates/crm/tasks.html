@@ -1,0 +1,119 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Tasks - Sidekick CRM{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+    <div>
+        <p style="color: var(--primary-light); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700;">Task Operations</p>
+        <h1 class="page-title">Tasks & Reminders</h1>
+    </div>
+    
+    <!-- Expandable Add Task Form -->
+    <details>
+        <summary class="btn">
+            <i class="fa-solid fa-plus"></i> Create New Task
+        </summary>
+        <div class="card" style="margin-top: 16px; text-align: left;">
+            <form action="{% url 'add_task' %}" method="POST">
+                {% csrf_token %}
+                <div class="grid-2" style="grid-template-columns: 2fr 1fr; gap: 16px;">
+                    <div>
+                        <label>Task Title *</label>
+                        <input type="text" name="title" required placeholder="Follow up email - Ahmed Khan">
+                    </div>
+                    <div>
+                        <label>Priority</label>
+                        <select name="priority">
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <label>Linked Lead</label>
+                        <select name="lead">
+                            <option value="">None (Unlinked)</option>
+                            {% for lead in leads %}
+                            <option value="{{ lead.id }}">{{ lead.name }} ({{ lead.company|default:"No Company" }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Due Date</label>
+                        <input type="date" name="due_date">
+                    </div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label>Description</label>
+                    <textarea name="description" placeholder="Specify operations or notes to remember..." style="height: 100px;"></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Schedule Task</button>
+            </form>
+        </div>
+    </details>
+</div>
+
+<!-- Filter Bar -->
+<div class="card" style="padding: 12px 24px; margin-bottom: 24px; display: flex; gap: 16px; align-items: center;">
+    <span style="font-weight: 700; color: var(--muted); font-size: 0.85rem; text-transform: uppercase;">Filter Tasks:</span>
+    <a href="?status=All" class="btn {% if status_filter == 'All' or not status_filter %}btn-secondary{% else %}btn-secondary{% endif %}" style="padding: 8px 16px; font-size: 0.85rem; background: {% if status_filter == 'All' %}rgba(99,102,241,0.2){% else %}transparent{% endif %};">All</a>
+    <a href="?status=Pending" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; background: {% if status_filter == 'Pending' %}rgba(99,102,241,0.2){% else %}transparent{% endif %};">Pending</a>
+    <a href="?status=Completed" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; background: {% if status_filter == 'Completed' %}rgba(99,102,241,0.2){% else %}transparent{% endif %};">Completed</a>
+</div>
+
+<!-- Task List -->
+<div>
+    {% for task in tasks %}
+    <div class="card" style="margin-bottom: 16px;">
+        <details>
+            <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="font-size: 1.5rem;">
+                        {% if task.done %}
+                        <i class="fa-solid fa-circle-check" style="color: var(--success);"></i>
+                        {% else %}
+                        <i class="fa-regular fa-square" style="color: var(--muted);"></i>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-weight: 700; text-decoration: {% if task.done %}line-through{% else %}none{% endif %}; color: {% if task.done %}var(--muted){% else %}var(--text){% endif %};">
+                            {{ task.title }}
+                        </h3>
+                        <span style="font-size: 0.8rem; color: var(--muted);">
+                            Due: {{ task.due_date }} &nbsp;|&nbsp; Linked Lead: {{ task.lead.name|default:"None" }}
+                        </span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <span class="badge {% if task.priority == 'High' %}badge-hot{% elif task.priority == 'Medium' %}badge-warm{% else %}badge-cold{% endif %}">
+                        {{ task.priority }}
+                    </span>
+                    <span style="color: var(--muted); font-size: 0.85rem;"><i class="fa-solid fa-chevron-down"></i></span>
+                </div>
+            </summary>
+            
+            <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+                <div>
+                    <h4 style="color: var(--primary-light); margin-bottom: 8px;">Description</h4>
+                    <p style="color: var(--muted);">{{ task.description|default:"No task description provided." }}</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    {% if not task.done %}
+                    <a href="{% url 'complete_task' task.id %}" class="btn" style="background: var(--success);"><i class="fa-solid fa-check"></i> Complete</a>
+                    {% endif %}
+                    <a href="{% url 'delete_task' task.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete</a>
+                </div>
+            </div>
+        </details>
+    </div>
+    {% empty %}
+    <div class="card" style="text-align: center; color: var(--muted); padding: 40px;">
+        <h3>No Tasks Registered</h3>
+        <p>Use the form above to add a new task and stay organized.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
